@@ -47,12 +47,15 @@ class GeneralOutput(GeneralInput):
         return self.imp_a_depositar
     
     def calcular_cbus_y_cuits(self):
-        if self.banco  == '00935':
-            self.cbu_origen = '0200925801000040012697'
-            self.cuit_origen = 30999256712
-            self.cbu_destino = '0200900501000000402265'
-            self.cuit_destino = 34999230573
-        return self.cbu_origen, self.cuit_origen, self.cbu_destino, self.cuit_destino
+        try:
+            if self.banco  == '00935':
+                self.cbu_origen = '0200925801000040012697'
+                self.cuit_origen = 30999256712
+                self.cbu_destino = '0200900501000000402265'
+                self.cuit_destino = 34999230573
+            return self.cbu_origen, self.cuit_origen, self.cbu_destino, self.cuit_destino
+        except (TypeError, AttributeError, SystemError):
+            print("Error al calcular cbus y cuits. Ingresar bien el campo general.banco")
 
     def generar_nro_transaccion(self):
         pass
@@ -61,8 +64,13 @@ class GeneralOutput(GeneralInput):
         pass
     
     def transformar_fecha(self):
-        self.fecha_rendicion = self.fecha_rendicion[6:10] + self.fecha_rendicion[5] + self.fecha_rendicion[3:5] + self.fecha_rendicion[2] + self.fecha_rendicion[0:2]
-        return self.fecha_rendicion
+        try:
+            self.fecha_rendicion = self.fecha_rendicion[6:10] + self.fecha_rendicion[5] + self.fecha_rendicion[3:5] + self.fecha_rendicion[2] + self.fecha_rendicion[0:2]
+            return self.fecha_rendicion
+        except:
+            print("Error al formatear fecha. Formato correcto: DD-MM-AAAA")
+        
+            
         
 
     def calcular_cant_registros(self):
@@ -150,7 +158,7 @@ class Generador():
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
              
 
-        except (AttributeError,SystemError):
+        except (TypeError, AttributeError, SystemError):
             print("Error al generar xml")
 
 
