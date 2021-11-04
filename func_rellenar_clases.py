@@ -20,14 +20,18 @@ def rellenar_clase_general_input():
                 else:
                     valor = False
                     print("Campo general.fechaRendicion debe ser fomato DD-MM-AAAA")
+                    sys.exit()
             else:
                 valor = False
-                print("Campo banco debe ser numerico")
+                print("Campo general.banco debe ser numerico")
+                sys.exit()
 
             return banco, fecha_rendicion
         else:
             print("Error de carga en los datos de la cabecera general. CAMPOS A INGRESAR: general.banco y general.fechaRendicion")
+            sys.exit()
     except:
         print("Error al llenar la clase GeneralInput")
+        sys.exit()
         
         

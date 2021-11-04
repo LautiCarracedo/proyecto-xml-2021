@@ -1,3 +1,5 @@
+import sys
+
 def leer_archivo():
     vector_datos_general = []
     vector_datos_sucursal = []
@@ -35,6 +37,8 @@ def leer_archivo():
 
     except IOError:
         print("ERROR DE LECTURA DE ARCHIVO")
+        sys.exit()
     
     except:
         print("ERROR")
+        sys.exit()
