@@ -59,7 +59,8 @@ def transformar_datos_detallepago():
             if datos[0] == '***detallepago.fechaPago':
                 fecha_pago = datos[1]
                 if ((len(fecha_pago) == 10) and (str(fecha_pago[0:2]).isnumeric() and fecha_pago[2] == '-' and str(fecha_pago[3:5]).isnumeric() and fecha_pago[5] == '-' and str(fecha_pago[6:10]).isnumeric())):
-                    vector_detalle_pago.append(fecha_pago)
+                    fecha_pago = fecha_pago[6:10] + fecha_pago[5] + fecha_pago[3:5] + fecha_pago[2] + fecha_pago[0:2]
+                    vector_detalle_pago.append(fecha_pago + 'T09:30:00.000')
                     #print(f"Fecha Pago: ", fecha_pago)
                 else:
                     print("Campo ***detallepago.fechaPago debe ser formato DD-MM-AAAA")
@@ -77,11 +78,14 @@ def transformar_datos_detallepago():
 
             if datos[0] == '***detallepago.cantCuotas':
                 cant_cuotas = datos[1]
-                if (str(cant_cuotas).isnumeric) and (cant_cuotas >= '0' or cant_cuotas <= '18'):
-                    vector_detalle_pago.append(cant_cuotas)
-                    #print("Cant cuotas: ", cant_cuotas)
+                if (str(cant_cuotas).isnumeric()):
+                    if (str(cant_cuotas) >= "0" or str(cant_cuotas) <= "18"):
+                        vector_detalle_pago.append(cant_cuotas)
+                        #print("Cant cuotas: ", cant_cuotas)
+                    else:
+                        print("Campo ***detallepago.cantCuotas debe estar comprendido entre 1 y 18")
                 else:
-                    print("Campo ***detallepago.cantCuotas debe estar comprendido entre 1 y 18")
+                    print("Campo ***detallepago.cantCuotas debe estar numerico")
                     sys.exit()
 
             if datos[0] == '***detallepago.idObjetoImponible':
@@ -105,7 +109,7 @@ def transformar_datos_detallepago():
         
         #print(datos[0])
         #print("Cant boletas: ", contador_boletas)
-        print(vector_detalle_pago)
+        #print(vector_detalle_pago)
         #print(nro_boleta)
 
         largo_correspodiente_vector_dp = len(vector_detalle_pago) % 6 #saco el modulo, de esta forma verifico que siempre sea multiplo de 6 el vector, ya que puede venir 6,12,18, es el formato correcto....
@@ -121,6 +125,16 @@ def transformar_datos_detallepago():
     except:
         print("Error al llenar la clase DetallePagoInput")
         sys.exit()
+
+
+def separar_detallespagos(): #lo que hace esta funcion es tomar el vector_detallepago que viene con todos los datos, y los divide en subvectores de detalles indeptes
+    lista_dp = transformar_datos_detallepago()
+
+    lista_dp_unitario_anidados = []
+    for i in range(0, len(lista_dp), 6):
+        lista_dp_unitario_anidados.append(lista_dp[i:i+6])
+    print(lista_dp_unitario_anidados)
+    return lista_dp_unitario_anidados
 
 
 def transformar_nroboletas_dp():
@@ -227,12 +241,14 @@ def rellenar_clase_detallepago_input(): #la idea de esta funcion es recorrer el 
     obj_imponibles = transformar_objimponibles_dp()
     obligaciones = transformar_obligaciones_dp()
 
-    print(nros_boletas)
-    print(fechas_pago)
-    print(importes)
-    print(cant_cuotas)
-    print(obj_imponibles)
-    print(obligaciones)
+    #print(nros_boletas)
+    #print(fechas_pago)
+    #print(importes)
+    #print(cant_cuotas)
+    #print(obj_imponibles)
+    #print(obligaciones)
+
+    return nros_boletas, fechas_pago, importes, cant_cuotas, obj_imponibles, obligaciones
 
     
 

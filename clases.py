@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
+import random
 from lectura_archivo import leer_archivo
-from func_rellenar_clases import rellenar_clase_detallepago_input, rellenar_clase_general_input, transformar_datos_detallepago
+from func_rellenar_clases import rellenar_clase_general_input, separar_detallespagos, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
 
 
 class GeneralInput():
@@ -51,11 +52,9 @@ class GeneralOutput(GeneralInput):
             self.cuit_destino = 34999230573
         return self.cbu_origen, self.cuit_origen, self.cbu_destino, self.cuit_destino
 
-    def generar_nro_transaccion(self):
-        pass
-
     def generar_nro_rendicion(self):
-        pass
+        self.nro_rendicion = random.randint(00000,99999)
+        return self.nro_rendicion
     
     def transformar_fecha(self):
         self.fecha_rendicion = self.fecha_rendicion[6:10] + self.fecha_rendicion[5] + self.fecha_rendicion[3:5] + self.fecha_rendicion[2] + self.fecha_rendicion[0:2]
@@ -65,36 +64,30 @@ class GeneralOutput(GeneralInput):
         
 
     def calcular_cant_registros(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        contador = 1
-        #print(len(datos_detallepago))
-        
-        if datos_detallepago[7][0] != " ":
-            contador += 1
-        #print(contador)
-        return contador
+        vector_boletas = transformar_nroboletas_dp()
+        cantidad_registros = 0
+        for cantidad in range(len(vector_boletas)):
+            cantidad_registros += 1
+        return cantidad_registros
     
     def calcular_importe_determinado_y_pagado(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        suma = float(datos_detallepago[2][1])
-        if datos_detallepago[6][0] != " ":
-            suma = suma + float(datos_detallepago[8][1])
-        return suma
+        vector_importes = transformar_importes_dp()
+        suma_importes = 0
+        for importes in vector_importes:
+            suma_importes += float(importes)
+        return suma_importes
 
-    def calcular_total_comision(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        total_comision = float(datos_detallepago[2][1]) * 0.01
-        if datos_detallepago[6][0] != " ":
-            total_comision = round(total_comision + (float(datos_detallepago[8][1]) * 0.01), 2)
-        return total_comision
+    def calcular_total_comision_iva(self):
+        vector_importes_x_dp = transformar_importes_dp()
+        comision = 0
+        iva = 0
+        for importes in vector_importes_x_dp:
+            comision += round(float(importes) * 0.01, 2) 
+        
+        iva += round(float(comision) * 0.21, 2)           
+        return comision, iva
 
-    def calcular_iva(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        total_comision = float(datos_detallepago[2][1]) * 0.01
-        if datos_detallepago[6][0] != " ":
-            total_comision = round(total_comision + (float(datos_detallepago[8][1]) * 0.01), 2)
-        iva = round(total_comision * 0.21, 2)
-        return iva
+
     
     def informes_general(self):
         datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
@@ -129,31 +122,32 @@ class SucursalOutput():
         return self.imp_a_depositar
             
     def calcular_cant_registros(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        contador = 1
-        #print(len(datos_detallepago))
+        vector_boletas = transformar_nroboletas_dp()
+        cantidad_registros = 0
+        for cantidad in range(len(vector_boletas)):
+            cantidad_registros += 1
+        return cantidad_registros
         
-        if datos_detallepago[7][0] != " ":
-            contador += 1
-        #print(contador)
-        return contador
     
     def calcular_importe_determinado_y_pagado(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        suma = float(datos_detallepago[2][1])
-        if datos_detallepago[6][0] != " ":
-            suma = suma + float(datos_detallepago[8][1])
-        return suma
+        vector_importes = transformar_importes_dp()
+        suma_importes = 0
+        for importe in vector_importes:
+            suma_importes += float(importe)
+        return suma_importes
 
-    def calcular_total_comision(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        total_comision = float(datos_detallepago[2][1]) * 0.01
-        if datos_detallepago[6][0] != " ":
-            total_comision = round(total_comision + (float(datos_detallepago[8][1]) * 0.01), 2)
-        return total_comision
-
-    def calcular_iva(self):
-        pass
+    def calcular_total_comision_iva_sucursal(self):
+        dp = DetallePagoOutput()
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp()
+        sumatoria_comision = 0
+        sumatoria_iva = 0
+        for valor_com in valores_comisiones:
+            sumatoria_comision += valor_com
+        
+        for valor_iva in valores_iva:
+            sumatoria_iva += valor_iva
+        
+        return sumatoria_comision, sumatoria_iva
         
 
 
@@ -178,59 +172,138 @@ class PagosOutput():
     def getLote(self):
         return self.lote
             
-    def calcular_cant_registros(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        contador = 1
-        #print(len(datos_detallepago))
-        
-        if datos_detallepago[7][0] != " ":
-            contador += 1
-        #print(contador)
-        return contador
+    def calcular_cant_registros_pagos(self):
+        vector_boletas = transformar_nroboletas_dp()
+        print("BOLETAS: ", vector_boletas)
+        cantidad_registros = 0
+        for cantidad in range(len(vector_boletas)):
+            cantidad_registros += 1
+            print("REGISTROS: ", cantidad_registros)
+        return cantidad_registros
     
     def calcular_importe_determinado_y_pagado(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        suma = float(datos_detallepago[2][1])
-        if datos_detallepago[6][0] != " ":
-            suma = suma + float(datos_detallepago[8][1])
-        return suma
+        vector_importes = transformar_importes_dp()
+        suma_importes = 0
+        for importe in vector_importes:
+            suma_importes += float(importe)
+        return suma_importes
 
-    def calcular_total_comision(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        total_comision = float(datos_detallepago[2][1]) * 0.01
-        if datos_detallepago[6][0] != " ":
-            total_comision = round(total_comision + (float(datos_detallepago[8][1]) * 0.01), 2)
-        return total_comision
-
-    def calcular_iva(self):
-        pass
+    def calcular_total_comision_iva_pagos(self):
+        dp = DetallePagoOutput()
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp()
+        sumatoria_comision = 0
+        sumatoria_iva = 0
+        for valor_com in valores_comisiones:
+            sumatoria_comision += valor_com
+        
+        for valor_iva in valores_iva:
+            sumatoria_iva += valor_iva
+        
+        return sumatoria_comision, sumatoria_iva
 
 
 class DetallePagoInput():
     def __init__(self):
-        vector_dp_input = rellenar_clase_detallepago_input()
-        #print(vector_dp_input)
+        self.datos = separar_detallespagos()
+
 
 
     #Getters
-    def getNroBoleta(self):
-        return self.nro_boleta
+    def getDatos(self):
+        return self.datos
+
+
+
+class DetallePagoOutput(DetallePagoInput):
+    def __init__(self):
+        super().__init__()
+        self.cod_registro = '022'
+        self.marca_movimiento = 'P'
+        self.tipo_operacion = '01'
+        self.tipo_rendicion = '01'
+        self.moneda = '01'
+        self.nro_comercio = '27426748'
     
-    def getFechaPago(self):
-        return self.fecha_pago
+    def getCodRegistro(self):
+        return self.cod_registro
+    
+    def getMarcaMovimiento(self):
+        return self.marca_movimiento
+    
+    def getTipoOperacion(self):
+        return self.tipo_operacion
+    
+    def getTipoRendicion(self):
+        return self.tipo_rendicion
+    
+    def getMoneda(self):
+        return self.moneda
     
     def getImporte(self):
-        return self.importe
+        vector_importes = transformar_importes_dp()
+        #print(vector_importes)
+        return vector_importes
+    
+    def getNroBoletas(self):
+        vector_nro_boletas = transformar_nroboletas_dp()
+        return vector_nro_boletas
     
     def getCantCuotas(self):
-        return self.cant_cuotas
-
-    def getIdObjImponible(self):
-        return self.id_obj_imponible
-
+        vector_cuotas = transformar_cuotas_dp()
+        return vector_cuotas
+    
+    def getObjImponible(self):
+        vector_obj_imponible = transformar_objimponibles_dp()
+        return vector_obj_imponible
+    
     def getObligacion(self):
-        return self.obligacion    
+        vector_obligacion = transformar_obligaciones_dp()
+        return vector_obligacion
+    
+    def getFechaPago(self):
+        vector_fechaspagos = transformar_fechaspago_dp()
+        return vector_fechaspagos
+    
+    def getNroComercio(self):
+        return self.nro_comercio
+    
+    def calculo_nro_registro_ycontrol(self):
+        registros_ycontrol = []
+        for numero in range(len(self.datos)):
+            registros_ycontrol.append(numero + 1)
+            #print(registros_ycontrol)
+        return registros_ycontrol
+    
+    def calculo_comision_iva_x_dp(self):
+        vector_importes_x_dp = transformar_importes_dp()
+        comisiones = []
+        ivas = []
+        comision = 0
+        iva = 0
+        for importes in vector_importes_x_dp:
+            comision = round(float(importes) * 0.01, 2) 
+            iva = round(float(comision) * 0.21, 2)           
+            comisiones.append(comision)
+            ivas.append(iva)
+        return comisiones, ivas
+    
 
+    
+    
+    
+    #def sumar_importes(self):
+    #    sumatoria = 0
+    #    for valor in self.importe:
+    #        sumatoria += float(valor) #por error de str e int parseo a float
+    #    return sumatoria
+    #
+    #def calculo_nro_registro(self):
+    #    cant_registros = len(self.boleta)
+    #    for registro in cant_registros():
+    #        print(registro)
+        
+
+   
 
 class Generador():
     def generar_xml(self):
@@ -238,8 +311,10 @@ class Generador():
             instancia_general_output = GeneralOutput()
             instancia_sucursal_output = SucursalOutput()
             instancia_pagos_output = PagosOutput()
+            instancia_dp_output = DetallePagoOutput()
 
             banco = instancia_general_output.getBanco()
+            nro_rendicion = instancia_general_output.generar_nro_rendicion()
             fecha_rendicion = instancia_general_output.transformar_fecha()
             cbu_origen, cuit_origen, cbu_destino, cuit_destino = instancia_general_output.calcular_cbus_y_cuits()
             cant_registros = instancia_general_output.calcular_cant_registros()
@@ -248,8 +323,7 @@ class Generador():
             imp_recaudado = instancia_general_output.getImpRecaudado()
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
-            total_comision = instancia_general_output.calcular_total_comision()
-            total_iva = instancia_general_output.calcular_iva()
+            total_comision, total_iva = instancia_general_output.calcular_total_comision_iva()
             informe_suma, informe_comision = instancia_general_output.informes_general()
 
 
@@ -260,48 +334,73 @@ class Generador():
             imp_recaudado_sucursal = instancia_sucursal_output.getImpRecaudado()
             imp_depositado_sucursal = instancia_sucursal_output.getImpDepositado()
             imp_a_depositar_sucursal = instancia_sucursal_output.getImpADepositar()
-            total_comision_sucursal = instancia_sucursal_output.calcular_total_comision()
-            #total_iva = instancia_sucursal_output.calcular_iva()
+            total_comision_sucursal, total_iva_sucursal = instancia_sucursal_output.calcular_total_comision_iva_sucursal()
 
 
             cod_registro = instancia_pagos_output.getCodRegistro()
             caja = instancia_pagos_output.getCaja()
             cajero = instancia_pagos_output.getCajero()
             lote = instancia_pagos_output.getLote()
-            cant_registros_pagos = instancia_pagos_output.calcular_cant_registros()
+            cant_registros_pagos = instancia_pagos_output.calcular_cant_registros_pagos()
             imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado()
             imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado()
-            total_comision_pagos = instancia_pagos_output.calcular_total_comision()
-            #total_iva_pagos = instancia_pagos_output.calcular_iva()
+            total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos()
+
+            
+            cod_registro_dp = instancia_dp_output.getCodRegistro()
+            nro_registro = instancia_dp_output.calculo_nro_registro_ycontrol()
+            marca_movimiento = instancia_dp_output.getMarcaMovimiento()
+            tipo_operacion = instancia_dp_output.getTipoOperacion()
+            tipo_rendicion = instancia_dp_output.getTipoRendicion()
+            moneda = instancia_dp_output.getMoneda()
+            importe = instancia_dp_output.getImporte()
+            nro_boleta = instancia_dp_output.getNroBoletas()
+            cuota = instancia_dp_output.getCantCuotas()
+            obj_imponible = instancia_dp_output.getObjImponible()
+            obligacion = instancia_dp_output.getObligacion()
+            fecha_pago = instancia_dp_output.getFechaPago()
+            nro_comercio = instancia_dp_output.getNroComercio()
+            comision, iva = instancia_dp_output.calculo_comision_iva_x_dp()
 
 
             
             #generando estructura xml con los campos
-            general = ET.Element("General",totalImpIVA = str(total_iva), totalImpComision = str(total_comision), 
+            general = ET.Element("General", totalImpIVA = str(total_iva), totalImpComision = str(total_comision), 
                                     totalImpRecaudado = str(imp_recaudado), totalImpDemositado = str(imp_depositado),
                                     totalImpADepositar = str(imp_a_depositar), totalImpPagado = str(imp_pagado), 
                                     totalImpDeterminado = str(imp_determinado), registros = str(cant_registros), 
                                     cuitDestino = str(cuit_destino), cbuDestino = str(cbu_destino), cuitOrigen = str(cuit_origen), cbuOrigen = str(cbu_origen),
-                                    fechaRendicion = fecha_rendicion, nroRendicion = "123", nroTransaccion = "0", banco = banco)
+                                    fechaRendicion = fecha_rendicion, nroRendicion = str(nro_rendicion), nroTransaccion = "0", banco = banco, xmlns="")
             
-            sucursal = ET.SubElement(general,"Sucursal", totalImpIVA = "None", totalImpComision = str(total_comision_pagos), 
+            sucursal = ET.SubElement(general,"Sucursal", totalImpIVA = str(total_iva_sucursal), totalImpComision = str(total_comision_sucursal), 
                                     totalImpRecaudado = str(imp_recaudado_sucursal), totalImpDemositado = str(imp_depositado_sucursal),
                                     totalImpADepositar = str(imp_a_depositar_sucursal), totalImpPagado = str(imp_pagado_sucursal), 
-                                    totalImpDeterminado = str(imp_determinado_sucursal), registros = str(cant_registros_sucursal), sucursal = sucursal)
+                                    totalImpDeterminado = str(imp_determinado_sucursal), sucursal = sucursal, registros = str(cant_registros_sucursal))
                                     
-            pagos = ET.SubElement(sucursal,"Pagos", totalImpIVA = "None", totalImpComision = str(total_comision_pagos), 
+            pagos = ET.SubElement(sucursal,"Pagos", registros = str(cant_registros_pagos),
+                                    totalImpIVA = str(total_iva_pagos), totalImpComision = str(total_comision_pagos), 
                                     totalImpPagado = str(imp_pagado_pagos), 
-                                    totalImpDeterminado = str(imp_determinado_pagos), registros = str(cant_registros_pagos),
-                                    lote = lote, cajero = cajero, caja = caja, codRegistro = cod_registro)
+                                    totalImpDeterminado = str(imp_determinado_pagos),
+                                    lote = lote, cajero = cajero, caja = caja, codRegistro = cod_registro
+                                    )
+
                                     
-            det_pago = ET.SubElement(pagos,"DetallePago").text = ' '
+                                    
+            
+            for numero in range(len(nro_registro)):
+                det_pago = ET.SubElement(pagos,"DetallePago", obligacion = str(obligacion[numero]), idObjetoImponible = str(obj_imponible[numero]), 
+                                        cantCuotas = str(cuota[numero]), nroComercio = str(nro_comercio), impIVA = str(iva[numero]), impComision = str(comision[numero]), impPagado = str(importe[numero]), impDeterminado = str(importe[numero]), 
+                                        fechaPago = str(fecha_pago[numero]), nroLiquidacionActualizado = nro_boleta[numero], nroLiquidacionOriginal = nro_boleta[numero], 
+                                        moneda = str(moneda), tipoRendicion = str(tipo_rendicion), tipoOperacion = str(tipo_operacion), 
+                                        marcaMovimiento = str(marca_movimiento), nroControl = str(numero + 1), nroRegistro = str(numero + 1), 
+                                        codRegistro = str(cod_registro_dp)).text = ' '
+
             comentario_suma_general = ET.Comment(informe_suma)  
             comentario_comision_general = ET.Comment(informe_comision)  
-            general.insert(0, comentario_suma_general)
             general.insert(0, comentario_comision_general)
             tree = ET.ElementTree(general)
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
              
 
-        except (TypeError, AttributeError, SystemError):
+        except (AttributeError, SystemError):
             print("Error al generar xml")
