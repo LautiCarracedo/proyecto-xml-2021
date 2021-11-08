@@ -1,6 +1,5 @@
 general.banco = 00935
-general.fechaRendicion = 21-10-2021 
-**pagos.codigoRegistro = 021 
+general.fechaRendicion = 21-10-2021
 ***detallepago.nroBoleta = 0520823739863094
 ***detallepago.fechaPago = 12-11-2021
 ***detallepago.importe = 222.22

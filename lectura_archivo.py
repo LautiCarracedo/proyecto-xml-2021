@@ -12,6 +12,7 @@ def leer_archivo():
                 if lineas.split():
                     while 'general' in lineas:
                         datos_general = lineas.strip().split(' = ')
+                        #print(datos_general)
                         vector_datos_general.append(datos_general)
                         if lineas != 'general':
                             break
