@@ -90,14 +90,20 @@ class GeneralOutput(GeneralInput):
 
     
     def informes_general(self):
-        datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo()
-        suma_total = 'Sumatoria de importes de los detallepago ingresados: ' + str(datos_detallepago[2][1]) + ' + ' + str(datos_detallepago[8][1])
-        comision_total = 'La comision total es igual a: (' + str(datos_detallepago[2][1]) + '* 0.01)' + ' + (' + str(datos_detallepago[8][1]) + '* 0.01)'
+        vector_importes = transformar_importes_dp()
+        suma_importes = 0
+        for importe in vector_importes:
+            suma_importes += float(importe)
+            
+        importes_dp = 'Importes ingresados: ' + str(vector_importes)
+        suma_total = 'Sumatoria de los importes: $' + str(suma_importes)
+        cant_registros = 'Cantidad de registros es igual a cantidad de boletas ingresadas: ' + str(len(vector_importes))
+        comision_total = 'La comision total es igual a: '
         #iva_total = 'Iva total es igual a: ' + str(round(float(comision_total),2)) + ' * ' + '0.21'
         #print(suma_total)
         #print(comision_total)
         #print(iva_total)
-        return suma_total, comision_total
+        return importes_dp, suma_total, comision_total, cant_registros
 
 
 class SucursalOutput():
@@ -174,11 +180,11 @@ class PagosOutput():
             
     def calcular_cant_registros_pagos(self):
         vector_boletas = transformar_nroboletas_dp()
-        print("BOLETAS: ", vector_boletas)
+        #print("BOLETAS: ", vector_boletas)
         cantidad_registros = 0
         for cantidad in range(len(vector_boletas)):
             cantidad_registros += 1
-            print("REGISTROS: ", cantidad_registros)
+            #print("REGISTROS: ", cantidad_registros)
         return cantidad_registros
     
     def calcular_importe_determinado_y_pagado(self):
@@ -205,8 +211,6 @@ class PagosOutput():
 class DetallePagoInput():
     def __init__(self):
         self.datos = separar_detallespagos()
-
-
 
     #Getters
     def getDatos(self):
@@ -286,21 +290,6 @@ class DetallePagoOutput(DetallePagoInput):
             comisiones.append(comision)
             ivas.append(iva)
         return comisiones, ivas
-    
-
-    
-    
-    
-    #def sumar_importes(self):
-    #    sumatoria = 0
-    #    for valor in self.importe:
-    #        sumatoria += float(valor) #por error de str e int parseo a float
-    #    return sumatoria
-    #
-    #def calculo_nro_registro(self):
-    #    cant_registros = len(self.boleta)
-    #    for registro in cant_registros():
-    #        print(registro)
         
 
    
@@ -324,7 +313,7 @@ class Generador():
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
             total_comision, total_iva = instancia_general_output.calcular_total_comision_iva()
-            informe_suma, informe_comision = instancia_general_output.informes_general()
+            informe_importes, informe_suma, informe_comision, informe_cant_registros = instancia_general_output.informes_general()
 
 
             sucursal = instancia_sucursal_output.getSucursal()
@@ -372,15 +361,15 @@ class Generador():
                                     cuitDestino = str(cuit_destino), cbuDestino = str(cbu_destino), cuitOrigen = str(cuit_origen), cbuOrigen = str(cbu_origen),
                                     fechaRendicion = fecha_rendicion, nroRendicion = str(nro_rendicion), nroTransaccion = "0", banco = banco, xmlns="")
             
-            sucursal = ET.SubElement(general,"Sucursal", totalImpIVA = str(total_iva_sucursal), totalImpComision = str(total_comision_sucursal), 
-                                    totalImpRecaudado = str(imp_recaudado_sucursal), totalImpDemositado = str(imp_depositado_sucursal),
-                                    totalImpADepositar = str(imp_a_depositar_sucursal), totalImpPagado = str(imp_pagado_sucursal), 
-                                    totalImpDeterminado = str(imp_determinado_sucursal), sucursal = sucursal, registros = str(cant_registros_sucursal))
+            sucursal = ET.SubElement(general,"Sucursal", totalImpIVAs = str(total_iva_sucursal), totalImpComisions = str(total_comision_sucursal), 
+                                    totalImpRecaudados = str(imp_recaudado_sucursal), totalImpDemositados = str(imp_depositado_sucursal),
+                                    totalImpADepositars = str(imp_a_depositar_sucursal), totalImpPagados = str(imp_pagado_sucursal), 
+                                    totalImpDeterminados = str(imp_determinado_sucursal), registross = str(cant_registros_sucursal), sucursal = sucursal)
                                     
-            pagos = ET.SubElement(sucursal,"Pagos", registros = str(cant_registros_pagos),
-                                    totalImpIVA = str(total_iva_pagos), totalImpComision = str(total_comision_pagos), 
-                                    totalImpPagado = str(imp_pagado_pagos), 
-                                    totalImpDeterminado = str(imp_determinado_pagos),
+            pagos = ET.SubElement(sucursal,"Pagos",
+                                    totalImpIVAp = str(total_iva_pagos), totalImpComisionp = str(total_comision_pagos), 
+                                    totalImpPagadop = str(imp_pagado_pagos), 
+                                    totalImpDeterminadop = str(imp_determinado_pagos), registrosp = str(cant_registros_pagos),
                                     lote = lote, cajero = cajero, caja = caja, codRegistro = cod_registro
                                     )
 
@@ -395,12 +384,19 @@ class Generador():
                                         marcaMovimiento = str(marca_movimiento), nroControl = str(numero + 1), nroRegistro = str(numero + 1), 
                                         codRegistro = str(cod_registro_dp)).text = ' '
 
+            comentario_importes = ET.Comment(informe_importes)
             comentario_suma_general = ET.Comment(informe_suma)  
-            comentario_comision_general = ET.Comment(informe_comision)  
+            comentario_cant_registros = ET.Comment(informe_cant_registros)
+            comentario_comision_general = ET.Comment(informe_comision) 
+            
             general.insert(0, comentario_comision_general)
+            general.insert(0, comentario_suma_general)
+            general.insert(0, comentario_importes)
+            general.insert(0, comentario_cant_registros)
+            
             tree = ET.ElementTree(general)
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
              
 
-        except (AttributeError, SystemError):
+        except (TypeError, AttributeError, SystemError):
             print("Error al generar xml")

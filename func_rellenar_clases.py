@@ -79,29 +79,38 @@ def transformar_datos_detallepago():
             if datos[0] == '***detallepago.cantCuotas':
                 cant_cuotas = datos[1]
                 if (str(cant_cuotas).isnumeric()):
-                    if (str(cant_cuotas) >= "0" or str(cant_cuotas) <= "18"):
+                    if int(cant_cuotas) >= 0 and int(cant_cuotas) <= 18:
                         vector_detalle_pago.append(cant_cuotas)
                         #print("Cant cuotas: ", cant_cuotas)
                     else:
                         print("Campo ***detallepago.cantCuotas debe estar comprendido entre 1 y 18")
+                        sys.exit()
                 else:
                     print("Campo ***detallepago.cantCuotas debe estar numerico")
                     sys.exit()
 
             if datos[0] == '***detallepago.idObjetoImponible':
                 id_obj_imponible = datos[1]
-                if (str(id_obj_imponible).isnumeric()) and (id_obj_imponible >= '0' or id_obj_imponible <= '18'):
-                    vector_detalle_pago.append(id_obj_imponible)
-                    #print("Id Obj Imp: ", id_obj_imponible)
+                if (str(id_obj_imponible).isnumeric()):
+                    if int(id_obj_imponible) >= 0 and int(id_obj_imponible) <= 18:
+                        vector_detalle_pago.append(id_obj_imponible)
+                        #print("Id Obj Imp: ", id_obj_imponible)
+                    else:
+                        print("Campo ***detallepago.idObjetoImponible debe estar comprendido entre 1 y 18")
+                        sys.exit()
                 else:
-                    print("Campo ***detallepago.idObjetoImponible debe estar comprendido entre 1 y 18")
+                    print("Campo ***detallepago.idObjetoImponible debe ser numerico")
                     sys.exit()
 
             if datos[0] == '***detallepago.obligacion':
                 obligacion = datos[1]
                 if str(obligacion).isnumeric():
-                    vector_detalle_pago.append(obligacion)
-                    #print("Obligacion: ", obligacion)
+                    if int(obligacion) >= 0 and int(obligacion) <= 18:
+                        vector_detalle_pago.append(obligacion)
+                        #print("Obligacion: ", obligacion)
+                    else:
+                        print("Campo ***detallepago.obligacion debe estar comprendido entre 1 y 18")
+                        sys.exit()
                 else:
                     print("Campo ***detallepago.obligacion debe ser numerico")
                     sys.exit()
@@ -133,7 +142,7 @@ def separar_detallespagos(): #lo que hace esta funcion es tomar el vector_detall
     lista_dp_unitario_anidados = []
     for i in range(0, len(lista_dp), 6):
         lista_dp_unitario_anidados.append(lista_dp[i:i+6])
-    print(lista_dp_unitario_anidados)
+    #print(lista_dp_unitario_anidados)
     return lista_dp_unitario_anidados
 
 

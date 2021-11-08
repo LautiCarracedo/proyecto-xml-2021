@@ -45,11 +45,11 @@ def main():
                                 #instance_objeto_detallepago.getIdObjImponible(), instance_objeto_detallepago.getObligacion()
                                 ]
 
-        print("Datos tag general: ", vector_general)
-        print("Datos tag sucursal: ", vector_sucursal)
-        print("Datos tag pagos: ", vector_pagos)
-        print("Datos tag detallepago: ", vector_detalle_pago)
-    except (AttributeError):
+        #print("Datos tag general: ", vector_general)
+        #print("Datos tag sucursal: ", vector_sucursal)
+        #print("Datos tag pagos: ", vector_pagos)
+        #print("Datos tag detallepago: ", vector_detalle_pago)
+    except (TypeError, AttributeError):
             print("ERROR")
 
 
