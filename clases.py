@@ -82,9 +82,9 @@ class GeneralOutput(GeneralInput):
         comision = 0
         iva = 0
         for importes in vector_importes_x_dp:
-            comision += round(float(importes) * 0.01, 2) 
+            comision += round((float(importes) * 0.01), 2) 
         
-        iva += round(float(comision) * 0.21, 2)           
+        iva += round((float(comision) * 0.21), 2)           
         return comision, iva
 
 
@@ -148,10 +148,10 @@ class SucursalOutput():
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += valor_com
+            sumatoria_comision += round(valor_com, 2)
         
         for valor_iva in valores_iva:
-            sumatoria_iva += valor_iva
+            sumatoria_iva += round(valor_iva, 2)
         
         return sumatoria_comision, sumatoria_iva
         
@@ -200,10 +200,10 @@ class PagosOutput():
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += valor_com
+            sumatoria_comision += round(valor_com, 2)
         
         for valor_iva in valores_iva:
-            sumatoria_iva += valor_iva
+            sumatoria_iva += round(valor_iva, 2)
         
         return sumatoria_comision, sumatoria_iva
 

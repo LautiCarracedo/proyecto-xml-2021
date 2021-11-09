@@ -42,6 +42,8 @@ def transformar_datos_detallepago():
     datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo() #leo el archivo
     #print(datos_detallepago)
     try:
+        
+        #print(datos_detallepago[0][1])
     #recorro datos_detallepago que viene como [[***detallepago.nroBoleta,xxxxx],[***detallepago.importe,222]]. La idea es generar un vector que solo tenga los valores.
         for datos in datos_detallepago: 
             #print(datos[0], datos[1])
@@ -242,22 +244,7 @@ def transformar_obligaciones_dp():
     return obligaciones
 
 
-def rellenar_clase_detallepago_input(): #la idea de esta funcion es recorrer el vector_detalle_pago generado en la funcion rellenar que contiene todos los datos, y generar pequeñas listas que contengan valores de la misma clave. Por ej: si hay 2 boletas, que haya un vector de los nro_boleta, otro vctor con las dos fecha_pago
-    nros_boletas = transformar_nroboletas_dp()
-    fechas_pago = transformar_fechaspago_dp()
-    importes = transformar_importes_dp()
-    cant_cuotas = transformar_cuotas_dp()
-    obj_imponibles = transformar_objimponibles_dp()
-    obligaciones = transformar_obligaciones_dp()
 
-    #print(nros_boletas)
-    #print(fechas_pago)
-    #print(importes)
-    #print(cant_cuotas)
-    #print(obj_imponibles)
-    #print(obligaciones)
-
-    return nros_boletas, fechas_pago, importes, cant_cuotas, obj_imponibles, obligaciones
 
     
 
