@@ -61,8 +61,6 @@ class GeneralOutput(GeneralInput):
         return self.fecha_rendicion
         
             
-        
-
     def calcular_cant_registros(self):
         vector_boletas = transformar_nroboletas_dp()
         cantidad_registros = 0
@@ -82,10 +80,12 @@ class GeneralOutput(GeneralInput):
         comision = 0
         iva = 0
         for importes in vector_importes_x_dp:
-            comision += round((float(importes) * 0.01), 2) 
+            comision += float(importes) * 0.01
+            comision_redondeo = round(comision, 2)
         
-        iva += round((float(comision) * 0.21), 2)           
-        return comision, iva
+        iva += float(comision) * 0.21
+        iva_redondeo = round(iva, 2)       
+        return comision_redondeo, iva_redondeo
 
 
     
@@ -148,12 +148,14 @@ class SucursalOutput():
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += round(valor_com, 2)
+            sumatoria_comision += valor_com
+            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
         
         for valor_iva in valores_iva:
-            sumatoria_iva += round(valor_iva, 2)
+            sumatoria_iva += valor_iva
+            sumatoria_iva_redondeo = round(sumatoria_iva, 2)
         
-        return sumatoria_comision, sumatoria_iva
+        return sumatoria_comision_redondeo, sumatoria_iva_redondeo
         
 
 
@@ -200,12 +202,15 @@ class PagosOutput():
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += round(valor_com, 2)
+            sumatoria_comision += valor_com
+            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
+            
         
         for valor_iva in valores_iva:
-            sumatoria_iva += round(valor_iva, 2)
+            sumatoria_iva += valor_iva
+            sumatoria_iva_redondeo = round(sumatoria_iva, 2)
         
-        return sumatoria_comision, sumatoria_iva
+        return sumatoria_comision_redondeo, sumatoria_iva_redondeo
 
 
 class DetallePagoInput():

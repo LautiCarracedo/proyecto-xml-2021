@@ -41,9 +41,9 @@ def transformar_datos_detallepago():
     largo_correspodiente_vector_dp = 0
     datos_generales, datos_sucursal, datos_pagos, datos_detallepago = leer_archivo() #leo el archivo
     #print(datos_detallepago)
+    
+    
     try:
-        
-        #print(datos_detallepago[0][1])
     #recorro datos_detallepago que viene como [[***detallepago.nroBoleta,xxxxx],[***detallepago.importe,222]]. La idea es generar un vector que solo tenga los valores.
         for datos in datos_detallepago: 
             #print(datos[0], datos[1])
