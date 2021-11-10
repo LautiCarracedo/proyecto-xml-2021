@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import random
 from lectura_archivo import leer_archivo
 from func_rellenar_clases import rellenar_clase_general_input, separar_detallespagos, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
-
+import time
 
 class GeneralInput():
     def __init__(self):
@@ -405,3 +405,4 @@ class Generador():
 
         except (TypeError, AttributeError, SystemError):
             print("Error al generar xml")
+            time.sleep(5)
