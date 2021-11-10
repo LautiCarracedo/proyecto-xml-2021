@@ -223,7 +223,12 @@ class PagosOutput():
 
 class DetallePagoInput():
     def __init__(self):
-        self.datos = separar_detallespagos()
+        self.boletas = transformar_nroboletas_dp()
+        self.fecha_pagos = transformar_fechaspago_dp()
+        self.importes = transformar_importes_dp()
+        self.cuotas = transformar_cuotas_dp()
+        self.obj_imp = transformar_objimponibles_dp()
+        self.obligaciones =  transformar_obligaciones_dp()
 
     #Getters
     def getDatos(self):
@@ -257,36 +262,36 @@ class DetallePagoOutput(DetallePagoInput):
         return self.moneda
     
     def getImporte(self):
-        vector_importes = transformar_importes_dp()
+        #vector_importes = transformar_importes_dp()
         #print(vector_importes)
-        return vector_importes
+        return self.importes
     
     def getNroBoletas(self):
-        vector_nro_boletas = transformar_nroboletas_dp()
-        return vector_nro_boletas
+        #vector_nro_boletas = transformar_nroboletas_dp()
+        return self.boletas
     
     def getCantCuotas(self):
-        vector_cuotas = transformar_cuotas_dp()
-        return vector_cuotas
+        #vector_cuotas = transformar_cuotas_dp()
+        return self.cuotas
     
     def getObjImponible(self):
-        vector_obj_imponible = transformar_objimponibles_dp()
-        return vector_obj_imponible
+        #vector_obj_imponible = transformar_objimponibles_dp()
+        return self.obj_imp
     
     def getObligacion(self):
-        vector_obligacion = transformar_obligaciones_dp()
-        return vector_obligacion
+        #vector_obligacion = transformar_obligaciones_dp()
+        return self.obligaciones
     
     def getFechaPago(self):
-        vector_fechaspagos = transformar_fechaspago_dp()
-        return vector_fechaspagos
+        #vector_fechaspagos = transformar_fechaspago_dp()
+        return self.fecha_pagos
     
     def getNroComercio(self):
         return self.nro_comercio
     
     def calculo_nro_registro_ycontrol(self):
         registros_ycontrol = []
-        for numero in range(len(self.datos)):
+        for numero in range(len(self.boletas)):
             registros_ycontrol.append(numero + 1)
             #print(registros_ycontrol)
         return registros_ycontrol
