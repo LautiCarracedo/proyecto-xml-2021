@@ -99,10 +99,10 @@ def leer_archivo():
     
     except IOError:
         print("Error de lectura de archivo")
-        time.sleep(5)
+        time.sleep(3)
         sys.exit()
     
     except:
         print("Error al intentar realizar operaciones con los datos del archivo.")
-        time.sleep(5)
+        time.sleep(3)
         sys.exit()

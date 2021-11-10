@@ -22,22 +22,22 @@ def rellenar_clase_general_input():
                 else:
                     valor = False
                     print("Campo general.fechaRendicion debe ser fomato DD-MM-AAAA")
-                    time.sleep(5)
+                    time.sleep(4)
                     sys.exit()
             else:
                 valor = False
                 print("Campo general.banco debe ser numerico")
-                time.sleep(5)
+                time.sleep(4)
                 sys.exit()
             #print(banco, fecha_rendicion)
             return banco, fecha_rendicion
         else:
             print("Error de carga en los datos de la cabecera general. CAMPOS A INGRESAR: general.banco y general.fechaRendicion")
-            time.sleep(5)
+            time.sleep(6)
             sys.exit()
     except:
         print("Error al llenar la clase GeneralInput")
-        time.sleep(3)
+        time.sleep(2)
         sys.exit()
         
 
@@ -56,7 +56,7 @@ def verificar_orden_dp():
             orden = 'El orden cargado de los detalles de pagos esta mal'
             print(orden)
             bandera_ok_orden = False
-            time.sleep(5)
+            time.sleep(4)
             sys.exit()
 
         inicio_vector += 6

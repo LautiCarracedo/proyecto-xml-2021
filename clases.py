@@ -90,20 +90,33 @@ class GeneralOutput(GeneralInput):
 
     
     def informes_general(self):
+        dp = DetallePagoOutput()
+        vector_comisiones, vector_ivas = dp.calculo_comision_iva_x_dp()
         vector_importes = transformar_importes_dp()
         suma_importes = 0
+        suma_comision = 0
+        suma_iva = 0
         for importe in vector_importes:
             suma_importes += float(importe)
             
-        importes_dp = 'Importes ingresados: ' + str(vector_importes)
-        suma_total = 'Sumatoria de los importes: $' + str(suma_importes)
+        for comision in vector_comisiones:
+            suma_comision += float(comision)
+            comision_redondeo = round(suma_comision, 2)
+        
+        for ivas in vector_ivas:
+            suma_iva += float(ivas)
+            iva_redondeo = round(suma_iva, 2)
+        
         cant_registros = 'Cantidad de registros es igual a cantidad de boletas ingresadas: ' + str(len(vector_importes))
-        comision_total = 'La comision total es igual a: '
-        #iva_total = 'Iva total es igual a: ' + str(round(float(comision_total),2)) + ' * ' + '0.21'
-        #print(suma_total)
-        #print(comision_total)
-        #print(iva_total)
-        return importes_dp, suma_total, comision_total, cant_registros
+        importes_dp = 'Importes ingresados de cada boleta: ' + str(vector_importes)
+        suma_total = 'Sumatoria de los importes de todas las boletas: $ ' + str(suma_importes)
+        comisiones_dp = 'Comisiones de cada importe: ' + str(vector_comisiones)
+        comision_total = 'La comision total es igual a $: ' + str(comision_redondeo)
+        ivas_dp = 'Iva de cada importe (comision de cada importe x 0.21):' + str(vector_ivas)
+        ivas_total = 'La comision total es igual a $: ' + str(iva_redondeo)
+        
+
+        return importes_dp, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros
 
 
 class SucursalOutput():
@@ -318,8 +331,8 @@ class Generador():
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
             total_comision, total_iva = instancia_general_output.calcular_total_comision_iva()
-            informe_importes, informe_suma, informe_comision, informe_cant_registros = instancia_general_output.informes_general()
-
+            informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas, informe_suma_ivas, informe_cant_registros = instancia_general_output.informes_general()
+            
 
             sucursal = instancia_sucursal_output.getSucursal()
             cant_registros_sucursal = instancia_sucursal_output.calcular_cant_registros()
@@ -389,20 +402,28 @@ class Generador():
                                         marcaMovimiento = str(marca_movimiento), nroControl = str(numero + 1), nroRegistro = str(numero + 1), 
                                         codRegistro = str(cod_registro_dp)).text = ' '
 
-            comentario_importes = ET.Comment(informe_importes)
-            comentario_suma_general = ET.Comment(informe_suma)  
             comentario_cant_registros = ET.Comment(informe_cant_registros)
-            comentario_comision_general = ET.Comment(informe_comision) 
-            
-            general.insert(0, comentario_comision_general)
-            general.insert(0, comentario_suma_general)
+            comentario_importes = ET.Comment(informe_importes)
+            comentario_suma_importes = ET.Comment(informe_suma_importes)  
+            comentario_comision = ET.Comment(informe_comisiones) 
+            comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
+            comentario_iva = ET.Comment(informe_ivas)
+            comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+
+            general.insert(0, comentario_suma_ivas)
+            general.insert(0, comentario_iva)
+            general.insert(0, comentario_suma_comisiones)
+            general.insert(0, comentario_comision)
+            general.insert(0, comentario_suma_importes)
             general.insert(0, comentario_importes)
             general.insert(0, comentario_cant_registros)
+            
+            
             
             tree = ET.ElementTree(general)
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
              
 
-        except (TypeError, AttributeError, SystemError):
+        except (AttributeError, SystemError):
             print("Error al generar xml")
             time.sleep(5)
