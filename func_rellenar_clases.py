@@ -43,27 +43,30 @@ def rellenar_clase_general_input():
 
 
 def verificar_orden_dp():
-    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago = leer_archivo() #leo el archivo
-    inicio_vector = 0
-    fin_vector = len(claves_detallepago)
-    bandera_ok_orden = False
-    while inicio_vector < fin_vector:
-        if claves_detallepago[inicio_vector] == '***detallepago.nroBoleta' and claves_detallepago[inicio_vector+1] == '***detallepago.fechaPago' and claves_detallepago[inicio_vector+2] == '***detallepago.importe' and claves_detallepago[inicio_vector+3] == '***detallepago.cantCuotas' and claves_detallepago[inicio_vector+4] == '***detallepago.idObjetoImponible' and claves_detallepago[inicio_vector+5] == '***detallepago.obligacion':
-            orden = 'El orden cargado de los detalles de pagos esta bien'
-            #print(orden)
-            bandera_ok_orden = True
-        else:
-            orden = 'El orden cargado de los detalles de pagos esta mal'
-            print(orden)
-            bandera_ok_orden = False
-            time.sleep(4)
-            sys.exit()
+    try:
+        claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago = leer_archivo() #leo el archivo
+        inicio_vector = 0
+        fin_vector = len(claves_detallepago)
+        bandera_ok_orden = False
+        while inicio_vector < fin_vector:
+            if claves_detallepago[inicio_vector] == '***detallepago.nroBoleta' and claves_detallepago[inicio_vector+1] == '***detallepago.fechaPago' and claves_detallepago[inicio_vector+2] == '***detallepago.importe' and claves_detallepago[inicio_vector+3] == '***detallepago.cantCuotas' and claves_detallepago[inicio_vector+4] == '***detallepago.idObjetoImponible' and claves_detallepago[inicio_vector+5] == '***detallepago.obligacion':
+                orden = 'El orden cargado de los detalles de pagos esta bien.'
+                #print(orden)
+                bandera_ok_orden = True
+            else:
+                orden = 'El orden cargado de los detalles de pagos esta mal. Se espera que ingrese ***detallepago.nroBoleta = valor, ***detallepago.fechaPago = valor, ***detallepago.importe = valor, ***detallepago.cantCuotas = valor, ***detallepago.idObjetoImponible = valor, ***detallepago.obligacion = valor'
+                print(orden)
+                bandera_ok_orden = False
+                time.sleep(7)
+                sys.exit()
 
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    
-    return bandera_ok_orden
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+            
+        return bandera_ok_orden
+    except (IndexError, TypeError):
+        print("Faltan campos por ingresar de los detalles de pagos")
 
 
 def transformar_datos_detallepago():
@@ -183,106 +186,142 @@ def transformar_datos_detallepago():
 
 
 def separar_detallespagos(): #lo que hace esta funcion es tomar el vector_detallepago que viene con todos los datos, y los divide en subvectores de detalles indeptes
-    lista_dp = transformar_datos_detallepago()
+    try:
+        lista_dp = transformar_datos_detallepago()
 
-    lista_dp_unitario_anidados = []
-    for i in range(0, len(lista_dp), 6):
-        lista_dp_unitario_anidados.append(lista_dp[i:i+6])
-    #print(lista_dp_unitario_anidados)
-    return lista_dp_unitario_anidados
+        lista_dp_unitario_anidados = []
+        for i in range(0, len(lista_dp), 6):
+            lista_dp_unitario_anidados.append(lista_dp[i:i+6])
+        #print(lista_dp_unitario_anidados)
+        return lista_dp_unitario_anidados
+    except (TypeError, IndexError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
+
 
 
 def transformar_nroboletas_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    boletas = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 0
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        boletas = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 0
 
-    while inicio_vector < fin_vector:
-        boletas.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Boletas: ", boletas)
-    return boletas
+        while inicio_vector < fin_vector:
+            boletas.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Boletas: ", boletas)
+        return boletas
+    except (TypeError, IndexError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
 
 
 def transformar_fechaspago_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    fechas = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 1 #posicion en donde se encuentra la fecha, por eso inicio vector = 1
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        fechas = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 1 #posicion en donde se encuentra la fecha, por eso inicio vector = 1
 
-    while inicio_vector < fin_vector:
-        fechas.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Fechas: ", fechas)
-    return fechas
+        while inicio_vector < fin_vector:
+            fechas.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Fechas: ", fechas)
+        return fechas
+    except (TypeError, IndexError, AttributeError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
 
 
 def transformar_importes_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    importes = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 2
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        importes = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 2
 
-    while inicio_vector < fin_vector:
-        importes.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Importes: ", importes)
-    return importes
+        while inicio_vector < fin_vector:
+            importes.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Importes: ", importes)
+        return importes
+    except (TypeError, IndexError, AttributeError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
 
 
 def transformar_cuotas_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    cuotas = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 3
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        cuotas = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 3
 
-    while inicio_vector < fin_vector:
-        cuotas.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Cuotas: ", cuotas)
-    return cuotas
+        while inicio_vector < fin_vector:
+            cuotas.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Cuotas: ", cuotas)
+        return cuotas
+    except (TypeError, IndexError, AttributeError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
 
 
 def transformar_objimponibles_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    obj_imponibles = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 4
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        obj_imponibles = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 4
 
-    while inicio_vector < fin_vector:
-        obj_imponibles.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Obj imponibles: ", obj_imponibles)
-    return obj_imponibles
+        while inicio_vector < fin_vector:
+            obj_imponibles.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Obj imponibles: ", obj_imponibles)
+        return obj_imponibles
+    except (TypeError, IndexError, AttributeError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()
 
 
 def transformar_obligaciones_dp():
-    #rellenar vector para nro boletas
-    vector_dp = transformar_datos_detallepago()
-    obligaciones = []
-    fin_vector = len(vector_dp)
-    inicio_vector = 5
+    try:
+        #rellenar vector para nro boletas
+        vector_dp = transformar_datos_detallepago()
+        obligaciones = []
+        fin_vector = len(vector_dp)
+        inicio_vector = 5
 
-    while inicio_vector < fin_vector:
-        obligaciones.append(vector_dp[inicio_vector])
-        inicio_vector += 6
-        if inicio_vector >= fin_vector:
-            break
-    #print("Obligaciones: ", obligaciones)
-    return obligaciones
+        while inicio_vector < fin_vector:
+            obligaciones.append(vector_dp[inicio_vector])
+            inicio_vector += 6
+            if inicio_vector >= fin_vector:
+                break
+        #print("Obligaciones: ", obligaciones)
+        return obligaciones
+    except (TypeError, IndexError, AttributeError):
+        print("Falta algun elemento de los detalles de pagos")
+        time.sleep(4)
+        sys.exit()

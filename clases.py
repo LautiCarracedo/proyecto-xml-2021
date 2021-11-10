@@ -15,12 +15,7 @@ class GeneralInput():
     def getFechaRendicion(self):
         return self.fecha_rendicion
     
-    #Setters
-    def setBanco(self, bancoX):
-        self.banco = bancoX
 
-    def setFechaRendicion(self, fecha_rendicionX):
-        self.fecha_rendicion = fecha_rendicionX
     
 
     
@@ -424,6 +419,6 @@ class Generador():
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
              
 
-        except (AttributeError, SystemError):
+        except (TypeError, AttributeError, SystemError):
             print("Error al generar xml")
             time.sleep(5)
