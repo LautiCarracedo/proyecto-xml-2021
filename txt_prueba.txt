@@ -1,7 +1,5 @@
 general.banco = 00935
 general.fechaRendicion = 31-05-2021
-
-
 ***detallepago.nroBoleta = 0520823739863094
 ***detallepago.fechaPago = 30-09-2021
 ***detallepago.importe = 222.22
@@ -9,37 +7,10 @@ general.fechaRendicion = 31-05-2021
 ***detallepago.idObjetoImponible = 1
 ***detallepago.obligacion = 0 
 
+
 ***detallepago.nroBoleta = 0520505423731850
 ***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 1170.73
-***detallepago.cantCuotas = 12
-***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
-
-***detallepago.nroBoleta = 0520250624970392
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 676.06
-***detallepago.cantCuotas = 18
-***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
-
-***detallepago.nroBoleta = 0520592641248208
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 106.25
-***detallepago.cantCuotas = 18
-***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
-
-***detallepago.nroBoleta = 0520350824843501
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 115.36
-***detallepago.cantCuotas = 12
-***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
-
-***detallepago.nroBoleta = 0520587721465758
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 1841.19
+***detallepago.importe = 1170
 ***detallepago.cantCuotas = 12
 ***detallepago.idObjetoImponible = 1
 ***detallepago.obligacion = 0

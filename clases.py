@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import random
 from lectura_archivo import leer_archivo
-from func_rellenar_clases import rellenar_clase_general_input, separar_detallespagos, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
+from func_rellenar_clases import rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
 import time
 
 class GeneralInput():
@@ -373,14 +373,14 @@ class Generador():
             
             #generando estructura xml con los campos
             general = ET.Element("General", totalImpIVA = str(total_iva), totalImpComision = str(total_comision), 
-                                    totalImpRecaudado = str(imp_recaudado), totalImpDemositado = str(imp_depositado),
+                                    totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
                                     totalImpADepositar = str(imp_a_depositar), totalImpPagado = str(imp_pagado), 
                                     totalImpDeterminado = str(imp_determinado), registros = str(cant_registros), 
                                     cuitDestino = str(cuit_destino), cbuDestino = str(cbu_destino), cuitOrigen = str(cuit_origen), cbuOrigen = str(cbu_origen),
                                     fechaRendicion = fecha_rendicion, nroRendicion = str(nro_rendicion), nroTransaccion = "0", banco = banco, xmlns="")
             
             sucursal = ET.SubElement(general,"Sucursal", totalImpIVAs = str(total_iva_sucursal), totalImpComisions = str(total_comision_sucursal), 
-                                    totalImpRecaudados = str(imp_recaudado_sucursal), totalImpDemositados = str(imp_depositado_sucursal),
+                                    totalImpRecaudados = str(imp_recaudado_sucursal), totalImpDepositados = str(imp_depositado_sucursal),
                                     totalImpADepositars = str(imp_a_depositar_sucursal), totalImpPagados = str(imp_pagado_sucursal), 
                                     totalImpDeterminados = str(imp_determinado_sucursal), registross = str(cant_registros_sucursal), sucursal = sucursal)
                                     
@@ -422,8 +422,11 @@ class Generador():
             
             tree = ET.ElementTree(general)
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+
+
+
              
 
         except (TypeError, AttributeError, SystemError):
-            print("Error al generar xml")
-            time.sleep(5)
+            input("Error al generar xml. Presione enter para salir")
+            #time.sleep(5)

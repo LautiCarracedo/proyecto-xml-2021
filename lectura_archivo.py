@@ -10,7 +10,7 @@ def leer_archivo():
     vector_clave_valor_detallepagos = []
     
     try:
-        with open("C:/Users/Lauti/Desktop/generador_prueba/txt_prueba.txt","r") as archivo:
+        with open("C:/generador_prueba/txt_prueba.txt","r") as archivo:
             for lineas in archivo.readlines():
                 #print(lineas)
                 if lineas.strip():
@@ -98,11 +98,11 @@ def leer_archivo():
             return vector_clave_general, vector_datos_general, vector_clave_valor_general, vector_clave_detallepagos, vector_datos_detallepagos, vector_clave_valor_detallepagos
     
     except IOError:
-        print("Error de lectura de archivo")
-        time.sleep(3)
+        input("Error de lectura de archivo. Presione enter para salir")
+        #time.sleep(3)
         sys.exit()
     
     except:
-        print("Error al intentar realizar operaciones con los datos del archivo.")
-        time.sleep(3)
+        input("Error al intentar realizar operaciones con los datos del archivo. Presione enter para salir")
+        #time.sleep(3)
         sys.exit()
