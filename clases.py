@@ -1,8 +1,8 @@
+from os import symlink
 import xml.etree.ElementTree as ET
 import random
 from lectura_archivo import leer_archivo
 from func_rellenar_clases import rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
-import time
 
 class GeneralInput():
     def __init__(self):
@@ -45,6 +45,37 @@ class GeneralOutput(GeneralInput):
             self.cuit_origen = 30999256712
             self.cbu_destino = '0200900501000000402265'
             self.cuit_destino = 34999230573
+
+        elif self.banco  == '00936':
+            self.cbu_origen = '0200925801000040012697'
+            self.cuit_origen = 30999256712
+            self.cbu_destino = '0200900501000000402265'
+            self.cuit_destino = 34999230573
+        
+        elif self.banco  == '00937':
+            self.cbu_origen = '0200925801000040012697'
+            self.cuit_origen = 30999256712
+            self.cbu_destino = '0200900501000000402265'
+            self.cuit_destino = 34999230573
+        
+        elif self.banco  == '00938':
+            self.cbu_origen = '0200925801000040012697'
+            self.cuit_origen = 30999256712
+            self.cbu_destino = '0200900501000000402265'
+            self.cuit_destino = 34999230573
+        
+        elif self.banco  == '00939':
+            self.cbu_origen = '0200925801000040012697'
+            self.cuit_origen = 30999256712
+            self.cbu_destino = '0200900501000000402265'
+            self.cuit_destino = 34999230573
+        
+        elif self.banco  == '00940':
+            self.cbu_origen = '0200925801000040012697'
+            self.cuit_origen = 30999256712
+            self.cbu_destino = '0200900501000000402265'
+            self.cuit_destino = 34999230573
+
         return self.cbu_origen, self.cuit_origen, self.cbu_destino, self.cuit_destino
 
     def generar_nro_rendicion(self):
@@ -302,14 +333,34 @@ class DetallePagoOutput(DetallePagoInput):
             #print(registros_ycontrol)
         return registros_ycontrol
     
+    def comision_x_ente(self):
+        instancia_general = GeneralInput()
+        banco = instancia_general.getBanco()
+
+        if banco == '00935':
+            comision = 0.01
+        elif banco == '00936':
+            comision = 0.012
+        elif banco == '00937':
+            comision = 0.008
+        elif banco == '00938':
+            comision = 0.008
+        elif banco == '00939':
+            comision = 0.0035
+        elif banco == '00940':
+            comision = 0.01
+        
+        return comision
+    
     def calculo_comision_iva_x_dp(self):
         vector_importes_x_dp = transformar_importes_dp()
+        comision_ente = self.comision_x_ente()
         comisiones = []
         ivas = []
         comision = 0
         iva = 0
         for importes in vector_importes_x_dp:
-            comision = round(float(importes) * 0.01, 2) 
+            comision = round(float(importes) * comision_ente, 2) 
             iva = round(float(comision) * 0.21, 2)           
             comisiones.append(comision)
             ivas.append(iva)
@@ -386,7 +437,7 @@ class Generador():
         
             
             
-            sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros),
+            sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
                                     totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
                                     totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
                                     totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
@@ -438,6 +489,6 @@ class Generador():
 
              
 
-        except (SystemError):
+        except (SystemError, TypeError, AttributeError):
             input("Error al generar xml. Presione enter para salir")
             #time.sleep(5)

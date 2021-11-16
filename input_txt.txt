@@ -1,11 +1,11 @@
-general.banco = 00935
+general.banco = 12
 general.fechaRendicion = 31-05-2021
 ***detallepago.nroBoleta = 0520823739863094
 ***detallepago.fechaPago = 30-09-2021
 ***detallepago.importe = 222.22
 ***detallepago.cantCuotas = 12
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0 
+***detallepago.obligacion = 0
 
 ***detallepago.nroBoleta = 0520505423731850
 ***detallepago.fechaPago = 30-09-2021

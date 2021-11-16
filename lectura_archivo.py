@@ -102,8 +102,9 @@ def leer_archivo():
             #    vector_dp_separados = []
             #    for i in range(0, len(vector_datos_general), 2):
             #        vector_general_separados.append(vector_datos_general[i:i+2])
-            #        vector_dp_separados.append()
-            #    print(vector_general_separados)
+                    #vector_dp_separados.append()
+                #print(vector_general_separados)
+                #print("Valores de general: ", vector_datos_general)
                 #return vector_general_separado
 
             

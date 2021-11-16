@@ -65,7 +65,7 @@ def verificar_orden_dp():
                 break
             
         return bandera_ok_orden
-    except (IndexError, TypeError):
+    except (IndexError, TypeError, AttributeError):
         input("Faltan campos por ingresar en los detalles de pagos. Presione enter para salir")
 
 
