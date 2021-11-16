@@ -21,7 +21,6 @@ def leer_archivo():
                         clave_general = datos[0]
                         clave_valor_general = clave_general, datos_general
                         #print(datos_general)
-                        ##print(datos_general)
                         vector_datos_general.append(datos_general)
                         vector_clave_general.append(clave_general)
                         vector_clave_valor_general.append(clave_valor_general)
@@ -89,10 +88,24 @@ def leer_archivo():
             #print("Claves de general: ", vector_clave_general)
             #print("Valores de general: ", vector_datos_general)
             #print(vector_clave_valor_general)
-#
+
             #print("Claves de dp: ", vector_clave_detallepagos)
             #print("Valores de dp: ", vector_datos_detallepagos)
             #print(vector_clave_valor_detallepagos)        
+
+            #print(len(vector_datos_general))
+
+
+            #Implementacion cuando vienen mas de dos pagos
+            #if len(vector_datos_general) >= 4: #quiere decir que hay mas de un general.banco y se deben generar 2 o mas xml 
+            #    vector_general_separados = []
+            #    vector_dp_separados = []
+            #    for i in range(0, len(vector_datos_general), 2):
+            #        vector_general_separados.append(vector_datos_general[i:i+2])
+            #        vector_dp_separados.append()
+            #    print(vector_general_separados)
+                #return vector_general_separado
+
             
             
             return vector_clave_general, vector_datos_general, vector_clave_valor_general, vector_clave_detallepagos, vector_datos_detallepagos, vector_clave_valor_detallepagos

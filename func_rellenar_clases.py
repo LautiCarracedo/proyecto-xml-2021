@@ -98,9 +98,13 @@ def transformar_datos_detallepago():
                 if datos[0] == '***detallepago.fechaPago':
                     fecha_pago = datos[1]
                     if ((len(fecha_pago) == 10) and (str(fecha_pago[0:2]).isnumeric() and fecha_pago[2] == '-' and str(fecha_pago[3:5]).isnumeric() and fecha_pago[5] == '-' and str(fecha_pago[6:10]).isnumeric())):
-                        fecha_pago = fecha_pago[6:10] + fecha_pago[5] + fecha_pago[3:5] + fecha_pago[2] + fecha_pago[0:2]
-                        vector_detalle_pago.append(fecha_pago + 'T09:30:00.000')
-                        #print(f"Fecha Pago: ", fecha_pago)
+                        if (int(fecha_pago[0:2]) <= 31 and int(fecha_pago[3:5]) <= 12):
+                            fecha_pago = fecha_pago[6:10] + fecha_pago[5] + fecha_pago[3:5] + fecha_pago[2] + fecha_pago[0:2]
+                            vector_detalle_pago.append(fecha_pago + 'T09:30:00.000')
+                            #print(f"Fecha Pago: ", fecha_pago)
+                        else:
+                            input("Error en ***detallepago.fechaPago: Debe ser formato DD-MM-AAAA. Los días menor a 31 y los meses menor a 12")
+                            sys.exit()
                     else:
                         input("Campo ***detallepago.fechaPago debe ser formato DD-MM-AAAA. Presione enter para continuar")
                         #time.sleep(5)
@@ -124,7 +128,7 @@ def transformar_datos_detallepago():
                             vector_detalle_pago.append(cant_cuotas)
                             #print("Cant cuotas: ", cant_cuotas)
                         else:
-                            input("Campo ***detallepago.cantCuotas debe estar comprendido entre 1 y 18. Presione enter para continuar")
+                            input("Campo ***detallepago.cantCuotas debe estar comprendido entre 0 y 18. Presione enter para continuar")
                             #time.sleep(5)
                             sys.exit()
                     else:
@@ -139,7 +143,7 @@ def transformar_datos_detallepago():
                             vector_detalle_pago.append(id_obj_imponible)
                             #print("Id Obj Imp: ", id_obj_imponible)
                         else:
-                            input("Campo ***detallepago.idObjetoImponible debe estar comprendido entre 1 y 18. Presione enter para continuar")
+                            input("Campo ***detallepago.idObjetoImponible debe estar comprendido entre 0 y 18. Presione enter para continuar")
                             #time.sleep(5)
                             sys.exit()
                     else:
@@ -154,7 +158,7 @@ def transformar_datos_detallepago():
                             vector_detalle_pago.append(obligacion)
                             #print("Obligacion: ", obligacion)
                         else:
-                            input("Campo ***detallepago.obligacion debe estar comprendido entre 1 y 18. Presione enter para continuar")
+                            input("Campo ***detallepago.obligacion debe estar comprendido entre 0 y 18. Presione enter para continuar")
                             #time.sleep(5)
                             sys.exit()
                     else:

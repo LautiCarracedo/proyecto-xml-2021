@@ -23,9 +23,9 @@ class GeneralInput():
 class GeneralOutput(GeneralInput):
     def __init__(self):
         super().__init__()
-        self.imp_recaudado = 0.00
-        self.imp_depositado = 0.00
-        self.imp_a_depositar = 0.00
+        self.imp_recaudado = '0.00'
+        self.imp_depositado = '0.00'
+        self.imp_a_depositar = '0.00'
         self.calcular_cbus_y_cuits()
 
     
@@ -71,16 +71,22 @@ class GeneralOutput(GeneralInput):
         return suma_importes
 
     def calcular_total_comision_iva(self):
-        vector_importes_x_dp = transformar_importes_dp()
-        comision = 0
-        iva = 0
-        for importes in vector_importes_x_dp:
-            comision += float(importes) * 0.01
-            comision_redondeo = round(comision, 2)
+        dp = DetallePagoOutput()
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp()
+        sumatoria_comision = 0
+        sumatoria_iva = 0
+        for valor_com in valores_comisiones:
+            sumatoria_comision += valor_com
+            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
         
-        iva += float(comision) * 0.21
-        iva_redondeo = round(iva, 2)       
-        return comision_redondeo, iva_redondeo
+
+        
+        sumatoria_iva += float(sumatoria_comision_redondeo) * 0.21
+        iva_redondeo = round(sumatoria_iva, 2) 
+        
+        return sumatoria_comision_redondeo, iva_redondeo
+        
+
 
 
     
@@ -108,7 +114,7 @@ class GeneralOutput(GeneralInput):
         comisiones_dp = 'Comisiones de cada importe: ' + str(vector_comisiones)
         comision_total = 'La comision total es igual a $: ' + str(comision_redondeo)
         ivas_dp = 'Iva de cada importe (comision de cada importe x 0.21):' + str(vector_ivas)
-        ivas_total = 'La comision total es igual a $: ' + str(iva_redondeo)
+        ivas_total = 'El iva total es igual a $: ' + str(iva_redondeo)
         
 
         return importes_dp, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros
@@ -117,9 +123,9 @@ class GeneralOutput(GeneralInput):
 class SucursalOutput():
     def __init__(self):
         self.sucursal = '001'
-        self.imp_recaudado = 0.00
-        self.imp_depositado = 0.00
-        self.imp_a_depositar = 0.00
+        self.imp_recaudado = '0.00'
+        self.imp_depositado = '0.00'
+        self.imp_a_depositar = '0.00'
 
     
     #Getters
@@ -334,7 +340,7 @@ class Generador():
             informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas, informe_suma_ivas, informe_cant_registros = instancia_general_output.informes_general()
             
 
-            sucursal = instancia_sucursal_output.getSucursal()
+            sucursal_id = instancia_sucursal_output.getSucursal()
             cant_registros_sucursal = instancia_sucursal_output.calcular_cant_registros()
             imp_pagado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado()
             imp_determinado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado()
@@ -372,35 +378,39 @@ class Generador():
 
             
             #generando estructura xml con los campos
-            general = ET.Element("General", totalImpIVA = str(total_iva), totalImpComision = str(total_comision), 
-                                    totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
-                                    totalImpADepositar = str(imp_a_depositar), totalImpPagado = str(imp_pagado), 
-                                    totalImpDeterminado = str(imp_determinado), registros = str(cant_registros), 
-                                    cuitDestino = str(cuit_destino), cbuDestino = str(cbu_destino), cuitOrigen = str(cuit_origen), cbuOrigen = str(cbu_origen),
-                                    fechaRendicion = fecha_rendicion, nroRendicion = str(nro_rendicion), nroTransaccion = "0", banco = banco, xmlns="")
+            general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
+                                    cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
+                                    registros = str(cant_registros),
+                                    totalImpDeterminado = str(imp_determinado), totalImpPagado = str(imp_pagado), totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
+                                    totalImpADepositar = str(imp_a_depositar), totalImpComision = str(total_comision), totalImpIVA = str(total_iva))
+        
             
-            sucursal = ET.SubElement(general,"Sucursal", totalImpIVAs = str(total_iva_sucursal), totalImpComisions = str(total_comision_sucursal), 
-                                    totalImpRecaudados = str(imp_recaudado_sucursal), totalImpDepositados = str(imp_depositado_sucursal),
-                                    totalImpADepositars = str(imp_a_depositar_sucursal), totalImpPagados = str(imp_pagado_sucursal), 
-                                    totalImpDeterminados = str(imp_determinado_sucursal), registross = str(cant_registros_sucursal), sucursal = sucursal)
+            
+            sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros),
+                                    totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
+                                    totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
+                                    totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
                                     
-            pagos = ET.SubElement(sucursal,"Pagos",
-                                    totalImpIVAp = str(total_iva_pagos), totalImpComisionp = str(total_comision_pagos), 
-                                    totalImpPagadop = str(imp_pagado_pagos), 
-                                    totalImpDeterminadop = str(imp_determinado_pagos), registrosp = str(cant_registros_pagos),
-                                    lote = lote, cajero = cajero, caja = caja, codRegistro = cod_registro
+
+            #sucursal_tag.append(0)                 
+            
+            pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
+                                    registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
+                                    totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
+                                    totalImpIVA = str(total_iva_pagos)
                                     )
 
-                                    
+                              
                                     
             
             for numero in range(len(nro_registro)):
-                det_pago = ET.SubElement(pagos,"DetallePago", obligacion = str(obligacion[numero]), idObjetoImponible = str(obj_imponible[numero]), 
-                                        cantCuotas = str(cuota[numero]), nroComercio = str(nro_comercio), impIVA = str(iva[numero]), impComision = str(comision[numero]), impPagado = str(importe[numero]), impDeterminado = str(importe[numero]), 
-                                        fechaPago = str(fecha_pago[numero]), nroLiquidacionActualizado = nro_boleta[numero], nroLiquidacionOriginal = nro_boleta[numero], 
-                                        moneda = str(moneda), tipoRendicion = str(tipo_rendicion), tipoOperacion = str(tipo_operacion), 
-                                        marcaMovimiento = str(marca_movimiento), nroControl = str(numero + 1), nroRegistro = str(numero + 1), 
-                                        codRegistro = str(cod_registro_dp)).text = ' '
+                det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                        marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
+                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                        fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                        impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
+                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = str(obligacion[numero])
+                                        ).text = ' '
 
             comentario_cant_registros = ET.Comment(informe_cant_registros)
             comentario_importes = ET.Comment(informe_importes)
@@ -420,13 +430,14 @@ class Generador():
             
             
             
-            tree = ET.ElementTree(general)
+            tree = ET.ElementTree(general)    
             tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+            #del general.attrib["sucursal"]  
 
 
 
              
 
-        except (TypeError, AttributeError, SystemError):
+        except (SystemError):
             input("Error al generar xml. Presione enter para salir")
             #time.sleep(5)
