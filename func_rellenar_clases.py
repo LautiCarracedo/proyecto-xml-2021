@@ -2,9 +2,28 @@ from lectura_archivo import leer_archivo
 import sys
 import time
 
+def det_sistema_origen():
+    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago, clave_origen, dato_origen, clave_valor_origen = leer_archivo() #leo el archivo
+    #print(dato_origen)
+    #print(clave_origen)
+    try:
+        if clave_origen[0] == 'origen':
+            if dato_origen[0] == 'PSRM' or dato_origen[0] == 'psrm' or dato_origen[0] == 'OTAX' or dato_origen[0] == 'otax' or dato_origen[0] == 'GANT' or dato_origen[0] == 'gant':
+                origen = dato_origen
+                return origen
+            else:
+                input("No existe el sistema origen")
+                sys.exit()
+        else:
+            input("Se espera que ingrese el sistema origen en la primera linea de la siguiente forma: origen = valor")
+            sys.exit()
+
+    except(AttributeError, IndexError, TypeError, SystemError):
+        input("Error al leer el sistema origen")
+        sys.exit()
 
 def rellenar_clase_general_input():
-    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago = leer_archivo() #leo el archivo
+    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago, clave_origen, dato_origen, clave_valor_origen = leer_archivo() #leo el archivo
 
     try:
         if len(claves_generales) == 2: #siempre espero un len de 2(general.banco y general.fechaRendicion).
@@ -44,7 +63,7 @@ def rellenar_clase_general_input():
 
 def verificar_orden_dp():
     try:
-        claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago = leer_archivo() #leo el archivo
+        claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago, clave_origen, dato_origen, clave_valor_origen = leer_archivo() #leo el archivo
         inicio_vector = 0
         fin_vector = len(claves_detallepago)
         bandera_ok_orden = False
@@ -74,7 +93,7 @@ def transformar_datos_detallepago():
     vector_detalle_pago = []
     largo_correspodiente_vector_dp = 0
     ok_orden_dp = verificar_orden_dp()
-    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago = leer_archivo() #leo el archivo
+    claves_generales, datos_generales, clave_valor_general, claves_detallepago, datos_detallepago, clave_valor_detallepago, clave_origen, dato_origen, clave_valor_origen = leer_archivo() #leo el archivo
     #print(clave_valor_detallepago)
     
     
@@ -154,13 +173,8 @@ def transformar_datos_detallepago():
                 if datos[0] == '***detallepago.obligacion':
                     obligacion = datos[1]
                     if str(obligacion).isnumeric():
-                        if int(obligacion) >= 0 and int(obligacion) <= 18:
-                            vector_detalle_pago.append(obligacion)
-                            #print("Obligacion: ", obligacion)
-                        else:
-                            input("Campo ***detallepago.obligacion debe estar comprendido entre 0 y 18. Presione enter para continuar")
-                            #time.sleep(5)
-                            sys.exit()
+                        vector_detalle_pago.append(obligacion)
+                        #print("Obligacion: ", obligacion)
                     else:
                         input("Campo ***detallepago.obligacion debe ser numerico. Presione enter para continuar")
                         #time.sleep(5)

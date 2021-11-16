@@ -2,6 +2,9 @@ import sys
 import time
 
 def leer_archivo():
+    vector_datos_origen = []
+    vector_clave_origen = []
+    vector_clave_valor_origen = []
     vector_datos_general = []
     vector_clave_general = []
     vector_clave_valor_general = []
@@ -16,6 +19,16 @@ def leer_archivo():
                 if lineas.strip():
                     datos = lineas.replace(" ", "").strip().split('=')
                     #print(datos)
+                    if datos[0] == 'origen':
+                        dato_sistema_origen = datos[1]
+                        clave_sistema_origen = datos[0]
+                        clave_valor_sistema_origen = clave_sistema_origen, dato_sistema_origen
+                        vector_datos_origen.append(dato_sistema_origen)
+                        vector_clave_origen.append(clave_sistema_origen)
+                        vector_clave_valor_origen.append(clave_valor_sistema_origen)
+
+                        #print(vector_clave_valor_origen)
+
                     if datos[0] == 'general.banco':
                         datos_general = datos[1]
                         clave_general = datos[0]
@@ -109,7 +122,7 @@ def leer_archivo():
 
             
             
-            return vector_clave_general, vector_datos_general, vector_clave_valor_general, vector_clave_detallepagos, vector_datos_detallepagos, vector_clave_valor_detallepagos
+            return vector_clave_general, vector_datos_general, vector_clave_valor_general, vector_clave_detallepagos, vector_datos_detallepagos, vector_clave_valor_detallepagos, vector_clave_origen, vector_datos_origen, vector_clave_valor_origen
     
     except IOError:
         input("Error de lectura de archivo. Presione enter para salir")

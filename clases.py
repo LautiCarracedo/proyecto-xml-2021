@@ -2,7 +2,7 @@ from os import symlink
 import xml.etree.ElementTree as ET
 import random
 from lectura_archivo import leer_archivo
-from func_rellenar_clases import rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
+from func_rellenar_clases import det_sistema_origen, rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
 
 class GeneralInput():
     def __init__(self):
@@ -372,6 +372,9 @@ class DetallePagoOutput(DetallePagoInput):
 class Generador():
     def generar_xml(self):
         try:
+            sist_origen = det_sistema_origen()
+            #print(sist_origen)
+
             instancia_general_output = GeneralOutput()
             instancia_sucursal_output = SucursalOutput()
             instancia_pagos_output = PagosOutput()
@@ -427,63 +430,120 @@ class Generador():
             comision, iva = instancia_dp_output.calculo_comision_iva_x_dp()
 
 
-            
-            #generando estructura xml con los campos
-            general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
-                                    cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
-                                    registros = str(cant_registros),
-                                    totalImpDeterminado = str(imp_determinado), totalImpPagado = str(imp_pagado), totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
-                                    totalImpADepositar = str(imp_a_depositar), totalImpComision = str(total_comision), totalImpIVA = str(total_iva))
-        
-            
-            
-            sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
-                                    totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
-                                    totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
-                                    totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
-                                    
+            if sist_origen[0] == 'PSRM' or sist_origen[0] == 'psrm' or sist_origen[0] == 'OTAX' or sist_origen[0] == 'otax':
+                #generando estructura xml con los campos
+                general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
+                                        cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
+                                        registros = str(cant_registros),
+                                        totalImpDeterminado = str(imp_determinado), totalImpPagado = str(imp_pagado), totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
+                                        totalImpADepositar = str(imp_a_depositar), totalImpComision = str(total_comision), totalImpIVA = str(total_iva))
 
-            #sucursal_tag.append(0)                 
-            
-            pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
-                                    registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
-                                    totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
-                                    totalImpIVA = str(total_iva_pagos)
-                                    )
 
-                              
-                                    
-            
-            for numero in range(len(nro_registro)):
-                det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
-                                        marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
-                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
-                                        fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
-                                        impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
-                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = str(obligacion[numero])
-                                        ).text = ' '
 
-            comentario_cant_registros = ET.Comment(informe_cant_registros)
-            comentario_importes = ET.Comment(informe_importes)
-            comentario_suma_importes = ET.Comment(informe_suma_importes)  
-            comentario_comision = ET.Comment(informe_comisiones) 
-            comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
-            comentario_iva = ET.Comment(informe_ivas)
-            comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+                sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
+                                        totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
+                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
+                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
 
-            general.insert(0, comentario_suma_ivas)
-            general.insert(0, comentario_iva)
-            general.insert(0, comentario_suma_comisiones)
-            general.insert(0, comentario_comision)
-            general.insert(0, comentario_suma_importes)
-            general.insert(0, comentario_importes)
-            general.insert(0, comentario_cant_registros)
+
+                #sucursal_tag.append(0)                 
+
+                pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
+                                        registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
+                                        totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
+                                        totalImpIVA = str(total_iva_pagos)
+                                        )
+
+
+
+
+                for numero in range(len(nro_registro)):
+                    det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                            marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
+                                            moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                            fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                            impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
+                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = str(obligacion[numero])
+                                            ).text = ' '
+
+                comentario_cant_registros = ET.Comment(informe_cant_registros)
+                comentario_importes = ET.Comment(informe_importes)
+                comentario_suma_importes = ET.Comment(informe_suma_importes)  
+                comentario_comision = ET.Comment(informe_comisiones) 
+                comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
+                comentario_iva = ET.Comment(informe_ivas)
+                comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+
+                general.insert(0, comentario_suma_ivas)
+                general.insert(0, comentario_iva)
+                general.insert(0, comentario_suma_comisiones)
+                general.insert(0, comentario_comision)
+                general.insert(0, comentario_suma_importes)
+                general.insert(0, comentario_importes)
+                general.insert(0, comentario_cant_registros)
+
+
+
+                tree = ET.ElementTree(general)    
+                tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+                #del general.attrib["sucursal"]  
             
-            
-            
-            tree = ET.ElementTree(general)    
-            tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
-            #del general.attrib["sucursal"]  
+            elif sist_origen[0] == 'GANT' or sist_origen[0] == 'gant':
+                general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
+                                        cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
+                                        registros = str(cant_registros),
+                                        totalImpDeterminado = str(imp_determinado), totalImpPagado = str(imp_pagado), totalImpRecaudado = str(imp_recaudado), totalImpDepositado = str(imp_depositado),
+                                        totalImpADepositar = str(imp_a_depositar), totalImpComision = str(total_comision), totalImpIVA = str(total_iva))
+
+
+
+                sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
+                                        totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
+                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
+                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
+
+
+                #sucursal_tag.append(0)                 
+
+                pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
+                                        registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
+                                        totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
+                                        totalImpIVA = str(total_iva_pagos)
+                                        )
+
+
+
+
+                for numero in range(len(nro_registro)):
+                    det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                            marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
+                                            moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                            fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                            impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
+                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = obligacion[numero]
+                                            ).text = ' '
+
+                comentario_cant_registros = ET.Comment(informe_cant_registros)
+                comentario_importes = ET.Comment(informe_importes)
+                comentario_suma_importes = ET.Comment(informe_suma_importes)  
+                comentario_comision = ET.Comment(informe_comisiones) 
+                comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
+                comentario_iva = ET.Comment(informe_ivas)
+                comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+
+                general.insert(0, comentario_suma_ivas)
+                general.insert(0, comentario_iva)
+                general.insert(0, comentario_suma_comisiones)
+                general.insert(0, comentario_comision)
+                general.insert(0, comentario_suma_importes)
+                general.insert(0, comentario_importes)
+                general.insert(0, comentario_cant_registros)
+
+
+
+                tree = ET.ElementTree(general)    
+                tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+                #del general.attrib["sucursal"] 
 
 
 

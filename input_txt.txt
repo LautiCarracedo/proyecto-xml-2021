@@ -1,43 +1,67 @@
-general.banco = 12
-general.fechaRendicion = 31-05-2021
-***detallepago.nroBoleta = 0520823739863094
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 222.22
+origen = GANT
+
+general.banco = 00935
+general.fechaRendicion = 27-05-2021
+
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 471.96
 ***detallepago.cantCuotas = 12
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
+***detallepago.obligacion = 20211000000025599029
 
-***detallepago.nroBoleta = 0520505423731850
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 1170.73
-***detallepago.cantCuotas = 12
-***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
-
-***detallepago.nroBoleta = 0520250624970392
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 676.06
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 3453.61
 ***detallepago.cantCuotas = 18
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
+***detallepago.obligacion = 20211000000025599008
 
-***detallepago.nroBoleta = 0520592641248208
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 106.25
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 1238.75
 ***detallepago.cantCuotas = 18
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
+***detallepago.obligacion = 20211000000025599014
 
-***detallepago.nroBoleta = 0520350824843501
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 115.36
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 766.50
+***detallepago.cantCuotas = 18
+***detallepago.idObjetoImponible = 1
+***detallepago.obligacion = 20211000000025599031
+
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 1112.63
 ***detallepago.cantCuotas = 12
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
+***detallepago.obligacion = 20211000000025599018
 
-***detallepago.nroBoleta = 0520587721465758
-***detallepago.fechaPago = 30-09-2021
-***detallepago.importe = 1841.19
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 6405.00
 ***detallepago.cantCuotas = 12
 ***detallepago.idObjetoImponible = 1
-***detallepago.obligacion = 0
+***detallepago.obligacion = 20211000000025599026
+
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 83.33
+***detallepago.cantCuotas = 18
+***detallepago.idObjetoImponible = 1
+***detallepago.obligacion = 20211000000025599027
+
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 428.71
+***detallepago.cantCuotas = 12
+***detallepago.idObjetoImponible = 1
+***detallepago.obligacion = 20211000000025626314
+
+***detallepago.nroBoleta = 0
+***detallepago.fechaPago = 03-09-2021
+***detallepago.importe = 1008.48
+***detallepago.cantCuotas = 18
+***detallepago.idObjetoImponible = 1
+***detallepago.obligacion = 20211000000025626315
