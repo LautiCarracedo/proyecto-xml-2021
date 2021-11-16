@@ -10,7 +10,7 @@ def leer_archivo():
     vector_clave_valor_detallepagos = []
     
     try:
-        with open("C:/generador_prueba/txt_prueba.txt","r") as archivo:
+        with open("C:/generador_xml/input_txt.txt","r") as archivo:
             for lineas in archivo.readlines():
                 #print(lineas)
                 if lineas.strip():
