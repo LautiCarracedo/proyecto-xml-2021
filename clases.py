@@ -2,7 +2,7 @@ from os import symlink
 import xml.etree.ElementTree as ET
 import random
 from lectura_archivo import leer_archivo
-from func_rellenar_clases import det_sistema_origen, rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp, transformar_obligaciones_dp
+from func_rellenar_clases import det_sistema_origen, rellenar_clase_general_input, transformar_datos_detallepago, transformar_nroboletas_dp, transformar_fechaspago_dp, transformar_importes_dp, transformar_cuotas_dp, transformar_objimponibles_dp
 
 class GeneralInput():
     def __init__(self):
@@ -81,10 +81,7 @@ class GeneralOutput(GeneralInput):
     def generar_nro_rendicion(self):
         self.nro_rendicion = random.randint(00000,99999)
         return self.nro_rendicion
-    
-    def transformar_fecha(self):
-        self.fecha_rendicion = self.fecha_rendicion[6:10] + self.fecha_rendicion[5] + self.fecha_rendicion[3:5] + self.fecha_rendicion[2] + self.fecha_rendicion[0:2]
-        return self.fecha_rendicion
+
         
             
     def calcular_cant_registros(self):
@@ -128,12 +125,14 @@ class GeneralOutput(GeneralInput):
         suma_importes = 0
         suma_comision = 0
         suma_iva = 0
+        iva_general = 0
         for importe in vector_importes:
             suma_importes += float(importe)
             
         for comision in vector_comisiones:
             suma_comision += float(comision)
             comision_redondeo = round(suma_comision, 2)
+        iva_general += round((float(comision_redondeo) * 0.21),2)
         
         for ivas in vector_ivas:
             suma_iva += float(ivas)
@@ -144,11 +143,12 @@ class GeneralOutput(GeneralInput):
         suma_total = 'Sumatoria de los importes de todas las boletas: $ ' + str(suma_importes)
         comisiones_dp = 'Comisiones de cada importe: ' + str(vector_comisiones)
         comision_total = 'La comision total es igual a $: ' + str(comision_redondeo)
+        iva_tag_general = 'El iva a nivel del tag general es igual a la comisión total x 0.21, es decir = ' + str(comision_redondeo) + 'x 0.21 = ' + str(iva_general)
         ivas_dp = 'Iva de cada importe (comision de cada importe x 0.21):' + str(vector_ivas)
         ivas_total = 'El iva total es igual a $: ' + str(iva_redondeo)
         
 
-        return importes_dp, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros
+        return importes_dp, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros, iva_tag_general
 
 
 class SucursalOutput():
@@ -265,7 +265,6 @@ class DetallePagoInput():
         self.importes = transformar_importes_dp()
         self.cuotas = transformar_cuotas_dp()
         self.obj_imp = transformar_objimponibles_dp()
-        self.obligaciones =  transformar_obligaciones_dp()
 
     #Getters
     def getDatos(self):
@@ -315,9 +314,6 @@ class DetallePagoOutput(DetallePagoInput):
         #vector_obj_imponible = transformar_objimponibles_dp()
         return self.obj_imp
     
-    def getObligacion(self):
-        #vector_obligacion = transformar_obligaciones_dp()
-        return self.obligaciones
     
     def getFechaPago(self):
         #vector_fechaspagos = transformar_fechaspago_dp()
@@ -339,15 +335,7 @@ class DetallePagoOutput(DetallePagoInput):
 
         if banco == '00935':
             comision = 0.01
-        elif banco == '00936':
-            comision = 0.012
-        elif banco == '00937':
-            comision = 0.008
-        elif banco == '00938':
-            comision = 0.008
-        elif banco == '00939':
-            comision = 0.0035
-        elif banco == '00940':
+        elif banco == '00212': #visa???
             comision = 0.01
         
         return comision
@@ -382,7 +370,7 @@ class Generador():
 
             banco = instancia_general_output.getBanco()
             nro_rendicion = instancia_general_output.generar_nro_rendicion()
-            fecha_rendicion = instancia_general_output.transformar_fecha()
+            fecha_rendicion = instancia_general_output.getFechaRendicion()
             cbu_origen, cuit_origen, cbu_destino, cuit_destino = instancia_general_output.calcular_cbus_y_cuits()
             cant_registros = instancia_general_output.calcular_cant_registros()
             imp_pagado = instancia_general_output.calcular_importe_determinado_y_pagado()
@@ -391,7 +379,7 @@ class Generador():
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
             total_comision, total_iva = instancia_general_output.calcular_total_comision_iva()
-            informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas, informe_suma_ivas, informe_cant_registros = instancia_general_output.informes_general()
+            informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas_dp, informe_suma_ivas, informe_cant_registros, informe_iva_general = instancia_general_output.informes_general()
             
 
             sucursal_id = instancia_sucursal_output.getSucursal()
@@ -424,7 +412,7 @@ class Generador():
             nro_boleta = instancia_dp_output.getNroBoletas()
             cuota = instancia_dp_output.getCantCuotas()
             obj_imponible = instancia_dp_output.getObjImponible()
-            obligacion = instancia_dp_output.getObligacion()
+            obligacion = instancia_dp_output.getNroBoletas() #obligacion es el nroBoleta para gant. para psrm y otax es 0
             fecha_pago = instancia_dp_output.getFechaPago()
             nro_comercio = instancia_dp_output.getNroComercio()
             comision, iva = instancia_dp_output.calculo_comision_iva_x_dp()
@@ -463,19 +451,34 @@ class Generador():
                                             moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
                                             fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                             impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
-                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = str(obligacion[numero])
+                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = '0'
                                             ).text = ' '
 
+                #Comentarios de los calculos a nivel general
                 comentario_cant_registros = ET.Comment(informe_cant_registros)
                 comentario_importes = ET.Comment(informe_importes)
                 comentario_suma_importes = ET.Comment(informe_suma_importes)  
                 comentario_comision = ET.Comment(informe_comisiones) 
                 comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
-                comentario_iva = ET.Comment(informe_ivas)
+                comentario_iva_general = ET.Comment(informe_iva_general)
+                
+                #Comentarios de los calculos a nivel sucursal y pagos
+                comentario_otros = ET.Comment('Los calculos de cantidad de registros, importes determinados y pagados y comision son igual al tag general. El unico que varia es el iva')
+                comentario_iva_pagos_sucursal = ET.Comment(informe_ivas_dp)
                 comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+                
+                
 
-                general.insert(0, comentario_suma_ivas)
-                general.insert(0, comentario_iva)
+
+                #Inserto comentarios en la parte del tag sucursal
+                sucursal_tag.insert(0, comentario_otros)
+                sucursal_tag.insert(0, comentario_iva_pagos_sucursal)
+                sucursal_tag.insert(0, comentario_suma_ivas)
+                
+
+
+                #Inserto comentarios en la parte del tag general
+                general.insert(0, comentario_iva_general)
                 general.insert(0, comentario_suma_comisiones)
                 general.insert(0, comentario_comision)
                 general.insert(0, comentario_suma_importes)
@@ -483,9 +486,11 @@ class Generador():
                 general.insert(0, comentario_cant_registros)
 
 
+                nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
+                tree = ET.ElementTree(general)
 
-                tree = ET.ElementTree(general)    
-                tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+                tree.write(nombre_archivoXML + '.xml', xml_declaration=True, encoding='utf-8')
+                input("El XML se generó correctamente en un archivo aparte. Presione enter para salir")
                 #del general.attrib["sucursal"]  
             
             elif sist_origen[0] == 'GANT' or sist_origen[0] == 'gant':
@@ -511,28 +516,33 @@ class Generador():
                                         totalImpIVA = str(total_iva_pagos)
                                         )
 
-
-
-
                 for numero in range(len(nro_registro)):
                     det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
                                             marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
-                                            moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                            moneda = str(moneda), nroLiquidacionOriginal = '0', nroLiquidacionActualizado = '0', 
                                             fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                             impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
-                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = obligacion[numero]
+                                            idObjetoImponible = str(obj_imponible[numero]), obligacion = nro_boleta[numero]
                                             ).text = ' '
 
+                #Comentarios de los calculos a nivel general
                 comentario_cant_registros = ET.Comment(informe_cant_registros)
                 comentario_importes = ET.Comment(informe_importes)
                 comentario_suma_importes = ET.Comment(informe_suma_importes)  
                 comentario_comision = ET.Comment(informe_comisiones) 
                 comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
-                comentario_iva = ET.Comment(informe_ivas)
+                comentario_iva_general = ET.Comment(informe_iva_general)
+                
+                #Comentarios de los calculos a nivel sucursal y pagos
                 comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+                comentario_iva_pagos_sucursal = ET.Comment(informe_ivas_dp)
 
-                general.insert(0, comentario_suma_ivas)
-                general.insert(0, comentario_iva)
+
+                
+                sucursal_tag.insert(0, comentario_iva_pagos_sucursal)
+                sucursal_tag.insert(0, comentario_suma_ivas)
+                
+                general.insert(0, comentario_iva_general)
                 general.insert(0, comentario_suma_comisiones)
                 general.insert(0, comentario_comision)
                 general.insert(0, comentario_suma_importes)
@@ -540,9 +550,10 @@ class Generador():
                 general.insert(0, comentario_cant_registros)
 
 
-
+                nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
                 tree = ET.ElementTree(general)    
-                tree.write('prueba.xml', xml_declaration=True, encoding='utf-8')
+                tree.write(nombre_archivoXML + '.xml', xml_declaration=True, encoding='utf-8')
+                input("El XML se generó correctamente en un archivo aparte. Presione enter para salir")
                 #del general.attrib["sucursal"] 
 
 

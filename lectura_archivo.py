@@ -82,7 +82,7 @@ def leer_archivo():
                         vector_clave_detallepagos.append(clave_dp)
                         vector_clave_valor_detallepagos.append(clave_valor_dp)
 
-                    if datos[0] == '***detallepago.idObjetoImponible':
+                    if datos[0] == '***detallepago.cuotaActual':
                         datos_dp = datos[1]
                         clave_dp = datos[0]
                         clave_valor_dp = clave_dp, datos_dp
@@ -90,13 +90,6 @@ def leer_archivo():
                         vector_clave_detallepagos.append(clave_dp)
                         vector_clave_valor_detallepagos.append(clave_valor_dp)
 
-                    if datos[0] == '***detallepago.obligacion':
-                        datos_dp = datos[1]
-                        clave_dp = datos[0]
-                        clave_valor_dp = clave_dp, datos_dp
-                        vector_datos_detallepagos.append(datos_dp)
-                        vector_clave_detallepagos.append(clave_dp)
-                        vector_clave_valor_detallepagos.append(clave_valor_dp)
 
             #print("Claves de general: ", vector_clave_general)
             #print("Valores de general: ", vector_datos_general)
