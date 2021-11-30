@@ -72,27 +72,28 @@ class GeneralOutput(GeneralInput):
         suma_importes = 0
         for valor_importes in importes:
             suma_importes += float(valor_importes)
-        return suma_importes
+        suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        return suma_imp_dos_decimales
 
-    def calcular_total_comision_iva(self, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(boletas, fechapagos, importes, cuotaactual, cantcuotas)
+    def calcular_total_comision_iva(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, self.banco)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += valor_com
-            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
+            sumatoria_comision += float(valor_com)
+            sumatoria_comision_redondeo = "{0:.2f}".format(sumatoria_comision)
 
 
         sumatoria_iva += float(sumatoria_comision_redondeo) * 0.21
-        iva_redondeo = round(sumatoria_iva, 2) 
+        iva_redondeo = "{0:.2f}".format(sumatoria_iva) 
 
         return sumatoria_comision_redondeo, iva_redondeo
 
 
 
     def informes_general(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(boletas, fechapagos, importes, cuotaactual, cantcuotas)
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         vector_comisiones, vector_ivas = dp.calculo_comision_iva_x_dp(importes, banco)
         #
         vector_importes = importes
@@ -105,12 +106,12 @@ class GeneralOutput(GeneralInput):
 
         for comision in vector_comisiones:
             suma_comision += float(comision)
-            comision_redondeo = round(suma_comision, 2)
-        iva_general += round((float(comision_redondeo) * 0.21),2)
+            comision_redondeo = "{0:.2f}".format(suma_comision)
+        iva_general += float("{0:.2f}".format(float(comision_redondeo) * 0.21))
 
         for ivas in vector_ivas:
             suma_iva += float(ivas)
-            iva_redondeo = round(suma_iva, 2)
+            iva_redondeo = "{0:.2f}".format(suma_iva)
 
         cant_registros = 'Cantidad de registros es igual a cantidad de boletas ingresadas: ' + str(len(vector_importes))
         importes_dp = 'Importes ingresados de cada boleta: ' + str(vector_importes)
@@ -163,29 +164,29 @@ class SucursalOutput():
         return suma_importes
 
     def calcular_total_comision_iva_sucursal(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(boletas, fechapagos, importes, cuotaactual, cantcuotas)
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         #print('DP:',dp)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, banco)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += valor_com
-            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
+            sumatoria_comision += float(valor_com)
+            sumatoria_comision_redondeo = "{0:.2f}".format(sumatoria_comision)
 
         for valor_iva in valores_iva:
-            sumatoria_iva += valor_iva
-            sumatoria_iva_redondeo = round(sumatoria_iva, 2)
+            sumatoria_iva += float(valor_iva)
+            sumatoria_iva_redondeo = "{0:.2f}".format(sumatoria_iva)
 
         return sumatoria_comision_redondeo, sumatoria_iva_redondeo
 
 
 
 class PagosOutput():
-    def __init__(self):
+    def __init__(self, banco):
         self.cod_registro = '021'
         self.caja = '0000'
         self.cajero = '000000'
-        self.lote = '2'
+        self.lote = banco
 
 
     #Getters
@@ -198,7 +199,11 @@ class PagosOutput():
     def getCajero(self):
         return self.cajero
 
-    def getLote(self):
+    def getLote(self, banco):
+        if banco == '00202' or banco == '00216':
+            self.lote = '1'
+        else:
+            self.lote = '2'
         return self.lote
 
     def calcular_cant_registros_pagos(self, boletas):
@@ -220,18 +225,18 @@ class PagosOutput():
         return suma_importes
 
     def calcular_total_comision_iva_pagos(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(boletas, fechapagos, importes, cuotaactual, cantcuotas)
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, banco)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
-            sumatoria_comision += valor_com
-            sumatoria_comision_redondeo = round(sumatoria_comision, 2)
+            sumatoria_comision += float(valor_com)
+            sumatoria_comision_redondeo = "{0:.2f}".format(sumatoria_comision)
 
 
         for valor_iva in valores_iva:
-            sumatoria_iva += valor_iva
-            sumatoria_iva_redondeo = round(sumatoria_iva, 2)
+            sumatoria_iva += float(valor_iva)
+            sumatoria_iva_redondeo = "{0:.2f}".format(sumatoria_iva)
 
         return sumatoria_comision_redondeo, sumatoria_iva_redondeo
 
@@ -252,14 +257,14 @@ class DetallePagoInput():
 
 
 class DetallePagoOutput(DetallePagoInput):
-    def __init__(self, boletas, fechapagos, importes, cuotaactual, cantcuotas):
+    def __init__(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         super().__init__(boletas, fechapagos, importes, cuotaactual, cantcuotas)
         self.cod_registro = '022'
         self.marca_movimiento = 'P'
         self.tipo_operacion = '01'
         self.tipo_rendicion = '01'
         self.moneda = '01'
-        self.nro_comercio = '27426748'
+        self.nro_comercio = banco
 
     def getCodRegistro(self):
         return self.cod_registro
@@ -298,7 +303,13 @@ class DetallePagoOutput(DetallePagoInput):
         #vector_fechaspagos = transformar_fechaspago_dp()
         return self.fecha_pagos
 
-    def getNroComercio(self):
+    def getNroComercio(self, banco):
+        if banco == '00935':
+            self.nro_comercio = '27426748'
+        elif banco == '00202':
+            self.nro_comercio = '0023552656'
+        elif banco == '00216':
+            self.nro_comercio = '18236295'
         return self.nro_comercio
 
     def calculo_nro_registro_ycontrol(self):
@@ -316,7 +327,9 @@ class DetallePagoOutput(DetallePagoInput):
 
         if banco == '00935': #cordobesa
             comision = 0.01
-        elif banco == '00212': #visa
+        elif banco == '00216': #master
+            comision = 0.01
+        elif banco == '00202': #visa
             comision = 0.01
 
         return comision
@@ -330,8 +343,8 @@ class DetallePagoOutput(DetallePagoInput):
         comision = 0
         iva = 0
         for valor_importes in vector_importes_x_dp:
-            comision = round(float(valor_importes) * comision_ente, 2) 
-            iva = round(float(comision) * 0.21, 2)           
+            comision = "{0:.2f}".format(float(valor_importes) * comision_ente)
+            iva = "{0:.2f}".format(float(comision) * 0.21)    
             comisiones.append(comision)
             ivas.append(iva)
         return comisiones, ivas

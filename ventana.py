@@ -1,3 +1,4 @@
+from os import remove
 from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
@@ -59,7 +60,7 @@ class Ventana:
 
             cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
             vector_cuotaactual = cuota_actual.split('\n')
-            print(vector_cuotaactual)
+            #print(vector_cuotaactual)
 
             #self.label_nroboleta = Label(self.frame,text='Número de boleta:',pady=10,padx=20)
             #self.label_nroboleta.grid(row=5,column=0,sticky='N' )
@@ -168,8 +169,8 @@ class Ventana:
                                     
                                         instancia_general_output = GeneralOutput(banco_t, fecha_rendicion_t)
                                         instancia_sucursal_output = SucursalOutput()
-                                        instancia_pagos_output = PagosOutput()
-                                        instancia_dp_output = DetallePagoOutput(vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
+                                        instancia_pagos_output = PagosOutput(banco_t)
+                                        instancia_dp_output = DetallePagoOutput(banco_t, vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
 
                                         banco = instancia_general_output.getBanco()
                                         nro_rendicion = instancia_general_output.generar_nro_rendicion()
@@ -181,7 +182,7 @@ class Ventana:
                                         imp_recaudado = instancia_general_output.getImpRecaudado()
                                         imp_depositado = instancia_general_output.getImpDepositado()
                                         imp_a_depositar = instancia_general_output.getImpADepositar()
-                                        total_comision, total_iva = instancia_general_output.calcular_total_comision_iva(vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
+                                        total_comision, total_iva = instancia_general_output.calcular_total_comision_iva(banco_t, vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
                                         informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas_dp, informe_suma_ivas, informe_cant_registros, informe_iva_general = instancia_general_output.informes_general(banco_t ,vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
 
 
@@ -198,7 +199,7 @@ class Ventana:
                                         cod_registro = instancia_pagos_output.getCodRegistro()
                                         caja = instancia_pagos_output.getCaja()
                                         cajero = instancia_pagos_output.getCajero()
-                                        lote = instancia_pagos_output.getLote()
+                                        lote = instancia_pagos_output.getLote(banco_t)
                                         cant_registros_pagos = instancia_pagos_output.calcular_cant_registros_pagos(vector_boletas)
                                         imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
                                         imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
@@ -218,7 +219,7 @@ class Ventana:
                                         obj_imponible = instancia_dp_output.getObjImponible()
                                         obligacion = instancia_dp_output.getNroBoletas() #obligacion es el nroBoleta para gant. para psrm y otax es 0
                                         fecha_pago = instancia_dp_output.getFechaPago()
-                                        nro_comercio = instancia_dp_output.getNroComercio()
+                                        nro_comercio = instancia_dp_output.getNroComercio(banco_t)
                                         comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(vector_importes_format_ok, banco_t)
 
 
@@ -231,69 +232,40 @@ class Ventana:
                                                                 totalImpADepositar = str(imp_a_depositar), totalImpComision = str(total_comision), totalImpIVA = str(total_iva))
 
 
-
+                                            
                                             sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
                                                                         totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
-                                                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
-                                                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
+                                                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
+                                                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpComision = str(total_comision_sucursal), 
+                                                                        totalImpIVA = str(total_iva_sucursal))                                
 
 
                                             #sucursal_tag.append(0)                 
 
-                                            pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
+                                            pagos = ET.SubElement(sucursal_tag,"Pagos", codigoRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
                                                                     registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
                                                                     totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
                                                                     totalImpIVA = str(total_iva_pagos)
                                                                     )
 
 
-
-
                                             for numero in range(len(nro_registro)):
-                                                det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                                if banco == '00202' or banco == '00216':
+                                                    det_pago = ET.SubElement(pagos,"DetallePago", codigoRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                                                        marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
+                                                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                                                        fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                                                        impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero])
+                                                                      ).text = ' '
+                                                else:
+                                                    det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
                                                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
                                                                         moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
                                                                         fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                                                         impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
                                                                         idObjetoImponible = str(obj_imponible[numero]), obligacion = "0"
-                                                                        ).text = ' '
+                                                                      ).text = ' '
 
-                                            #Comentarios de los calculos a nivel general
-                                            comentario_cant_registros = ET.Comment(informe_cant_registros)
-                                            comentario_importes = ET.Comment(informe_importes)
-                                            comentario_suma_importes = ET.Comment(informe_suma_importes)  
-                                            comentario_comision = ET.Comment(informe_comisiones) 
-                                            comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
-                                            comentario_iva_general = ET.Comment(informe_iva_general)
-
-                                            #Comentarios de los calculos a nivel sucursal y pagos
-                                            comentario_otros = ET.Comment('Los calculos de cantidad de registros, importes determinados y pagados y comision son igual al tag general. El unico que varia es el iva')
-                                            comentario_iva_pagos_sucursal = ET.Comment(informe_ivas_dp)
-                                            comentario_suma_ivas = ET.Comment(informe_suma_ivas)
-
-                                            #Inserto comentarios en la parte del tag sucursal
-                                            sucursal_tag.insert(0, comentario_otros)
-                                            sucursal_tag.insert(0, comentario_iva_pagos_sucursal)
-                                            sucursal_tag.insert(0, comentario_suma_ivas)
-
-
-                                            #Inserto comentarios en la parte del tag general
-                                            general.insert(0, comentario_iva_general)
-                                            general.insert(0, comentario_suma_comisiones)
-                                            general.insert(0, comentario_comision)
-                                            general.insert(0, comentario_suma_importes)
-                                            general.insert(0, comentario_importes)
-                                            general.insert(0, comentario_cant_registros)
-
-
-                                            nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
-                                            tree = ET.ElementTree(general)
-
-                                            tree.write(nombre_archivoXML + '.xml', xml_declaration=True, encoding='utf-8')
-                                            messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                            ventana.destroy()
-                                            #input("El XML se generó correctamente en un archivo aparte. Presione enter para salir")
-                                            #del general.attrib["sucursal"]  
 
                                         elif origen == 'GANT' or origen == 'gant':
                                             general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
@@ -306,11 +278,10 @@ class Ventana:
 
                                             sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(cant_registros_sucursal),
                                                                         totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
-                                                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
-                                                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpComision = str(total_comision_sucursal), totalImpIVA = str(total_iva_sucursal))                                
+                                                                        totalImpRecaudado = str(imp_recaudado_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
+                                                                        totalImpADepositar = str(imp_a_depositar_sucursal), totalImpComision = str(total_comision_sucursal), 
+                                                                        totalImpIVA = str(total_iva_sucursal))                             
 
-
-                                            #sucursal_tag.append(0)                 
 
                                             pagos = ET.SubElement(sucursal_tag,"Pagos", codRegistro = cod_registro, caja = caja, cajero = cajero, lote = lote,
                                                                     registros = str(cant_registros_pagos), totalImpDeterminado = str(imp_determinado_pagos),
@@ -319,44 +290,55 @@ class Ventana:
                                                                     )
 
                                             for numero in range(len(nro_registro)):
-                                                det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                                if banco == '00202' or banco == '00216':
+                                                    det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
                                                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
-                                                                        moneda = str(moneda), nroLiquidacionOriginal = '0', nroLiquidacionActualizado = '0', 
+                                                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                                                        fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                                                        impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero])
+                                                                      ).text = ' '
+                                                else:
+                                                    det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
+                                                                        marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
+                                                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
                                                                         fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                                                         impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
-                                                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = nro_boleta[numero]
-                                                                        ).text = ' '
+                                                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = "0"
+                                                                      ).text = ' '
+                                                
 
-                                            #Comentarios de los calculos a nivel general
-                                            comentario_cant_registros = ET.Comment(informe_cant_registros)
-                                            comentario_importes = ET.Comment(informe_importes)
-                                            comentario_suma_importes = ET.Comment(informe_suma_importes)  
-                                            comentario_comision = ET.Comment(informe_comisiones) 
-                                            comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
-                                            comentario_iva_general = ET.Comment(informe_iva_general)
+                                            
 
-                                            #Comentarios de los calculos a nivel sucursal y pagos
-                                            comentario_suma_ivas = ET.Comment(informe_suma_ivas)
-                                            comentario_iva_pagos_sucursal = ET.Comment(informe_ivas_dp)
+                                        #Comentarios de los calculos a nivel general
+                                        comentario_cant_registros = ET.Comment(informe_cant_registros)
+                                        comentario_importes = ET.Comment(informe_importes)
+                                        comentario_suma_importes = ET.Comment(informe_suma_importes)  
+                                        comentario_comision = ET.Comment(informe_comisiones) 
+                                        comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
+                                        comentario_iva_general = ET.Comment(informe_iva_general)
+
+                                        #Comentarios de los calculos a nivel sucursal y pagos
+                                        comentario_suma_ivas = ET.Comment(informe_suma_ivas)
+                                        comentario_iva_pagos_sucursal = ET.Comment(informe_ivas_dp)
 
 
-                                            sucursal_tag.insert(0, comentario_iva_pagos_sucursal)
-                                            sucursal_tag.insert(0, comentario_suma_ivas)
+                                        sucursal_tag.insert(0, comentario_iva_pagos_sucursal)
+                                        sucursal_tag.insert(0, comentario_suma_ivas)
 
-                                            general.insert(0, comentario_iva_general)
-                                            general.insert(0, comentario_suma_comisiones)
-                                            general.insert(0, comentario_comision)
-                                            general.insert(0, comentario_suma_importes)
-                                            general.insert(0, comentario_importes)
-                                            general.insert(0, comentario_cant_registros)
+                                        general.insert(0, comentario_iva_general)
+                                        general.insert(0, comentario_suma_comisiones)
+                                        general.insert(0, comentario_comision)
+                                        general.insert(0, comentario_suma_importes)
+                                        general.insert(0, comentario_importes)
+                                        general.insert(0, comentario_cant_registros)
 
-                                            nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
-                                            tree = ET.ElementTree(general)    
-                                            tree.write(nombre_archivoXML + '.xml', xml_declaration=True, encoding='utf-8')
-                                            messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                            ventana.destroy()
-                                            #input("El XML se generó correctamente en un archivo aparte. Presione enter para salir")
-                                            #del general.attrib["sucursal"] 
+                                        nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
+                                        tree = ET.ElementTree(general)    
+                                        tree.write(nombre_archivoXML + '.xml', xml_declaration=True, encoding='utf-8')
+                                        messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
+                                        ventana.destroy()
+                                        #input("El XML se generó correctamente en un archivo aparte. Presione enter para salir")
+                                        #del general.attrib["sucursal"] 
                                     else:
                                         messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
                                 else:
@@ -376,6 +358,8 @@ class Ventana:
             messagebox.showerror(message="Ingrese cada detalle por fila según corresponda. Revise comas decimales. Revise valor del numero banco", title="Error")
         except(ValueError):
             messagebox.showerror(message="Revisar importes. Deben ser numerico", title="Error")
+        except(UnboundLocalError):
+            messagebox.showerror(message="Revise el numero de banco. Soporta 00935, 00202 y 00216", title="Error")
         except:
             messagebox.showerror(message="Excepcion no controlada. Revise los campos", title="Error")
 
