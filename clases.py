@@ -1,5 +1,6 @@
 
 import random
+from xml.etree.ElementTree import ProcessingInstruction
 
 vector = []
 
@@ -67,17 +68,25 @@ class GeneralOutput(GeneralInput):
             cantidad_registros += 1
         return cantidad_registros
 
-    def calcular_importe_determinado_y_pagado(self, importes):
-        #
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
         suma_importes = 0
-        for valor_importes in importes:
-            suma_importes += float(valor_importes)
-        suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
+            for indice in range(len(importes)):
+                suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        
+        else:
+            for importe in importes:
+                suma_importes += float(importe)
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         return suma_imp_dos_decimales
+
+    
+
 
     def calcular_total_comision_iva(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
-        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, self.banco)
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(self.banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
@@ -94,7 +103,7 @@ class GeneralOutput(GeneralInput):
 
     def informes_general(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
-        vector_comisiones, vector_ivas = dp.calculo_comision_iva_x_dp(importes, banco)
+        vector_comisiones, vector_ivas = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
         #
         vector_importes = importes
         suma_importes = 0
@@ -155,18 +164,25 @@ class SucursalOutput():
         return cantidad_registros
 
 
-    def calcular_importe_determinado_y_pagado(self, importes):
-        #
-        vector_importes = importes
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
         suma_importes = 0
-        for importe in vector_importes:
-            suma_importes += float(importe)
-        return suma_importes
+        if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
+            for indice in range(len(importes)):
+                suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        
+        else:
+            for importe in importes:
+                suma_importes += float(importe)
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        return suma_imp_dos_decimales
+        
+
 
     def calcular_total_comision_iva_sucursal(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         #print('DP:',dp)
-        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, banco)
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
@@ -216,17 +232,22 @@ class PagosOutput():
             #print("REGISTROS: ", cantidad_registros)
         return cantidad_registros
 
-    def calcular_importe_determinado_y_pagado(self, importes):
-        #
-        vector_importes = importes
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
         suma_importes = 0
-        for importe in vector_importes:
-            suma_importes += float(importe)
-        return suma_importes
+        if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
+            for indice in range(len(importes)):
+                suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        
+        else:
+            for importe in importes:
+                suma_importes += float(importe)
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        return suma_imp_dos_decimales
 
     def calcular_total_comision_iva_pagos(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
-        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(importes, banco)
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:
@@ -237,7 +258,6 @@ class PagosOutput():
         for valor_iva in valores_iva:
             sumatoria_iva += float(valor_iva)
             sumatoria_iva_redondeo = "{0:.2f}".format(sumatoria_iva)
-
         return sumatoria_comision_redondeo, sumatoria_iva_redondeo
 
 
@@ -281,18 +301,39 @@ class DetallePagoOutput(DetallePagoInput):
     def getMoneda(self):
         return self.moneda
 
-    def getImporte(self):
+    def getImporte(self, banco, cantcuotas):
         #vector_importes = transformar_importes_dp()
         #print(vector_importes)
-        return self.importes
+        #print(self.importes)
+        importe_redeondeado = [] #tengo que devolver vector si o si porque self.importes es un vector para q se realicen todas las operacionces correctamente
+        if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
+            for indice in range(len(cantcuotas)):
+                importes = "{0:.2f}".format(float(self.importes[indice]) / float(cantcuotas[indice]))
+                importe_redeondeado.append(importes)
+                print(importe_redeondeado)
+        else:
+            for importes in self.importes:
+                importe_pago = "{0:.2f}".format(float(importes))
+                importe_redeondeado.append(importe_pago)
+        #print(importe_redeondeado)
+        return importe_redeondeado
+
+        
 
     def getNroBoletas(self):
         #vector_nro_boletas = transformar_nroboletas_dp()
         return self.boletas
 
-    def getCantCuotas(self):
+    def getCantCuotas(self, banco):
         #vector_cuotas = transformar_cuotas_dp()
-        return self.cuotas
+
+        cuotas = []
+        if banco == '00216' or banco == '00202':
+            for cuota in range(len(self.cuotas)):
+                cuotas.append('1') 
+        else:
+            cuotas = self.cuotas
+        return cuotas
 
     def getObjImponible(self):
         #vector_obj_imponible = transformar_objimponibles_dp()
@@ -319,24 +360,25 @@ class DetallePagoOutput(DetallePagoInput):
             #print(registros_ycontrol)
         return registros_ycontrol
 
-    def comision_x_ente(self, banco):
+    def comision_x_ente(self, banco, cantcuotas):
         #print('PRINTEO COMISIONXENTE: ', datos_general)
         #instancia_general = GeneralInput(datos_general)
         banco = banco
         #print('BANCO CMISION X ENTE' ,banco)
-
-        if banco == '00935': #cordobesa
-            comision = 0.01
-        elif banco == '00216': #master
-            comision = 0.01
-        elif banco == '00202': #visa
-            comision = 0.01
-
+        for valor_cuota in cantcuotas:
+            if banco == '00935': #cordobesa
+                comision = 0.01
+            elif (banco == '00216') and (valor_cuota == 'C' or valor_cuota == 'D'): #master
+                comision = 0.01
+            elif banco == '00202' and valor_cuota == 'C': #visa
+                comision = 0.01
+            elif banco == '00202' and valor_cuota == 'D': #visa
+                comision = 0.0035
         return comision
 
-    def calculo_comision_iva_x_dp(self, importes, banco):
-        vector_importes_x_dp = importes
-        comision_ente = self.comision_x_ente(banco)
+    def calculo_comision_iva_x_dp(self, banco, cantcuotas):
+        vector_importes_x_dp = self.getImporte(banco, cantcuotas)
+        comision_ente = self.comision_x_ente(banco, cantcuotas)
         #print('comision ente', comision_ente)
         comisiones = []
         ivas = []

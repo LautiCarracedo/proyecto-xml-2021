@@ -17,7 +17,7 @@ class Ventana:
 
             #toma de datos general
             vector_datos_general = []
-            banco_t = str(self.input_nrobanco.get())
+            banco_t = str(self.cbbox_nrobanco.get())
             vector_datos_general.append(banco_t)
 
             fecha_rendicion = str(self.input_fecharendicion.get())
@@ -93,11 +93,16 @@ class Ventana:
 
             #toma de datos general
             vector_datos_general = []
-            banco_t = str(self.input_nrobanco.get())
+            banco_t = str(self.cbbox_nrobanco.get())
             vector_datos_general.append(banco_t)
 
             fecha_rendicion = str(self.input_fecharendicion.get())
             fecha_rendicion_t = fecha_rendicion.replace('/','-')
+            if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:2]).isnumeric()) and (fecha_rendicion_t[2] == '-') and (str(fecha_rendicion_t[3:5]).isnumeric()) and (fecha_rendicion_t[5] == '-') and (str(fecha_rendicion_t[6:10]).isnumeric())):
+                fecha_rendicion_format_ok = True
+                fecha_rendicion_t = fecha_rendicion_t[6:10] + fecha_rendicion_t[5] + fecha_rendicion_t[3:5] + fecha_rendicion_t[2] + fecha_rendicion_t[0:2] + 'T09:30:00.000'
+            else:
+                fecha_rendicion_format_ok = False
 
             vector_datos_general.append(fecha_rendicion_t)
             #print(vector_datos_general)
@@ -130,8 +135,8 @@ class Ventana:
             format_fechas = False
             for fechas in vector_fechapagos:
                 fechas_format = fechas.replace('/','-')
-                if ((len(fechas_format) == 10) and (str(fechas_format[0:4]).isnumeric()) and (fechas_format[4] == '-') and (str(fechas_format[5:7]).isnumeric()) and (fechas_format[7] == '-') and (str(fechas_format[8:10]).isnumeric())):
-                    fechas_format += 'T09:30:00.000'
+                if ((len(fechas_format) == 10) and (str(fechas_format[0:2]).isnumeric()) and (fechas_format[2] == '-') and (str(fechas_format[3:5]).isnumeric()) and (fechas_format[5] == '-') and (str(fechas_format[6:10]).isnumeric())):
+                    fechas_format = fechas_format[6:10] + fechas_format[5] + fechas_format[3:5] + fechas_format[2] + fechas_format[0:2] + 'T09:30:00.000'
                     vector_fechapagos_format_ok.append(fechas_format)
                     format_fechas = True
                 else:
@@ -140,31 +145,41 @@ class Ventana:
 
             cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")
             vector_cantcuotas = cant_cuotas.split('\n')
-            cuotas_es_numero = False
+            cuotas_es_numero_cred_deb = False
             for cuota in vector_cantcuotas:
-                if cuota.isnumeric():
-                    cuotas_es_numero = True
+                if cuota.isnumeric() or cuota == 'C' or cuota == 'D':
+                    cuotas_es_numero_cred_deb = True
                 else:
-                    cuotas_es_numero = False
+                    cuotas_es_numero_cred_deb = False
 
 
             
             cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
             vector_cuotaactual = cuota_actual.split('\n')
             cuotaactual_es_numero = False
+            if (banco_t == '00202' or banco_t == '00216') and len(vector_cuotaactual) == 1: 
+                # como los text aunque no carguemos nada lo toma como len=1, para el caso de visa y master 
+                # que no utilizamos estos campos lo cargamos en cero y se desactiva para no pdoer cargar
+                vector_cuotaactual.pop()
+                for boleta in range(len(vector_boletas)):
+                    vector_cuotaactual.append('0')
+            #print(vector_cuotaactual)
+                    
+              
             for c_act in vector_cuotaactual:
                 if c_act.isnumeric():
                     cuotaactual_es_numero = True
                 else:
                     cuotaactual_es_numero = False
+                
             #print(vector_cuotaactual)
 
             if cuotaactual_es_numero:
-                if cuotas_es_numero:
+                if cuotas_es_numero_cred_deb:
                     if importes_es_float:
                         if format_fechas:
                             if banco_t.isnumeric():
-                                if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:4]).isnumeric()) and (fecha_rendicion_t[4] == '-') and (str(fecha_rendicion_t[5:7]).isnumeric()) and (fecha_rendicion_t[7] == '-') and (str(fecha_rendicion_t[8:10]).isnumeric())):
+                                if fecha_rendicion_format_ok:
                                     if len(vector_boletas) == len(vector_importes) == len(vector_fechapagos) == len(vector_cantcuotas) == len(vector_cuotaactual):
                                     
                                         instancia_general_output = GeneralOutput(banco_t, fecha_rendicion_t)
@@ -177,8 +192,8 @@ class Ventana:
                                         fecha_rendicion = instancia_general_output.getFechaRendicion()
                                         cbu_origen, cuit_origen, cbu_destino, cuit_destino = instancia_general_output.calcular_cbus_y_cuits()
                                         cant_registros = instancia_general_output.calcular_cant_registros(vector_boletas)
-                                        imp_pagado = instancia_general_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
-                                        imp_determinado = instancia_general_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
+                                        imp_pagado = instancia_general_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
+                                        imp_determinado = instancia_general_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
                                         imp_recaudado = instancia_general_output.getImpRecaudado()
                                         imp_depositado = instancia_general_output.getImpDepositado()
                                         imp_a_depositar = instancia_general_output.getImpADepositar()
@@ -188,8 +203,8 @@ class Ventana:
 
                                         sucursal_id = instancia_sucursal_output.getSucursal()
                                         cant_registros_sucursal = instancia_sucursal_output.calcular_cant_registros(vector_boletas)
-                                        imp_pagado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
-                                        imp_determinado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
+                                        imp_pagado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
+                                        imp_determinado_sucursal = instancia_sucursal_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
                                         imp_recaudado_sucursal = instancia_sucursal_output.getImpRecaudado()
                                         imp_depositado_sucursal = instancia_sucursal_output.getImpDepositado()
                                         imp_a_depositar_sucursal = instancia_sucursal_output.getImpADepositar()
@@ -201,8 +216,8 @@ class Ventana:
                                         cajero = instancia_pagos_output.getCajero()
                                         lote = instancia_pagos_output.getLote(banco_t)
                                         cant_registros_pagos = instancia_pagos_output.calcular_cant_registros_pagos(vector_boletas)
-                                        imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
-                                        imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(vector_importes_format_ok)
+                                        imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
+                                        imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_t, vector_importes_format_ok, vector_cantcuotas)
                                         total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos(banco_t, vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
 
 
@@ -213,14 +228,15 @@ class Ventana:
                                         tipo_operacion = instancia_dp_output.getTipoOperacion()
                                         tipo_rendicion = instancia_dp_output.getTipoRendicion()
                                         moneda = instancia_dp_output.getMoneda()
-                                        importe = instancia_dp_output.getImporte()
+                                        importe = instancia_dp_output.getImporte(banco_t, vector_cantcuotas)
+                                        print(importe)
                                         nro_boleta = instancia_dp_output.getNroBoletas()
-                                        cuota = instancia_dp_output.getCantCuotas()
+                                        cuota = instancia_dp_output.getCantCuotas(banco_t)
                                         obj_imponible = instancia_dp_output.getObjImponible()
                                         obligacion = instancia_dp_output.getNroBoletas() #obligacion es el nroBoleta para gant. para psrm y otax es 0
                                         fecha_pago = instancia_dp_output.getFechaPago()
                                         nro_comercio = instancia_dp_output.getNroComercio(banco_t)
-                                        comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(vector_importes_format_ok, banco_t)
+                                        comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(banco_t, vector_cantcuotas)
 
 
                                         if origen == 'PSRM' or origen == 'psrm' or origen == 'OTAX' or origen == 'otax':
@@ -254,7 +270,7 @@ class Ventana:
                                                     det_pago = ET.SubElement(pagos,"DetallePago", codigoRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
                                                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
                                                                         moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
-                                                                        fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
+                                                                        fechaPago = str(fecha_pago[numero]), impDeterminado = importe[numero], impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                                                         impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero])
                                                                       ).text = ' '
                                                 else:
@@ -265,6 +281,7 @@ class Ventana:
                                                                         impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
                                                                         idObjetoImponible = str(obj_imponible[numero]), obligacion = "0"
                                                                       ).text = ' '
+                                                    
 
 
                                         elif origen == 'GANT' or origen == 'gant':
@@ -342,11 +359,11 @@ class Ventana:
                                     else:
                                         messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
                                 else:
-                                    messagebox.showerror(message="El formato de la fecha de rendicion debe ser AAAA/MM/DD o AAAA-MM-DD", title="Error en fecha de rendicion (General)")   
+                                    messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA", title="Error en fecha de rendicion (General)")   
                             else:
                                 messagebox.showerror(message="El numero de banco debe ser numerico", title="Error en banco")
                         else:
-                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser AAAA/MM/DD o AAAA-MM-DD", title="Error en las fechas de detalles de pagos")
+                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA", title="Error en las fechas de detalles de pagos")
                     else:
                         messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
                 else:
@@ -359,11 +376,43 @@ class Ventana:
         except(ValueError):
             messagebox.showerror(message="Revisar importes. Deben ser numerico", title="Error")
         except(UnboundLocalError):
-            messagebox.showerror(message="Revise el numero de banco. Soporta 00935, 00202 y 00216", title="Error")
+            messagebox.showerror(message="Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago). Para 00935 debe ingresar la cant cuotas correspondiente", title="Error")
         except:
             messagebox.showerror(message="Excepcion no controlada. Revise los campos", title="Error")
 
 
+    def mostrar_nombre_banco(self, event):
+        banco_selec = str(self.cbbox_nrobanco.get())
+        if banco_selec == "00202":
+            self.label_nombrebanco = Label(self.frame,text='VISA',padx=1,pady=1 )
+            self.label_nombrebanco.grid(row=3, column=2)
+
+            self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20, state="disabled")
+            self.label_cuotaactual.grid(row=5,column=8,sticky='N')
+
+            self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
+            self.input_cuotaactual.grid(row=5, column=9)
+
+        elif banco_selec == "00216":
+            self.label_nombrebanco = Label(self.frame,text='Mastercard',padx=1,pady=1 )
+            self.label_nombrebanco.grid(row=3, column=2)
+
+            self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20, state="disabled")
+            self.label_cuotaactual.grid(row=5,column=8,sticky='N')
+
+            self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
+            self.input_cuotaactual.grid(row=5, column=9)
+
+        elif banco_selec == "00935":
+            self.label_nombrebanco = Label(self.frame,text='Cordobesa 12-18',padx=1,pady=1 )
+            self.label_nombrebanco.grid(row=3, column=2)
+
+            self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20)
+            self.label_cuotaactual.grid(row=5,column=8,sticky='N')
+
+            self.input_cuotaactual = Text(self.frame, height = 15, width = 10)
+            self.input_cuotaactual.grid(row=5, column=9)
+        
         
 
     def __init__(self, master):
@@ -371,7 +420,7 @@ class Ventana:
         self.label_origen = Label(self.frame, bg='grey', text='ORIGEN: ')
         self.label_origen.grid(row=0, column=0, pady=20, sticky= 'WE')
 
-        self.cbbox_origen = ttk.Combobox(self.frame, width=17)
+        self.cbbox_origen = ttk.Combobox(self.frame, width=17, state="readonly")
         self.cbbox_origen.place(x=163,y=20)
         opc = ["PSRM","OTAX","GANT"]
         self.cbbox_origen["values"] = opc
@@ -380,18 +429,24 @@ class Ventana:
         self.titulo_general = Label(self.frame,bg='grey',text='GENERAL' )
         self.titulo_general.grid(row=2,column=0,sticky= 'WE')
 
-        self.label_nrobanco = Label(self.frame,text='Número de Banco:',padx=20,pady=20)
-        self.label_nrobanco.grid(row=3,column=0)
+        self.label_nrobanco = Label(self.frame,text='Número de banco:',padx=20,pady=20 )
+        self.label_nrobanco.grid(row=3, column=0)
+        
+        self.cbbox_nrobanco = ttk.Combobox(self.frame, width=17, state="readonly")
+        self.cbbox_nrobanco.place(x=163,y=100)
+        opc_bancos = ["00935","00202","00216"]
+        self.cbbox_nrobanco["values"] = opc_bancos
 
-        self.input_nrobanco = ttk.Entry(self.frame,width=20,justify=CENTER)
-        self.input_nrobanco.grid(row=3, column=1)
+        self.cbbox_nrobanco.bind("<<ComboboxSelected>>", self.mostrar_nombre_banco)
+
+        
 
         #fecha de rendicion
         self.label_fecharendicion = Label(self.frame,text='Fecha de rendición:',padx=20,pady=20 )
-        self.label_fecharendicion.grid(row=3,column=2,sticky='W')
+        self.label_fecharendicion.grid(row=3,column=3,sticky='W')
 
         self.input_fecharendicion = ttk.Entry(self.frame,width=20,justify=CENTER)
-        self.input_fecharendicion.grid(row=3, column=3, )
+        self.input_fecharendicion.grid(row=3, column=4, )
 
         #Detalle de pago
 
@@ -428,10 +483,10 @@ class Ventana:
         self.input_cant_cuotas.grid(row=5, column=7, sticky='N')
 
         #Cuota Actual
-        self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20)
+        self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20, state="disabled")
         self.label_cuotaactual.grid(row=5,column=8,sticky='N')
 
-        self.input_cuotaactual = Text(self.frame, height = 15, width = 10)
+        self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
         self.input_cuotaactual.grid(row=5, column=9)
 
         
