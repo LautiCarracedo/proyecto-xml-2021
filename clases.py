@@ -310,7 +310,7 @@ class DetallePagoOutput(DetallePagoInput):
             for indice in range(len(cantcuotas)):
                 importes = "{0:.2f}".format(float(self.importes[indice]) / float(cantcuotas[indice]))
                 importe_redeondeado.append(importes)
-                print(importe_redeondeado)
+                #print(importe_redeondeado)
         else:
             for importes in self.importes:
                 importe_pago = "{0:.2f}".format(float(importes))

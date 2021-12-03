@@ -85,6 +85,8 @@ class Ventana:
         except:
             messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
 
+    
+    
     def tomar_datos(self):
         try:
             #toma de datos origen
@@ -147,10 +149,15 @@ class Ventana:
             vector_cantcuotas = cant_cuotas.split('\n')
             cuotas_es_numero_cred_deb = False
             for cuota in vector_cantcuotas:
-                if cuota.isnumeric() or cuota == 'C' or cuota == 'D':
-                    cuotas_es_numero_cred_deb = True
+                if banco_t == '00935':
+                    if cuota == '18' or cuota == '12':
+                        cuotas_es_numero_cred_deb = True
                 else:
-                    cuotas_es_numero_cred_deb = False
+                    if cuota == 'C' or cuota == 'D':
+                        cuotas_es_numero_cred_deb = True
+                    else:
+                        cuotas_es_numero_cred_deb = False
+            #print(cuotas_es_numero_cred_deb)
 
 
             
@@ -229,7 +236,6 @@ class Ventana:
                                         tipo_rendicion = instancia_dp_output.getTipoRendicion()
                                         moneda = instancia_dp_output.getMoneda()
                                         importe = instancia_dp_output.getImporte(banco_t, vector_cantcuotas)
-                                        print(importe)
                                         nro_boleta = instancia_dp_output.getNroBoletas()
                                         cuota = instancia_dp_output.getCantCuotas(banco_t)
                                         obj_imponible = instancia_dp_output.getObjImponible()
@@ -239,7 +245,7 @@ class Ventana:
                                         comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(banco_t, vector_cantcuotas)
 
 
-                                        if origen == 'PSRM' or origen == 'psrm' or origen == 'OTAX' or origen == 'otax':
+                                        if origen == 'PSRM' or origen == 'OTAX':
                                             #generando estructura xml con los campos
                                             general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
                                                                 cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
@@ -284,7 +290,7 @@ class Ventana:
                                                     
 
 
-                                        elif origen == 'GANT' or origen == 'gant':
+                                        elif origen == 'GANT':
                                             general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = fecha_rendicion , 
                                                                     cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
                                                                     registros = str(cant_registros),
@@ -317,10 +323,10 @@ class Ventana:
                                                 else:
                                                     det_pago = ET.SubElement(pagos,"DetallePago", codRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), nroControl = str(numero + 1),
                                                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
-                                                                        moneda = str(moneda), nroLiquidacionOriginal = nro_boleta[numero], nroLiquidacionActualizado = nro_boleta[numero], 
+                                                                        moneda = str(moneda), nroLiquidacionOriginal ="0", nroLiquidacionActualizado = "0", 
                                                                         fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
                                                                         impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
-                                                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = "0"
+                                                                        idObjetoImponible = str(obj_imponible[numero]), obligacion = nro_boleta[numero]
                                                                       ).text = ' '
                                                 
 
@@ -367,7 +373,7 @@ class Ventana:
                     else:
                         messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
                 else:
-                    messagebox.showerror(message="Campo cant cuotas deben ser todos numericos", title="Error en las cantidad cuotas")
+                    messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error en las cantidad cuotas")
             else:
                 messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
 
@@ -376,7 +382,7 @@ class Ventana:
         except(ValueError):
             messagebox.showerror(message="Revisar importes. Deben ser numerico", title="Error")
         except(UnboundLocalError):
-            messagebox.showerror(message="Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago). Para 00935 debe ingresar la cant cuotas correspondiente", title="Error")
+            messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error")
         except:
             messagebox.showerror(message="Excepcion no controlada. Revise los campos", title="Error")
 
