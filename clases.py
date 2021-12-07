@@ -104,8 +104,8 @@ class GeneralOutput(GeneralInput):
     def informes_general(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
         vector_comisiones, vector_ivas = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
-        #
-        vector_importes = importes
+        vector_importes = dp.getImporte(banco, cantcuotas) #los importes ingresados en la interfaz, los guardo aca para calcular la division x el nrocuotas (que es el valor que debes salir en el xml)
+        vector_importes_ingresados = importes #son los importes que se ingresan en la interfaz
         suma_importes = 0
         suma_comision = 0
         suma_iva = 0
@@ -123,7 +123,8 @@ class GeneralOutput(GeneralInput):
             iva_redondeo = "{0:.2f}".format(suma_iva)
 
         cant_registros = 'Cantidad de registros es igual a cantidad de boletas ingresadas: ' + str(len(vector_importes))
-        importes_dp = 'Importes ingresados de cada boleta: ' + str(vector_importes)
+        importes_dp_ing = 'Importes ingresados de cada boleta: ' + str(vector_importes_ingresados)
+        importes_dp_calc = 'Importes calculados de cada boleta (importe ingresado / cantcuotas): ' + str(vector_importes)
         suma_total = 'Sumatoria de los importes de todas las boletas: $ ' + str(suma_importes)
         comisiones_dp = 'Comisiones de cada importe: ' + str(vector_comisiones)
         comision_total = 'La comision total es igual a $: ' + str(comision_redondeo)
@@ -131,7 +132,7 @@ class GeneralOutput(GeneralInput):
         ivas_dp = 'Iva de cada importe (comision de cada importe x 0.21):' + str(vector_ivas)
         ivas_total = 'El iva total es igual a $: ' + str(iva_redondeo)
 
-        return importes_dp, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros, iva_tag_general
+        return importes_dp_ing, importes_dp_calc, suma_total, comisiones_dp, comision_total, ivas_dp, ivas_total, cant_registros, iva_tag_general
 
 
 class SucursalOutput():

@@ -171,7 +171,7 @@ class Ventana:
     def validar_fecha_rendicion(self):
         origen, banco_t, fecha_rendicion, boletas, importes, fecha_pagos, cant_cuotas, cuota_actual = self.tomar_datos()
         fecha_rendicion_t = fecha_rendicion.replace('/','-')
-        if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:2]).isnumeric()) and (fecha_rendicion_t[2] == '-') and (str(fecha_rendicion_t[3:5]).isnumeric()) and (fecha_rendicion_t[5] == '-') and (str(fecha_rendicion_t[6:10]).isnumeric())):
+        if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:2]).isnumeric() and (int(fecha_rendicion[0:2]) <= 31)) and (fecha_rendicion_t[2] == '-') and (str(fecha_rendicion_t[3:5]).isnumeric() and (int(fecha_rendicion[3:5]) <= 12)) and (fecha_rendicion_t[5] == '-') and (str(fecha_rendicion_t[6:10]).isnumeric())):
             fecha_rendicion_format_ok = True
             fecha_rendicion_t = fecha_rendicion_t[6:10] + fecha_rendicion_t[5] + fecha_rendicion_t[3:5] + fecha_rendicion_t[2] + fecha_rendicion_t[0:2] + 'T09:30:00.000'
         
@@ -203,7 +203,7 @@ class Ventana:
         format_fechas = False
         for fechas in vector_fechapagos:
             fechas_format = fechas.replace('/','-')
-            if ((len(fechas_format) == 10) and (str(fechas_format[0:2]).isnumeric()) and (fechas_format[2] == '-') and (str(fechas_format[3:5]).isnumeric()) and (fechas_format[5] == '-') and (str(fechas_format[6:10]).isnumeric())):
+            if ((len(fechas_format) == 10) and (str(fechas_format[0:2]).isnumeric() and (int(fechas_format[0:2]) <= 31)) and (fechas_format[2] == '-') and (str(fechas_format[3:5]).isnumeric() and (int(fechas_format[3:5]) <= 12)) and (fechas_format[5] == '-') and (str(fechas_format[6:10]).isnumeric())):
                 fechas_format = fechas_format[6:10] + fechas_format[5] + fechas_format[3:5] + fechas_format[2] + fechas_format[0:2] + 'T09:30:00.000'
                 vector_fechapagos_format_ok.append(fechas_format)
                 format_fechas = True
@@ -260,7 +260,7 @@ class Ventana:
         bandera_cantcuotas_ok, vector_cantcuotas = self.validar_cant_cuotas()
         bandera_cuotaactual_ok, vector_cuotaactual = self.validar_cuota_actual()
         cant_vectores_dp_ok = False
-        print(len(vector_boletas), len(vector_importes), len(vector_fechapagos), len(vector_cantcuotas), len(vector_cuotaactual))
+        #print(len(vector_boletas), len(vector_importes), len(vector_fechapagos), len(vector_cantcuotas), len(vector_cuotaactual))
         if len(vector_boletas) == len(vector_importes) == len(vector_fechapagos) == len(vector_cantcuotas) == len(vector_cuotaactual):
             cant_vectores_dp_ok = True
         else:
@@ -317,7 +317,7 @@ class Ventana:
             banco_t = self.validar_banco()
             vector_boletas = self.validar_boletas()
             origen = self.validar_origen()
-            print(cant_igual_vectores_dp)
+            #print(cant_igual_vectores_dp)
             if cuotaactual_es_numero:
                 if cuotas_es_numero_cred_deb:
                     if importes_es_float:
@@ -341,7 +341,7 @@ class Ventana:
                                     imp_depositado = instancia_general_output.getImpDepositado()
                                     imp_a_depositar = instancia_general_output.getImpADepositar()
                                     total_comision, total_iva = instancia_general_output.calcular_total_comision_iva(banco_t, vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
-                                    informe_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas_dp, informe_suma_ivas, informe_cant_registros, informe_iva_general = instancia_general_output.informes_general(banco_t ,vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
+                                    informe_importes_ing, informe_calc_importes, informe_suma_importes, informe_comisiones, informe_suma_comisiones, informe_ivas_dp, informe_suma_ivas, informe_cant_registros, informe_iva_general = instancia_general_output.informes_general(banco_t ,vector_boletas, vector_fechapagos_format_ok, vector_importes_format_ok, vector_cuotaactual, vector_cantcuotas)
 
 
                                     sucursal_id = instancia_sucursal_output.getSucursal()
@@ -470,7 +470,8 @@ class Ventana:
 
                                     #Comentarios de los calculos a nivel general
                                     comentario_cant_registros = ET.Comment(informe_cant_registros)
-                                    comentario_importes = ET.Comment(informe_importes)
+                                    comentario_importes_ing = ET.Comment(informe_importes_ing)
+                                    comentario_importes_calc = ET.Comment(informe_calc_importes)
                                     comentario_suma_importes = ET.Comment(informe_suma_importes)  
                                     comentario_comision = ET.Comment(informe_comisiones) 
                                     comentario_suma_comisiones = ET.Comment(informe_suma_comisiones)
@@ -488,7 +489,8 @@ class Ventana:
                                     general.insert(0, comentario_suma_comisiones)
                                     general.insert(0, comentario_comision)
                                     general.insert(0, comentario_suma_importes)
-                                    general.insert(0, comentario_importes)
+                                    general.insert(0, comentario_importes_ing)
+                                    general.insert(0, comentario_importes_calc)
                                     general.insert(0, comentario_cant_registros)
 
                                     nombre_archivoXML = fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + banco[2:5]
@@ -501,10 +503,10 @@ class Ventana:
                                 else:
                                     messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
                             else:
-                                messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA", title="Error en fecha de rendicion (General)")   
+                                messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en fecha de rendicion (General)")   
                             
                         else:
-                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA", title="Error en las fechas de detalles de pagos")
+                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en las fechas de detalles de pagos")
                     else:
                         messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
                 else:
