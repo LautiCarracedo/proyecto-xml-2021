@@ -173,7 +173,7 @@ class Ventana:
         fecha_rendicion_t = fecha_rendicion.replace('/','-')
         if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:2]).isnumeric() and (int(fecha_rendicion[0:2]) <= 31)) and (fecha_rendicion_t[2] == '-') and (str(fecha_rendicion_t[3:5]).isnumeric() and (int(fecha_rendicion[3:5]) <= 12)) and (fecha_rendicion_t[5] == '-') and (str(fecha_rendicion_t[6:10]).isnumeric())):
             fecha_rendicion_format_ok = True
-            fecha_rendicion_t = fecha_rendicion_t[6:10] + fecha_rendicion_t[5] + fecha_rendicion_t[3:5] + fecha_rendicion_t[2] + fecha_rendicion_t[0:2] + 'T09:30:00.000'
+            fecha_rendicion_t = fecha_rendicion_t[6:10] + fecha_rendicion_t[5] + fecha_rendicion_t[3:5] + fecha_rendicion_t[2] + fecha_rendicion_t[0:2]
         
         else:
             fecha_rendicion_format_ok = False
@@ -186,7 +186,7 @@ class Ventana:
         vector_importes_format_ok = []
         importes_es_float = False
         for importes in vector_importes:
-            importes_format_punto_miles = importes.replace('.','')
+            importes_format_punto_miles = importes.replace('.','').replace('$','')
             importes_format_coma_decimal = importes_format_punto_miles.replace(',','.')
             if float(importes_format_coma_decimal):
                 importes_es_float = True
