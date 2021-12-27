@@ -6,6 +6,8 @@ from tkinter import messagebox
 
 import xml.etree.ElementTree as ET
 
+#version 2.0?
+
 from clases import GeneralOutput, SucursalOutput, PagosOutput, DetallePagoOutput
 
 class Ventana:
@@ -461,7 +463,7 @@ class Ventana:
                                                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
                                                                         moneda = str(moneda), nroLiquidacionOriginal ="0", nroLiquidacionActualizado = "0", 
                                                                         fechaPago = str(fecha_pago[numero]), impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision[numero]), 
-                                                                        impIVA = str(iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
+                                                                        impIVA = str    (iva[numero]), nroComercio = str(nro_comercio), cantCuotas = str(cuota[numero]),
                                                                         idObjetoImponible = str(obj_imponible[numero]), obligacion = nro_boleta[numero]
                                                                         ).text = ' '
 
