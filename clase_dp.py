@@ -3,7 +3,7 @@
 #from lectura_archivo_config import calcular_comisiones
 
 
-from lectura_archivo_config import calcular_comisiones
+from lectura_archivo_config import calcular_comisiones, leer_ini_valores_tags_variables
 
 
 class DetallePagoInput():
@@ -90,13 +90,9 @@ class DetallePagoOutput(DetallePagoInput):
         return self.fecha_pagos
 
     def getNroComercio(self, banco):
-        if banco == '00935':
-            self.nro_comercio = '27426748'
-        elif banco == '00202':
-            self.nro_comercio = '0023552656'
-        elif banco == '00216':
-            self.nro_comercio = '18236295'
-        return self.nro_comercio
+        vec_claves_tag, vec_valores = leer_ini_valores_tags_variables(banco)
+
+        return vec_valores[0]
 
     def calculo_nro_registro_ycontrol(self):
         registros_ycontrol = []

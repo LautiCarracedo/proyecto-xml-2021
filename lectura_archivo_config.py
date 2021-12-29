@@ -2,7 +2,7 @@ from configparser import ConfigParser
 
 from validaciones_datos import validar_banco
 
-archivo_conf_bancos ='C:/Users/Lauti/Desktop/config_bancos_tags/configuracion_bancos.ini'
+archivo_conf_bancos ='C:/generador_xml/configuracion_bancos.ini'
 config = ConfigParser()
 config.read(archivo_conf_bancos)
 
@@ -48,6 +48,20 @@ def leer_ini_comisiones(banco):
     print(vec_comisiones)
 
     return vec_claves, vec_comisiones
+
+def leer_ini_valores_tags_variables(banco):
+    banco_selec = str(banco)
+    clave_valores = config.items('Valores' + str(banco_selec))
+
+    vec_claves_tag = []
+    vec_valores = []
+    for indice in clave_valores:
+        clave = indice[0]
+        valor = indice[1]
+        vec_claves_tag.append(clave)
+        vec_valores.append(valor)
+    
+    return vec_claves_tag, vec_valores
 
 def leer_ini_tags(origen, banco):
     banco_selec = str(banco)    

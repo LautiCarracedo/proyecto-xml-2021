@@ -1,4 +1,5 @@
 from clase_dp import DetallePagoOutput
+from lectura_archivo_config import leer_ini_valores_tags_variables
 
 class PagosOutput():
     def __init__(self, banco):
@@ -19,11 +20,10 @@ class PagosOutput():
         return self.cajero
 
     def getLote(self, banco):
-        if banco == '00202' or banco == '00216':
-            self.lote = '1'
-        else:
-            self.lote = '2'
-        return self.lote
+        vec_claves_tag, vec_valores = leer_ini_valores_tags_variables(banco)
+
+        return vec_valores[1]
+
 
     def calcular_cant_registros_pagos(self, boletas):
         #
