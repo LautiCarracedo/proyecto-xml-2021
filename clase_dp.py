@@ -1,5 +1,11 @@
 #from probando_leer_archivos_conf_bancos import Ventana
 
+#from lectura_archivo_config import calcular_comisiones
+
+
+from lectura_archivo_config import calcular_comisiones
+
+
 class DetallePagoInput():
     def __init__(self, boletas, fechapagos, importes, cuotaactual, cantcuotas):
         #
@@ -105,23 +111,23 @@ class DetallePagoOutput(DetallePagoInput):
         
         #vector_comisiones = Ventana.calcular_comisiones()
         banco = banco
-        vector_comisiones = []
+        vector_comisiones = calcular_comisiones(banco, cantcuotas)
         #print('BANCO CMISION X ENTE' ,banco)
-        for valor_cuota in cantcuotas:
-            #print(valor_cuota)
-            if banco == '00935': #cordobesa
-                comision = 0.01
-                vector_comisiones.append(comision)
-            elif (banco == '00216') and (valor_cuota == 'C' or valor_cuota == 'D'): #master
-                comision = 0.01
-                vector_comisiones.append(comision)
-            elif banco == '00202' and valor_cuota == 'C': #visa
-                comision = 0.01
-                vector_comisiones.append(comision)
-            elif banco == '00202' and valor_cuota == 'D': #visa
-                comision = 0.0035
-                vector_comisiones.append(comision)
-        #print(vector_comisiones)
+        #for valor_cuota in cantcuotas:
+        #    #print(valor_cuota)
+        #    if banco == '00935': #cordobesa
+        #        comision = 0.01
+        #        vector_comisiones.append(comision)
+        #    elif (banco == '00216') and (valor_cuota == 'C' or valor_cuota == 'D'): #master
+        #        comision = 0.01
+        #        vector_comisiones.append(comision)
+        #    elif banco == '00202' and valor_cuota == 'C': #visa
+        #        comision = 0.01
+        #        vector_comisiones.append(comision)
+        #    elif banco == '00202' and valor_cuota == 'D': #visa
+        #        comision = 0.0035
+        #        vector_comisiones.append(comision)
+        ##print(vector_comisiones)
         return vector_comisiones
 
     def calculo_comision_iva_x_dp(self, banco, cantcuotas):

@@ -64,3 +64,4 @@ class PagosOutput():
             sumatoria_iva += round(float(valor_iva),2)
             sumatoria_iva_redondeo = "{0:.2f}".format(sumatoria_iva)
         return sumatoria_comision_redondeo, sumatoria_iva_redondeo
+
