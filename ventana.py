@@ -104,7 +104,7 @@ class Ventana:
         #vector_datos_general.append(fecha_rendicion_t)
 
         #toma de datos dp
-        boletas = self.input_nroboleta.get("1.0","end-1c") 
+        boletas = self.input_nroboleta.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
         importes = self.input_importe.get("1.0","end-1c")
         fecha_pagos = self.input_fechapago.get("1.0","end-1c")
         cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")

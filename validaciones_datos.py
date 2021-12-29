@@ -47,6 +47,8 @@ def validar_cant_cuotas(banco, cant_cuotas):
             cuotas_es_numero_cred_deb = True
         elif banco == '00935' and cuota == '18' or cuota == '12':
             cuotas_es_numero_cred_deb = True
+        elif (cuota == 'C' or cuota == 'D' or cuota.isnumeric()):
+            cuotas_es_numero_cred_deb = True
         else:
             cuotas_es_numero_cred_deb = False
         #else:

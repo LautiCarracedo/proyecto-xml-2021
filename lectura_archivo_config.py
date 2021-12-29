@@ -146,17 +146,20 @@ def calcular_comisiones(banco, cantcuotas):
     
     if banco in nro_bancos:
         for valor_cuota in cantcuotas:
-            if valor_cuota == 'C' and banco != '00935':
+            if (valor_cuota == 'C' or valor_cuota >= '1') and banco != '00935':
                 comision_banco = float(vec_comisiones[0])
                 vector_comisiones_p_calculo.append(comision_banco)
 
-            elif valor_cuota == 'D' and banco != '00935':
+            elif (valor_cuota == 'D' or valor_cuota >= '1') and banco != '00935':
                 comision_banco = float(vec_comisiones[1])
                 vector_comisiones_p_calculo.append(comision_banco)
 
             elif banco == '00935' and (valor_cuota == '12' or valor_cuota == '18'):
                 comision_banco = float(vec_comisiones[0])
                 vector_comisiones_p_calculo.append(comision_banco)
+            
+
+                
                 
     print('Comisiones de cada dp del banco seleccionado: ', vector_comisiones_p_calculo)#
     return vector_comisiones_p_calculo
