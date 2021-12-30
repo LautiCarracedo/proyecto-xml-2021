@@ -110,3 +110,15 @@ def validar_origen(origen_t):
 def validar_banco(banco_t):
     banco = banco_t
     return banco
+
+def validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_actual):
+    vector_boletas = boletas.split('\n')
+    vector_importes = importes.split('\n')
+    vector_fechapagos = fecha_pagos.split('\n')
+    vector_cantcuotas = cant_cuotas.split('\n')
+    vector_cuotaactual = cuota_actual.split('\n')
+
+    return vector_boletas, vector_importes, vector_fechapagos, vector_cantcuotas, vector_cuotaactual
+
+
+

@@ -1,5 +1,5 @@
 from clase_dp import DetallePagoOutput
-from lectura_archivo_config import leer_ini_valores_tags_variables
+from lectura_archivo_config import ArchivoConfig
 
 class PagosOutput():
     def __init__(self, banco):
@@ -20,7 +20,8 @@ class PagosOutput():
         return self.cajero
 
     def getLote(self, banco):
-        vec_claves_tag, vec_valores = leer_ini_valores_tags_variables(banco)
+        datos_arc_conf = ArchivoConfig()
+        vec_claves_tag, vec_valores = datos_arc_conf.leer_ini_valores_tags_variables(banco)
 
         return vec_valores[1]
 

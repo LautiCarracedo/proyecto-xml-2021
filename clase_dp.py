@@ -1,10 +1,4 @@
-#from probando_leer_archivos_conf_bancos import Ventana
-
-#from lectura_archivo_config import calcular_comisiones
-
-
-from lectura_archivo_config import calcular_comisiones, leer_ini_valores_tags_variables
-
+from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
 class DetallePagoInput():
     def __init__(self, boletas, fechapagos, importes, cuotaactual, cantcuotas):
@@ -14,11 +8,6 @@ class DetallePagoInput():
         self.importes = importes
         self.obj_imp = cuotaactual
         self.cuotas = cantcuotas
-
-    #Getters
-    def getDatos(self):
-        return self.datos
-
 
 
 class DetallePagoOutput(DetallePagoInput):
@@ -90,7 +79,8 @@ class DetallePagoOutput(DetallePagoInput):
         return self.fecha_pagos
 
     def getNroComercio(self, banco):
-        vec_claves_tag, vec_valores = leer_ini_valores_tags_variables(banco)
+        datos_archivo_config = ArchivoConfig()
+        vec_claves_tag, vec_valores = datos_archivo_config.leer_ini_valores_tags_variables(banco)
 
         return vec_valores[0]
 
@@ -107,7 +97,8 @@ class DetallePagoOutput(DetallePagoInput):
         
         #vector_comisiones = Ventana.calcular_comisiones()
         banco = banco
-        vector_comisiones = calcular_comisiones(banco, cantcuotas)
+        comisiones_archivo_conf = ComisionesArchivo()
+        comisiones_ok, vector_comisiones = comisiones_archivo_conf.calcular_comisiones(banco, cantcuotas)
         #print('BANCO CMISION X ENTE' ,banco)
         #for valor_cuota in cantcuotas:
         #    #print(valor_cuota)

@@ -3,14 +3,16 @@ from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
 
-from generador import generar_xml
-from lectura_archivo_config import leer_ini_bancos
+from generador import Generador
+from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
-from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
+from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
 
 #from clases import DetallePagoOutput, GeneralOutput, PagosOutput, SucursalOutput
 
+
 class Ventana:
+    
     def __init__(self, master):
         self.frame = Frame(master)
         self.label_origen = Label(self.frame, bg='grey', text='ORIGEN: ')
@@ -30,7 +32,8 @@ class Ventana:
         
         self.cbbox_nrobanco = ttk.Combobox(self.frame, width=17, state="readonly")
         self.cbbox_nrobanco.place(x=163,y=100)
-        nro_bancos, nombres_bancos = leer_ini_bancos()
+        datos_archivo_conf = ArchivoConfig()
+        nro_bancos, nombres_bancos = datos_archivo_conf.leer_ini_bancos()
         opc_bancos = nro_bancos
         self.cbbox_nrobanco["values"] = opc_bancos
 
@@ -87,70 +90,80 @@ class Ventana:
         self.btn_generarXML = Button(self.frame, text="Generar XML", command=self.tomar_datos, width=13, height=2)
         self.btn_generarXML.grid(row=8, column=3, pady=10)
 
-        #self.btn_verificar_cantregistros = Button(self.frame, text="Verif cant registros", command=self.verificar_cant_registros, width=13, height=2)
-        #self.btn_verificar_cantregistros.grid(row=8, column=4, pady=10)
+        self.btn_verificar_cantregistros = Button(self.frame, text="Verif cant registros", command=self.verificar_cant_registros, width=13, height=2)
+        self.btn_verificar_cantregistros.grid(row=8, column=4, pady=10)
 
         self.frame.pack()
     
     def tomar_datos(self):
+        try:
+            #toma de datos origen
+            origen = self.cbbox_origen.get()
+            #toma de datos general
+            vector_datos_general = []
+            banco_t = str(self.cbbox_nrobanco.get())
+            vector_datos_general.append(banco_t)
+            fecha_rendicion = str(self.input_fecharendicion.get())
+            #vector_datos_general.append(fecha_rendicion_t)
 
-        #toma de datos origen
-        origen = self.cbbox_origen.get()
-        #toma de datos general
-        vector_datos_general = []
-        banco_t = str(self.cbbox_nrobanco.get())
-        vector_datos_general.append(banco_t)
-        fecha_rendicion = str(self.input_fecharendicion.get())
-        #vector_datos_general.append(fecha_rendicion_t)
+            #toma de datos dp
+            boletas = self.input_nroboleta.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
+            importes = self.input_importe.get("1.0","end-1c")
+            fecha_pagos = self.input_fechapago.get("1.0","end-1c")
+            cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")
+            cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
 
-        #toma de datos dp
-        boletas = self.input_nroboleta.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
-        importes = self.input_importe.get("1.0","end-1c")
-        fecha_pagos = self.input_fechapago.get("1.0","end-1c")
-        cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")
-        cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
-
-        dato_origen = validar_origen(origen)
-        dato_banco = validar_banco(banco_t)
-        validacion_dato_fec_rendicion, dato_fec_rendicion = validar_fecha_rendicion(fecha_rendicion)
-        datos_boletas = validar_boletas(boletas)
-        validacion_datos_importes, datos_importes = validar_importes(importes)
-        validacion_datos_fec_pagos, datos_fec_pagos = validar_fechapagos(fecha_pagos)
-        validacion_datos_cant_cuotas, datos_cant_cuotas = validar_cant_cuotas(banco_t, cant_cuotas)
-        validacion_datos_cuot_actual, datos_cuota_actual = validar_cuota_actual(banco_t, boletas, cuota_actual)
-        validacion_datos_cant_vectores = validar_cant_vectores_dp(banco_t, boletas, importes, fecha_pagos, cant_cuotas, cuota_actual)
-        #leer_ini(origen, banco_t)
-
-
-        if validacion_datos_cuot_actual:
-            if validacion_datos_cant_cuotas:
-                if validacion_datos_importes:
-                    if validacion_datos_fec_pagos:
-                        if validacion_dato_fec_rendicion:
-                            if validacion_datos_cant_vectores:
+            dato_origen = validar_origen(origen)
+            dato_banco = validar_banco(banco_t)
+            validacion_dato_fec_rendicion, dato_fec_rendicion = validar_fecha_rendicion(fecha_rendicion)
+            datos_boletas = validar_boletas(boletas)
+            validacion_datos_importes, datos_importes = validar_importes(importes)
+            validacion_datos_fec_pagos, datos_fec_pagos = validar_fechapagos(fecha_pagos)
+            validacion_datos_cant_cuotas, datos_cant_cuotas = validar_cant_cuotas(banco_t, cant_cuotas)
+            validacion_datos_cuot_actual, datos_cuota_actual = validar_cuota_actual(banco_t, boletas, cuota_actual)
+            validacion_datos_cant_vectores = validar_cant_vectores_dp(banco_t, boletas, importes, fecha_pagos, cant_cuotas, cuota_actual)
             
-                                generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes,
-                                            datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
-            
+            datos_comisiones_arch = ComisionesArchivo()
+            validacion_vector_comisiones_p_calculo, vector_comision_p_calculo = datos_comisiones_arch.calcular_comisiones(banco_t, datos_cant_cuotas)
+
+
+            if validacion_datos_cuot_actual:
+                if validacion_datos_cant_cuotas:
+                    if validacion_datos_importes:
+                        if validacion_datos_fec_pagos:
+                            if validacion_dato_fec_rendicion:
+                                if validacion_datos_cant_vectores:
+                                    if validacion_vector_comisiones_p_calculo:
+
+                                        generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+                                        generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+
+                                        nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
+                                        messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
+                                        ventana.destroy()
+                                    
+                                    else:
+                                        messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
+                                else:
+                                    messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
                             else:
-                                messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
+                                messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en fecha de rendicion (General)")   
                         else:
-                            messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en fecha de rendicion (General)")   
+                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en las fechas de detalles de pagos")
                     else:
-                        messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en las fechas de detalles de pagos")
+                        messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
                 else:
-                    messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
+                    messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error en las cantidad cuotas")
             else:
-                messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error en las cantidad cuotas")
-        else:
-            messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
-                                
+                messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
+        except(ValueError):
+            messagebox.showerror(message="Complete todos los campos", title="Error")       
 
-    
-    
+
     def mostrar_nombre_banco(self, event):
         banco_selec = str(self.cbbox_nrobanco.get())
-        nro_bancos, nombres_bancos = leer_ini_bancos()
+        datos_archivo_conf = ArchivoConfig()
+        nro_bancos, nombres_bancos = datos_archivo_conf.leer_ini_bancos()
 
         if banco_selec in nro_bancos:
             indice_banco = nro_bancos.index(banco_selec)
@@ -172,7 +185,48 @@ class Ventana:
 
             self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
             self.input_cuotaactual.grid(row=5, column=9)   
-               
+    
+
+    def verificar_cant_registros(self):
+        try:
+            #toma de datos origen
+            origen = self.cbbox_origen.get()
+            #toma de datos general
+            vector_datos_general = []
+            banco_t = str(self.cbbox_nrobanco.get())
+            vector_datos_general.append(banco_t)
+            fecha_rendicion = str(self.input_fecharendicion.get())
+            #vector_datos_general.append(fecha_rendicion_t)
+
+            #toma de datos dp
+            boletas = self.input_nroboleta.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
+            importes = self.input_importe.get("1.0","end-1c")
+            fecha_pagos = self.input_fechapago.get("1.0","end-1c")
+            cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")
+            cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
+
+            vector_boletas, vector_importes, vector_fechapagos, vector_cantcuotas, vector_cuotaactual = validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_actual)
+            
+            
+            cant_boletas = Label(self.frame, text='Cant registros: ' + str(len(vector_boletas)), pady=10,padx=20 )
+            cant_boletas.grid(row=6, column=1)
+
+            cant_importes = Label(self.frame, text='Cant registros: ' + str(len(vector_importes)), pady=10,padx=20 )
+            cant_importes.grid(row=6, column=3)
+
+            cant_pagos = Label(self.frame, text='Cant registros: ' + str(len(vector_fechapagos)), pady=10,padx=20 )
+            cant_pagos.grid(row=6, column=5)
+
+            cant_cantcuotas = Label(self.frame, text='Cant registros: ' + str(len(vector_cantcuotas)), pady=10,padx=20 )
+            cant_cantcuotas.grid(row=6, column=7)
+
+            cant_cuotaactual = Label(self.frame, text='Cant: ' + str(len(vector_cuotaactual)), pady=10,padx=20 )
+            cant_cuotaactual.grid(row=6, column=9)
+
+        except:
+            messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
+
+
 ventana = Tk()
 ventana.geometry('1450x520')
 ventana.title('XMLGenerator')
