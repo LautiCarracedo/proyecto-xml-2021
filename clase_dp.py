@@ -62,7 +62,7 @@ class DetallePagoOutput(DetallePagoInput):
         #vector_cuotas = transformar_cuotas_dp()
 
         cuotas = []
-        if banco == '00216' or banco == '00202':
+        if banco != '00935':
             for cuota in range(len(self.cuotas)):
                 cuotas.append('1') 
         else:

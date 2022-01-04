@@ -41,25 +41,21 @@ def validar_fechapagos(fecha_pagos):
     
 def validar_cant_cuotas(banco, cant_cuotas):
     vector_cantcuotas = cant_cuotas.split('\n')
+    #vector_dp_calculos = []
     cuotas_es_numero_cred_deb = False
     for cuota in vector_cantcuotas:
         if (cuota == 'C' or cuota == 'D') and banco != '00935':
             cuotas_es_numero_cred_deb = True
         elif banco == '00935' and cuota == '18' or cuota == '12':
             cuotas_es_numero_cred_deb = True
-        elif (cuota == 'C' or cuota == 'D' or cuota.isnumeric()):
-            cuotas_es_numero_cred_deb = True
+        #elif (cuota == 'C' or cuota == 'D' or cuota.isnumeric()):
+        #    cuotas_es_numero_cred_deb = True
         else:
             cuotas_es_numero_cred_deb = False
-        #else:
-        #    if (cuota == 'C' or cuota == 'D') and (banco == '00202' or banco == '00202d' or banco == '00216'):
-        #        cuotas_es_numero_cred_deb = True
-        #    else:
-        #        if cuota.isnumeric():
-        #            cuotas_es_numero_cred_deb = True
-        #        else:
-        #            cuotas_es_numero_cred_deb = False
+
+    print('vector cantcuotas:', vector_cantcuotas)
     return cuotas_es_numero_cred_deb, vector_cantcuotas
+    
 
 def validar_cuota_actual(banco, boletas, cuota_actual):
     vector_boletas = boletas.split('\n')

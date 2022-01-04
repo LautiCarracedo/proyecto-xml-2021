@@ -157,7 +157,11 @@ class Ventana:
             else:
                 messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
         except(ValueError):
-            messagebox.showerror(message="Complete todos los campos", title="Error")       
+            messagebox.showerror(message="Revise todos los campos. Revise comas (para decimales) y puntos (para miles) en los importes", title="Error")
+        except(TypeError):
+            messagebox.showerror(message="Error en el archivo de configuraciones. Verifique que existan todas las secciones [NroBanco],[Comisiones],[Valores],[Elementos] del origen y el banco para el que desea generar el XML y que los valores sean correctos", title="Error")
+        except:
+            messagebox.showerror(message="Revise en el archivo de configuraciones tener cargado [NroBanco],[Comisiones],[Valores] y [Elementos] para generar correctamente el XML", title="Error")     
 
 
     def mostrar_nombre_banco(self, event):

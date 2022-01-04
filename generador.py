@@ -99,9 +99,9 @@ class Generador():
                 vector_con_indices_a_mostrar_gral.append(indice_clave)
                 vector_general_datos_a_mostrar.append(vector_general[indice_clave])
 
-        print(vector_con_claves_a_mostrar_general)
-        print(vector_con_indices_a_mostrar_gral)
-        print(vector_general_datos_a_mostrar)
+        #print(vector_con_claves_a_mostrar_general)
+        #print(vector_con_indices_a_mostrar_gral)
+        #print(vector_general_datos_a_mostrar)
 
         ############################################################################################333
 
@@ -198,9 +198,9 @@ class Generador():
                 det_pago.attrib[vector_con_claves_a_mostrar_dp[indice]] = vector_dp_datos_a_mostrar[indice]   
 
 
-        print(vector_con_claves_a_mostrar_dp)
-        print(vector_con_indices_a_mostrar_dp)
-        print(vector_dp_datos_a_mostrar)
+        #print(vector_con_claves_a_mostrar_dp)
+        #print(vector_con_indices_a_mostrar_dp)
+        #print(vector_dp_datos_a_mostrar)
 
         tree = ET.ElementTree(general)    
         tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5] + '.xml', xml_declaration=True, encoding='utf-8')
