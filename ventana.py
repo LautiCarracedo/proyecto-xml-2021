@@ -8,8 +8,6 @@ from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
 from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
 
-#from clases import DetallePagoOutput, GeneralOutput, PagosOutput, SucursalOutput
-
 
 class Ventana:
     
@@ -113,8 +111,8 @@ class Ventana:
             cant_cuotas = self.input_cant_cuotas.get("1.0","end-1c")
             cuota_actual = self.input_cuotaactual.get("1.0","end-1c")
 
-            dato_origen = validar_origen(origen)
-            dato_banco = validar_banco(banco_t)
+            validacion_dato_origen, dato_origen = validar_origen(origen)
+            validacion_dato_banco, dato_banco = validar_banco(banco_t)
             validacion_dato_fec_rendicion, dato_fec_rendicion = validar_fecha_rendicion(fecha_rendicion)
             datos_boletas = validar_boletas(boletas)
             validacion_datos_importes, datos_importes = validar_importes(importes)
@@ -126,38 +124,44 @@ class Ventana:
             datos_comisiones_arch = ComisionesArchivo()
             validacion_vector_comisiones_p_calculo, vector_comision_p_calculo = datos_comisiones_arch.calcular_comisiones(banco_t, datos_cant_cuotas)
 
+            if validacion_dato_origen:
+                if validacion_dato_banco:
+                    if validacion_datos_cuot_actual:
+                        if validacion_datos_cant_cuotas:
+                            if validacion_datos_importes:
+                                if validacion_datos_fec_pagos:
+                                    if validacion_dato_fec_rendicion:
+                                        if validacion_datos_cant_vectores:
+                                            if validacion_vector_comisiones_p_calculo:
+                                                print("origen:",dato_origen)
 
-            if validacion_datos_cuot_actual:
-                if validacion_datos_cant_cuotas:
-                    if validacion_datos_importes:
-                        if validacion_datos_fec_pagos:
-                            if validacion_dato_fec_rendicion:
-                                if validacion_datos_cant_vectores:
-                                    if validacion_vector_comisiones_p_calculo:
+                                                generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+                                                generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
 
-                                        generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
-                                        generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+                                                nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
+                                                messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
+                                                ventana.destroy()
 
-                                        nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
-                                        messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                        ventana.destroy()
-                                    
+                                            else:
+                                                messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
+                                        else:
+                                            messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
                                     else:
-                                        messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
+                                        messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en fecha de rendicion (General)")   
                                 else:
-                                    messagebox.showerror(message="Los campos de los detalles de pagos tienen que tener la misma cantidad de items", title="Error en los detalles de pagos")
+                                    messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en las fechas de detalles de pagos")
                             else:
-                                messagebox.showerror(message="El formato de la fecha de rendicion debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en fecha de rendicion (General)")   
+                                messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
                         else:
-                            messagebox.showerror(message="El formato de la fecha de pago (detallepago) debe ser DD/MM/AAAA o DD-MM-AAAA. DD hasta 31. MM hasta 12", title="Error en las fechas de detalles de pagos")
+                            messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error en las cantidad cuotas")
                     else:
-                        messagebox.showerror(message="Los importes deben ser numericos", title="Error en las importes")
+                        messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
                 else:
-                    messagebox.showerror(message="Para Cordobesa debe ingresar 12 o 18. Para 00202 y 00216 en cant cuotas debe ingresar C o D según si es crédito o debito(siempre será 1 pago).", title="Error en las cantidad cuotas")
+                    messagebox.showerror(message="Debe seleccionar un banco", title="Error en el banco")
             else:
-                messagebox.showerror(message="Campo cuota actual deben ser todos numericos", title="Error en campo cuota actual")
+                messagebox.showerror(message="Debe seleccionar un origen", title="Error en el origen")
         except(ValueError):
-            messagebox.showerror(message="Revise todos los campos. Revise comas (para decimales) y puntos (para miles) en los importes", title="Error")
+            messagebox.showerror(message="Revise que todos los campos hayan sido cargados. Sugerencia: Revise comas (para decimales) y puntos (para miles) en los importes", title="Error")
         except(TypeError):
             messagebox.showerror(message="Error en el archivo de configuraciones. Verifique que existan todas las secciones [NroBanco],[Comisiones],[Valores],[Elementos] del origen y el banco para el que desea generar el XML y que los valores sean correctos", title="Error")
         except:

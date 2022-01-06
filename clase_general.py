@@ -9,8 +9,6 @@ class GeneralInput():
     def __init__(self, banco, fecha_rendicion):
         vector.append(banco)
         vector.append(fecha_rendicion)
-        #print('VECTPR GEMERAL CL;ASSEl ', vector)
-        #print(len(vector))
         self.banco = banco
         self.fecha_rendicion = fecha_rendicion
         
@@ -32,7 +30,6 @@ class GeneralOutput(GeneralInput):
         self.imp_recaudado = '0.00'
         self.imp_depositado = '0.00'
         self.imp_a_depositar = '0.00'
-        #self.calcular_cbus_y_cuits()
 
 
     #Getters

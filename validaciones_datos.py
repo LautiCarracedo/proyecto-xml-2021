@@ -101,11 +101,21 @@ def validar_cant_vectores_dp(banco, boletas, importes, fecha_pagos, cant_cuotas,
     
 def validar_origen(origen_t):
     origen = origen_t
-    return origen
+    origen_cargado = True
+    if origen == None or origen == "":
+        origen_cargado = False
+    else:
+        origen_cargado = True
+    return origen_cargado, origen
 
 def validar_banco(banco_t):
     banco = banco_t
-    return banco
+    banco_cargado = True
+    if banco == None or banco == "":
+        banco_cargado = False
+    else:
+        banco_cargado = True
+    return banco_cargado, banco
 
 def validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_actual):
     vector_boletas = boletas.split('\n')
