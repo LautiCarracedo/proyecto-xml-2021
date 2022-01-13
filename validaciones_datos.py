@@ -149,6 +149,27 @@ def validar_tipopagos(tipopagos, formato_xml, vec_codbarra1):
             else:
                 bandera_tipopagos_ok = False
     return bandera_tipopagos_ok, vec_tipopagos
+
+def validar_igualdad_largo_vector(codbarra1, codbarra2, tipopago, formato_xml):
+    vector_codbarra1 = validar_codbarra1(codbarra1)
+    vector_codbarra2 = validar_codbarra2(codbarra2)
+    bandera_tipospagos_ok, vector_tipopagos = validar_tipopagos(tipopago, formato_xml, codbarra1)
+    cant_vectores_ok = False
+    
+    if len(vector_codbarra1) == len(vector_codbarra2) == len(vector_tipopagos):
+        cant_vectores_ok = True
+    else:
+        cant_vectores_ok = False
+
+    return cant_vectores_ok
+
+def validar_cant_registros_bpc(codbarra1, codbarra2, tipopago):
+    vector_codbarra1 = codbarra1.split('\n')
+    vector_codbarra2 = codbarra2.split('\n')
+    vector_tipopagos = tipopago.split('\n')
+
+
+    return vector_codbarra1, vector_codbarra2, vector_tipopagos
     
 
 

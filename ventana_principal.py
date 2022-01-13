@@ -10,7 +10,8 @@ class VentanaPrincipal:
 
     
     def __init__(self, master):
-        self.frame_princ = Frame(master)
+        self.master = master
+        self.frame_princ = Frame(self.master)
         self.titulo = Label(self.frame_princ, bg='grey', text='GENERADOR XML')
         self.titulo.grid(row=0, column=2, pady=20, sticky= 'WE')
         
