@@ -140,7 +140,7 @@ class Ventana:
 
                                                 nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
                                                 messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                                ventana.destroy()
+                                                #ventana_otros_entes.destroy()
 
                                             else:
                                                 messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
@@ -235,8 +235,3 @@ class Ventana:
             messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
 
 
-ventana = Tk()
-ventana.geometry('1450x520')
-ventana.title('XMLGenerator')
-aplicacion = Ventana(ventana)
-ventana.mainloop()
