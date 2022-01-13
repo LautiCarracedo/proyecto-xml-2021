@@ -131,3 +131,4 @@ class DetallePagoOutput(DetallePagoInput):
             comisiones.append(comision)
             ivas.append(iva)
         return comisiones, ivas
+    
