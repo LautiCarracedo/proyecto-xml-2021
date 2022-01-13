@@ -126,5 +126,31 @@ def validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_ac
 
     return vector_boletas, vector_importes, vector_fechapagos, vector_cantcuotas, vector_cuotaactual
 
+def validar_codbarra1(codbarras1):
+    vec_codbarra1 = codbarras1.split('\n')
+    return vec_codbarra1
+
+def validar_codbarra2(codbarras2):
+    vec_codbarra2 = codbarras2.split('\n')
+    return vec_codbarra2
+
+def validar_tipopagos(tipopagos, formato_xml, vec_codbarra1):
+    bandera_tipopagos_ok = False
+    vec_tipopagos = tipopagos.split('\n')
+    if formato_xml == "Pagos presenciales" or formato_xml == "Pagos electronicos":
+        vec_tipopagos.pop()
+        for codigo in range(len(vec_codbarra1)):
+            vec_tipopagos.append('0')
+            bandera_tipopagos_ok = True
+    else:
+        for tipo in vec_tipopagos:
+            if tipo == "P" or tipo == "p" or tipo == "E" or tipo == "e":
+                bandera_tipopagos_ok = True
+            else:
+                bandera_tipopagos_ok = False
+    return bandera_tipopagos_ok, vec_tipopagos
+    
+
+
 
 
