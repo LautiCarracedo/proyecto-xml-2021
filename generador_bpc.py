@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 from clase_dp_bpc import DetallePagoBPC
-
 from clase_general_bpc import GeneralBPC
 from clase_pagos_bpc import PagosBPC
 from clase_sucursal_bpc import SucursalBPC
@@ -165,7 +164,7 @@ class GeneradorBPC():
             importe_recaudado, importe_depositado = instancia_general_output.calcular_imp_recaudado_depositado_adepositar_electronico(codbarra1, codbarra2, tipopago)
             
 
-            general = ET.Element("General",  xmlns="", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = str(fecha_rendicion) , 
+            general = ET.Element("General", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = str(fecha_rendicion) , 
                             cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
                             registros = str(cant_registros), totalImpDeterminado = str(importe_determ_pagado), totalImpPagado = str(importe_determ_pagado), 
                             totalImpRecaudado = str(importe_recaudado), totalImpDepositado = str(importe_depositado),

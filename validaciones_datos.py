@@ -127,20 +127,34 @@ def validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_ac
     return vector_boletas, vector_importes, vector_fechapagos, vector_cantcuotas, vector_cuotaactual
 
 def validar_codbarra1(codbarras1):
+    bandera_codbarra1_ok = False
     vec_codbarra1 = codbarras1.split('\n')
-    return vec_codbarra1
+    for codigo in vec_codbarra1:
+        if codigo.isnumeric():
+            bandera_codbarra1_ok = True
+        else:
+            bandera_codbarra1_ok = False
+    return bandera_codbarra1_ok, vec_codbarra1
 
 def validar_codbarra2(codbarras2):
+    bandera_codbarra2_ok = False
     vec_codbarra2 = codbarras2.split('\n')
-    return vec_codbarra2
+    for codigo in vec_codbarra2:
+        if codigo.isnumeric():
+            bandera_codbarra2_ok = True
+        else:
+            bandera_codbarra2_ok = False
+    return bandera_codbarra2_ok, vec_codbarra2
 
-def validar_tipopagos(tipopagos, formato_xml, vec_codbarra1):
+def validar_tipopagos(tipopagos, formato_xml, codbarra1):
+    vector_codbarra1 = codbarra1.split('\n')
     bandera_tipopagos_ok = False
     vec_tipopagos = tipopagos.split('\n')
     if formato_xml == "Pagos presenciales" or formato_xml == "Pagos electronicos":
         vec_tipopagos.pop()
-        for codigo in range(len(vec_codbarra1)):
-            vec_tipopagos.append('0')
+        print('len',len(vector_codbarra1))
+        for codigo in range(len(vector_codbarra1)):
+            vec_tipopagos.append('P')
             bandera_tipopagos_ok = True
     else:
         for tipo in vec_tipopagos:
@@ -151,11 +165,14 @@ def validar_tipopagos(tipopagos, formato_xml, vec_codbarra1):
     return bandera_tipopagos_ok, vec_tipopagos
 
 def validar_igualdad_largo_vector(codbarra1, codbarra2, tipopago, formato_xml):
-    vector_codbarra1 = validar_codbarra1(codbarra1)
-    vector_codbarra2 = validar_codbarra2(codbarra2)
+    bandera_codbarra1_ok, vector_codbarra1 = validar_codbarra1(codbarra1)
+    bandera_codbarra1_ok, vector_codbarra2 = validar_codbarra2(codbarra2)
     bandera_tipospagos_ok, vector_tipopagos = validar_tipopagos(tipopago, formato_xml, codbarra1)
     cant_vectores_ok = False
     
+    print(len(vector_codbarra1))
+    print(len(vector_codbarra2))
+    print(len(vector_tipopagos))
     if len(vector_codbarra1) == len(vector_codbarra2) == len(vector_tipopagos):
         cant_vectores_ok = True
     else:
@@ -170,6 +187,16 @@ def validar_cant_registros_bpc(codbarra1, codbarra2, tipopago):
 
 
     return vector_codbarra1, vector_codbarra2, vector_tipopagos
+
+
+def validar_campo_formato_xml(formato_xml):
+    formato = formato_xml
+    formato_cargado = True
+    if formato == None or formato == "":
+        formato_cargado = False
+    else:
+        formato_cargado = True
+    return formato_cargado, formato
     
 
 

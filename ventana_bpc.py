@@ -4,7 +4,7 @@ from tkinter.constants import CENTER, N
 from tkinter import messagebox
 
 from generador_bpc import GeneradorBPC
-from validaciones_datos import validar_cant_registros_bpc, validar_codbarra1, validar_codbarra2, validar_fecha_rendicion, validar_igualdad_largo_vector, validar_tipopagos
+from validaciones_datos import validar_campo_formato_xml, validar_cant_registros_bpc, validar_codbarra1, validar_codbarra2, validar_fecha_rendicion, validar_igualdad_largo_vector, validar_tipopagos
 
 
 class VentanaBPC:
@@ -76,45 +76,58 @@ class VentanaBPC:
         self.frame.pack()
 
     def tomar_datos(self):
-        opc_pagos = self.cbbox_opc.get()
+        try:
+            opc_pagos = self.cbbox_opc.get()
 
 
-        #toma de datos codbarra
-        fecha_rendicion = str(self.input_fecharendicion.get())
-        fecha_acreditacion = str(self.input_fechaacreditacion.get())
-        cod_barras1 = self.input_codbarra1.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
-        cod_barras2 = self.input_codbarra2.get("1.0","end-1c")
-        tipos_pagos = self.input_tipopago.get("1.0","end-1c")
+            #toma de datos codbarra
+            fecha_rendicion = str(self.input_fecharendicion.get())
+            fecha_acreditacion = str(self.input_fechaacreditacion.get())
+            cod_barras1 = self.input_codbarra1.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
+            cod_barras2 = self.input_codbarra2.get("1.0","end-1c")
+            tipos_pagos = self.input_tipopago.get("1.0","end-1c")
 
 
-        validacion_dato_fec_rendicion, dato_fec_rendicion = validar_fecha_rendicion(fecha_rendicion)
-        validacion_dato_fec_acreditacion, dato_fec_acreditacion = validar_fecha_rendicion(fecha_acreditacion) #uso la misma funcion validar porque debe tener el mismo formato
-        dato_codbarra1 = validar_codbarra1(cod_barras1)
-        dato_codbarra2 = validar_codbarra2(cod_barras2)
-        dato_formatoxml = opc_pagos
-        validacion_largo_vectores = validar_igualdad_largo_vector(cod_barras1, cod_barras2, tipos_pagos, dato_formatoxml)
-        validacion_dato_ambospagos, dato_ambospagos = validar_tipopagos(tipos_pagos, dato_formatoxml, dato_codbarra1) #aca se toman los valores del input de tipospagos
-        
-        if validacion_dato_ambospagos:
-            if validacion_dato_fec_rendicion:
-                if validacion_dato_fec_acreditacion:
-                    if validacion_largo_vectores:
-                
-                        generador = GeneradorBPC(dato_codbarra1, dato_codbarra2, dato_fec_rendicion, dato_fec_acreditacion, dato_formatoxml, dato_ambospagos)
-                        generador.generar_xml(dato_codbarra1, dato_codbarra2, dato_fec_rendicion, dato_fec_acreditacion, dato_formatoxml, dato_ambospagos)
+            validacion_dato_fec_rendicion, dato_fec_rendicion = validar_fecha_rendicion(fecha_rendicion)
+            validacion_dato_fec_acreditacion, dato_fec_acreditacion = validar_fecha_rendicion(fecha_acreditacion) #uso la misma funcion validar porque debe tener el mismo formato
+            validacion_dato_codbarra1, dato_codbarra1 = validar_codbarra1(cod_barras1)
+            validacion_dato_codbarra2, dato_codbarra2 = validar_codbarra2(cod_barras2)
+            validacion_dato_formato, dato_formatoxml = validar_campo_formato_xml(opc_pagos)
+            validacion_largo_vectores = validar_igualdad_largo_vector(cod_barras1, cod_barras2, tipos_pagos, dato_formatoxml)
+            validacion_dato_ambospagos, dato_ambospagos = validar_tipopagos(tipos_pagos, dato_formatoxml, cod_barras1) #aca se toman los valores del input de tipospagos
 
-                        nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
-                        messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                        self.cerrar_ventana()
-                    
+            if validacion_dato_codbarra1:
+                if validacion_dato_codbarra2:
+                    if validacion_dato_formato:
+                        if validacion_dato_ambospagos:
+                            if validacion_dato_fec_rendicion:
+                                if validacion_dato_fec_acreditacion:
+                                    if validacion_largo_vectores:
+                                    
+                                        generador = GeneradorBPC(dato_codbarra1, dato_codbarra2, dato_fec_rendicion, dato_fec_acreditacion, dato_formatoxml, dato_ambospagos)
+                                        generador.generar_xml(dato_codbarra1, dato_codbarra2, dato_fec_rendicion, dato_fec_acreditacion, dato_formatoxml, dato_ambospagos)
+
+                                        nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
+                                        messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
+                                        self.cerrar_ventana()
+
+                                    else:
+                                        messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
+                                else:
+                                    messagebox.showerror(message="Error en la fecha de acreditación. El formato correcto es DD/MM/AAAA o DD-MM-AAAA", title="Error")
+                            else:
+                                messagebox.showerror(message="Error en la fecha de rendición. El formato correcto es DD/MM/AAAA o DD-MM-AAAA", title="Error")
+                        else:
+                            messagebox.showerror(message="Error la lista cargada en tipo de pago. Las letras deben ser E(electronico) o P(presencial)", title="Error")
                     else:
-                        messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
+                        messagebox.showerror(message="Debe seleccionar una opcion en el campo formato xml", title="Error")
                 else:
-                    messagebox.showerror(message="Error en la fecha de acreditación. El formato correcto es DD/MM/AAAA o DD-MM-AAAA", title="Error")
+                    messagebox.showerror(message="El codigo de barra debe ser numerico y contener al menos 42 caracteres. Revise que no tenga espacios al final", title="Error")
             else:
-                messagebox.showerror(message="Error en la fecha de rendición. El formato correcto es DD/MM/AAAA o DD-MM-AAAA", title="Error")
-        else:
-            messagebox.showerror(message="Error la lista cargada en tipo de pago. Las letras deben ser E(electronico) o P(presencial)", title="Error")
+                messagebox.showerror(message="El codigo de barra debe ser numerico y contener al menos 42 caracteres Revise que no tenga espacios al final", title="Error")
+        except(UnboundLocalError):
+            messagebox.showerror(message="Debe ingresar en la lista de tipo pago al menos un tipo E(electronico) y un tipo P(presencial). De lo contrario si todos los pagos son de un solo tipo, debe elegir dicha opcion en formato correspondiente", title="Error")
+
 
     def ocultar_mostrar_tipopago(self, event):
         tipo_pago_selec = str(self.cbbox_opc.get())
