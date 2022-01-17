@@ -127,7 +127,8 @@ class VentanaBPC:
                 messagebox.showerror(message="El codigo de barra debe ser numerico y contener al menos 42 caracteres Revise que no tenga espacios al final", title="Error")
         except(UnboundLocalError):
             messagebox.showerror(message="Debe ingresar en la lista de tipo pago al menos un tipo E(electronico) y un tipo P(presencial). De lo contrario si todos los pagos son de un solo tipo, debe elegir dicha opcion en formato correspondiente", title="Error")
-
+        except(ValueError):
+            messagebox.showerror(message="El codigo de barra debe ser numerico y contener al menos 42 caracteres Revise que no tenga espacios al final", title="Error")
 
     def ocultar_mostrar_tipopago(self, event):
         tipo_pago_selec = str(self.cbbox_opc.get())
