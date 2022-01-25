@@ -1,4 +1,4 @@
-from clase_dp_bpc import DetallePagoBPC
+from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 
 
 class PagosBPC():
@@ -38,7 +38,7 @@ class PagosBPC():
         return cantidad_registros
 
     def calcular_importe_determinado_y_pagado(self, codbarra1, codbarra2):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoPresencialBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImporte()
         suma_importes = 0
         for importe in importes:
@@ -55,7 +55,7 @@ class PagosBPC():
 
     #para depositos (pagos electroncis)
     def calcular_imp_recaudado_depositos(self, codbarra1, codbarra2):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpRecaudadoBoletaER()
         suma_importes = 0
         for importe in importes:
@@ -64,7 +64,7 @@ class PagosBPC():
         return suma_imp_dos_decimales
 
     def calcular_imp_depositado_y_depositar_deposito(self, codbarra1, codbarra2):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpADepositarYDepositadoER()
         suma_importes = 0
         for importe in importes:

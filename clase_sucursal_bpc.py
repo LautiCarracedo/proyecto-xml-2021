@@ -1,4 +1,4 @@
-from clase_dp_bpc import DetallePagoBPC
+from clase_dp_bpc import DetallePagoPresencialBPC, DetallePagoElectronicoBPC
 
 
 class SucursalBPC():
@@ -30,8 +30,8 @@ class SucursalBPC():
         return cantidad_registros
 
 
-    def calcular_importe_determinado_y_pagado(self, codbarra1, codbarra2):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+    def calcular_importe_determinado_y_pagado(self, codbarra1, codbarra2): #pagos presenciales
+        dp_bpc = DetallePagoPresencialBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImporte()
         suma_importes = 0
         for importe in importes:
@@ -46,9 +46,10 @@ class SucursalBPC():
         iva = "0.0"
 
         return comision, iva
+
     
     def calcular_importe_recaudado_sucursal(self, codbarra1, codbarra2): #para pagos electronicos
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpRecaudadoBoletaER()
         suma_importes = 0
         for importe in importes:
@@ -57,7 +58,7 @@ class SucursalBPC():
         return suma_imp_dos_decimales
 
     def calcular_importe_depositado_adepositar_sucursal(self, codbarra1, codbarra2): #para pagos electronicos
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpADepositarYDepositadoER()
         suma_importes = 0
         for importe in importes:

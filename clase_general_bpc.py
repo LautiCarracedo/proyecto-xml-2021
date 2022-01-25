@@ -1,6 +1,6 @@
 import random
 
-from clase_dp_bpc import DetallePagoBPC
+from clase_dp_bpc import DetallePagoPresencialBPC, DetallePagoElectronicoBPC
 
 
 vector = []
@@ -54,7 +54,7 @@ class GeneralBPC():
         return cantidad_registros
 
     def calcular_importe_determinado_y_pagado(self, codbarra1, codbarra2): ##para pagos presenciales
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoPresencialBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImporte()
         suma_importes = 0
         for importe in importes:
@@ -71,7 +71,7 @@ class GeneralBPC():
 
 
     def calcular_importe_recaudado(self, codbarra1, codbarra2): #para pagos electronicos
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpRecaudadoBoletaER()
         suma_importes = 0
         for importe in importes:
@@ -80,7 +80,7 @@ class GeneralBPC():
         return suma_imp_dos_decimales
 
     def calcular_importe_depositado_adepositar(self, codbarra1, codbarra2): #para pagos electronicos
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
         importes = dp_bpc.getImpADepositarYDepositadoER()
         suma_importes = 0
         for importe in importes:
@@ -91,7 +91,7 @@ class GeneralBPC():
 
     #losmetodos que siguen son para cuando se elije ambos pagos
     def calcular_imp_determinado_pagado_presencial(self, codbarra1, codbarra2, tipopago):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
+        dp_bpc = DetallePagoPresencialBPC(codbarra1, codbarra2)
         importes = dp_bpc.calcular_imp_determinado_pagado(tipopago)
         suma_importes = 0
         for importe in importes:
@@ -99,9 +99,9 @@ class GeneralBPC():
             suma_imp_dos_decimales = round(suma_importes, 2)
         return suma_imp_dos_decimales
     
-    def calcular_imp_recaudado_depositado_adepositar_electronico(self, codbarra1, codbarra2, tipopago):
-        dp_bpc = DetallePagoBPC(codbarra1, codbarra2)
-        importes_rec, importes_dep = dp_bpc.calcular_imp_recaudado_depositado_adepostar(tipopago)
+    def calcular_imp_recaudado_depositado_adepositar_electronico(self, codbarra1, codbarra2, contador_pagos_e):
+        dp_bpc = DetallePagoElectronicoBPC(codbarra1, codbarra2)
+        importes_rec, importes_dep = dp_bpc.calcular_imp_recaudado_depositado_adepostar(contador_pagos_e)
         suma_importes_rec = 0
         suma_importes_dep = 0
 
