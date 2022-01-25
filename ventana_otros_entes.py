@@ -12,7 +12,8 @@ from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuot
 class Ventana:
     
     def __init__(self, master):
-        self.frame = Frame(master)
+        self.master = master
+        self.frame = Frame(self.master)
         self.label_origen = Label(self.frame, bg='grey', text='ORIGEN: ')
         self.label_origen.grid(row=0, column=0, pady=20, sticky= 'WE')
 
@@ -133,14 +134,13 @@ class Ventana:
                                     if validacion_dato_fec_rendicion:
                                         if validacion_datos_cant_vectores:
                                             if validacion_vector_comisiones_p_calculo:
-                                                print("origen:",dato_origen)
 
                                                 generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
                                                 generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
 
                                                 nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
                                                 messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                                ventana.destroy()
+                                                self.cerrar_ventana()
 
                                             else:
                                                 messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
@@ -199,12 +199,12 @@ class Ventana:
         try:
             #toma de datos origen
             origen = self.cbbox_origen.get()
+
             #toma de datos general
             vector_datos_general = []
             banco_t = str(self.cbbox_nrobanco.get())
             vector_datos_general.append(banco_t)
             fecha_rendicion = str(self.input_fecharendicion.get())
-            #vector_datos_general.append(fecha_rendicion_t)
 
             #toma de datos dp
             boletas = self.input_nroboleta.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
@@ -233,10 +233,8 @@ class Ventana:
 
         except:
             messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
+        
+    def cerrar_ventana(self):
+        self.master.destroy()
 
 
-ventana = Tk()
-ventana.geometry('1450x520')
-ventana.title('XMLGenerator')
-aplicacion = Ventana(ventana)
-ventana.mainloop()
