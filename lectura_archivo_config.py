@@ -22,8 +22,8 @@ class ArchivoConfig():
             nombre = indice[1]
             nro_bancos.append(banco)
             nombres_bancos.append(nombre)
-        print(nro_bancos)
-        print(nombres_bancos)
+        #print(nro_bancos)
+        #print(nombres_bancos)
         
         
         return nro_bancos, nombres_bancos
@@ -42,8 +42,8 @@ class ArchivoConfig():
                 vec_claves.append(clave)
                 vec_comisiones.append(comision)
 
-            print(vec_claves)
-            print(vec_comisiones)
+            #print(vec_claves)
+            #print(vec_comisiones)
 
             return vec_claves, vec_comisiones
 
@@ -154,7 +154,7 @@ class ComisionesArchivo():
         vector_comisiones_p_calculo = []
         vector_comisiones_calculo_ok = False
         vector_cant_cuotas = cantcuotas
-        print('cOMISIONES',vec_comisiones)
+        #print('cOMISIONES',vec_comisiones)
         for valor_cuota in vector_cant_cuotas:
             if (valor_cuota == 'C') and (banco != '00935'):
                 vector_comisiones_calculo_ok = True
@@ -167,7 +167,7 @@ class ComisionesArchivo():
                 vector_comisiones_p_calculo.append(vec_comisiones[0])
             else:
                 vector_comisiones_calculo_ok = False
-        print('Comisiones de cada dp del banco seleccionado: ', vector_comisiones_p_calculo)#
+        #print('Comisiones de cada dp del banco seleccionado: ', vector_comisiones_p_calculo)#
         return vector_comisiones_calculo_ok, vector_comisiones_p_calculo
         
         

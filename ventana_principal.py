@@ -24,9 +24,9 @@ class VentanaPrincipal:
         self.frame_princ.pack()
     
     def ventana_bpcc(self):
-        self.ventana_bpcc = Toplevel(self.frame_princ)
-        self.aplicacion = VentanaBPC(self.ventana_bpcc)
-        self.ventana_bpcc.geometry('1450x650')
+        self.ventana_bpc = Toplevel(self.frame_princ)
+        self.aplicacion = VentanaBPC(self.ventana_bpc)
+        self.ventana_bpc.geometry('1450x650')
     
     def ventana_otros_entes(self):
         self.ventana_entes = Toplevel(self.frame_princ)
