@@ -53,7 +53,7 @@ def validar_cant_cuotas(banco, cant_cuotas):
         else:
             cuotas_es_numero_cred_deb = False
 
-    print('vector cantcuotas:', vector_cantcuotas)
+    #print('vector cantcuotas:', vector_cantcuotas)
     return cuotas_es_numero_cred_deb, vector_cantcuotas
     
 
@@ -76,7 +76,7 @@ def validar_cuota_actual(banco, boletas, cuota_actual):
             else:
                 cuotaactual_es_numero = False
     
-    print('VECTOR CTA ACTAL',vector_cuotaactual)
+    #print('VECTOR CTA ACTAL',vector_cuotaactual)
     return cuotaactual_es_numero, vector_cuotaactual
     
 def validar_boletas(boletas):
@@ -201,10 +201,10 @@ def validar_igualdad_largo_vector(codbarra1_p, codbarra2_p, codbarra1_e, codbarr
     #bandera_tipospagos_ok, vector_tipopagos = validar_tipopagos(tipopago, formato_xml, codbarra1)
     cant_vectores_ok = False
     
-    print(len(vector_codbarra1_p))
-    print(len(vector_codbarra2_p))
-    print(len(vector_codbarra1_e))
-    print(len(vector_codbarra2_e))
+    #print(len(vector_codbarra1_p))
+    #print(len(vector_codbarra2_p))
+    #print(len(vector_codbarra1_e))
+    #print(len(vector_codbarra2_e))
     if formato_xml == "Pagos presenciales":
         if len(vector_codbarra1_p) == len(vector_codbarra2_p):
             cant_vectores_ok = True
@@ -223,7 +223,7 @@ def validar_igualdad_largo_vector(codbarra1_p, codbarra2_p, codbarra1_e, codbarr
         else:
             cant_vectores_ok = False
     
-    print(cant_vectores_ok)
+    #print(cant_vectores_ok)
 
     return cant_vectores_ok
 

@@ -19,8 +19,8 @@ class ArchivoConfigBPC():
             posicion = indice[1]
             claves_codbarra1_p.append(clave)
             posiciones_codbarra1_p.append(posicion)
-        print(claves_codbarra1_p)
-        print(posiciones_codbarra1_p)
+        #print(claves_codbarra1_p)
+        #print(posiciones_codbarra1_p)
         
         
         return claves_codbarra1_p, posiciones_codbarra1_p
@@ -35,8 +35,8 @@ class ArchivoConfigBPC():
             posicion = indice[1]
             claves_codbarra2_p.append(clave)
             posiciones_codbarra2_p.append(posicion)
-        print(claves_codbarra2_p)
-        print(posiciones_codbarra2_p)
+        #print(claves_codbarra2_p)
+        #print(posiciones_codbarra2_p)
         
         
         return claves_codbarra2_p, posiciones_codbarra2_p
@@ -51,8 +51,8 @@ class ArchivoConfigBPC():
             posicion = indice[1]
             claves_codbarra1_e.append(clave)
             posiciones_codbarra1_e.append(posicion)
-        print(claves_codbarra1_e)
-        print(posiciones_codbarra1_e)
+        #print(claves_codbarra1_e)
+        #print(posiciones_codbarra1_e)
         
         return claves_codbarra1_e, posiciones_codbarra1_e
     
@@ -66,7 +66,7 @@ class ArchivoConfigBPC():
             posicion = indice[1]
             claves_codbarra2_e.append(clave)
             posiciones_codbarra2_e.append(posicion)
-        print(claves_codbarra2_e)
-        print(posiciones_codbarra2_e)
+        #print(claves_codbarra2_e)
+        #print(posiciones_codbarra2_e)
         
         return claves_codbarra2_e, posiciones_codbarra2_e

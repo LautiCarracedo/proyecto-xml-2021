@@ -25,7 +25,7 @@ class Generador():
         vec_claves, vec_comisiones = datos_arc_config.leer_ini_comisiones(banco_ok)
         nro_bancos, nombres_bancos = datos_arc_config.leer_ini_bancos()
         tag_general, tag_sucursal, tag_pagos, tag_dp = datos_arc_config.leer_ini_tags(origen_ok, banco_ok)
-        print(vector_importes_ok)
+        #print(vector_importes_ok)
         instancia_general_output = GeneralOutput(banco_ok, fecha_rendicion_ok)
         banco = instancia_general_output.getBanco()
         fecha_rendicion = instancia_general_output.getFechaRendicion()
