@@ -1,12 +1,15 @@
 from configparser import ConfigParser
 from tkinter import messagebox
 from tkinter.constants import E
+import os
 
-from validaciones_datos import validar_cant_cuotas
-
-archivo_conf_bancos ='C:/generador_xml/configuracion_bancos.ini'
+directorio_actual = os.getcwd()
+archivo_conf_bancos ='configuracion_bancos.ini'
+ruta_final = os.path.join(directorio_actual, archivo_conf_bancos)
+ruta_final = os.path.abspath(ruta_final)
+#print(ruta_final)
 config = ConfigParser()
-config.read(archivo_conf_bancos)
+config.read(ruta_final)
 
 
 

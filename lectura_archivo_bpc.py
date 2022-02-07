@@ -1,9 +1,14 @@
 from configparser import ConfigParser
+import os
 
 
-archivo_conf_bpc ='C:/generador_xml/configuracion_bpc.ini'
+directorio_actual = os.getcwd()
+archivo_conf_bancos ='configuracion_bpc.ini'
+ruta_final = os.path.join(directorio_actual, archivo_conf_bancos)
+ruta_final = os.path.abspath(ruta_final)
+#print(ruta_final)
 config = ConfigParser()
-config.read(archivo_conf_bpc)
+config.read(ruta_final)
 
 
 
