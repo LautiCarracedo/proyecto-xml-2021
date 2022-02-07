@@ -7,7 +7,7 @@ from generador_bpc import GeneradorBPC
 from validaciones_datos import validar_campo_formato_xml, validar_cant_registros_bpc, validar_codbarra1, validar_codbarra2, validar_fecha_rendicion, validar_igualdad_largo_vector, validar_tipopagos
 
 
-class VentanaBPC:
+class VentanaBPC(Frame):
     
     def __init__(self, master):
         self.master = master
@@ -309,7 +309,7 @@ class VentanaBPC:
             cant_codbarra2_e = Label(self.frame, text='Cant registros: ' + str(len(vector_codbarra2_e)), pady=10,padx=20 )
             cant_codbarra2_e.grid(row=6, column=3)
 
-        except(UnboundLocalError):
+        except:
             messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
     
     def cerrar_ventana(self):

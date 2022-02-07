@@ -9,7 +9,7 @@ from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
 
 
-class Ventana:
+class Ventana(Frame):
     
     def __init__(self, master):
         self.master = master
