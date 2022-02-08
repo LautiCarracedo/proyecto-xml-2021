@@ -11,7 +11,7 @@ def validar_fecha_rendicion(fecha_rendicion):
     
 def validar_importes(importes):
     vector_importes = importes.split('\n')
-    print('vector importes', vector_importes)
+    #print('vector importes', vector_importes)
     vector_importes_format_ok = []
     importes_es_float = False
     for importes in vector_importes:
