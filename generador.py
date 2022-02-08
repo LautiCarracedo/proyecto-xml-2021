@@ -1,3 +1,4 @@
+from statistics import mode
 from clase_general import GeneralOutput
 from clase_sucursal import SucursalOutput
 from clase_pagos import PagosOutput
@@ -7,6 +8,9 @@ from lectura_archivo_config import ArchivoConfig
 
 import xml.etree.ElementTree as ET
 
+import zipfile
+
+import os
 
 class Generador():
     def __init__(self, origen_ok, banco_ok, fecha_rendicion_ok, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok):
@@ -202,5 +206,10 @@ class Generador():
         #print(vector_con_indices_a_mostrar_dp)
         #print(vector_dp_datos_a_mostrar)
 
-        tree = ET.ElementTree(general)    
-        tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5] + '.xml', xml_declaration=True, encoding='utf-8')
+        with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5]}" + ".zip", 'w') as zf:
+            tree = ET.ElementTree(general)    
+            tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
+            zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5])
+                       
+ 
+            

@@ -6,6 +6,8 @@ from clase_general_bpc import GeneralBPC
 from clase_pagos_bpc import PagosBPC
 from clase_sucursal_bpc import SucursalBPC
 
+import zipfile
+
 
 class GeneradorBPC():
     def __init__(self, codbarra1_p_ok, codbarra2_p_ok, codbarra1_e_ok, codbarra2_e_ok, fecha_rend_ok, formato_ok, contador_barras_p_ok, contador_barras_e_ok):
@@ -318,5 +320,8 @@ class GeneradorBPC():
                                     )
 #
 #
-        tree = ET.ElementTree(general)    
-        tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1' + '.xml', xml_declaration=True, encoding='utf-8')
+        
+        with zipfile.ZipFile(f"{fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + fecha_rendicion[2:5]}" + ".zip", 'w') as zf:
+            tree = ET.ElementTree(general)    
+            tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1', xml_declaration=True, encoding='utf-8')
+            zf.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + fecha_rendicion[2:5])
