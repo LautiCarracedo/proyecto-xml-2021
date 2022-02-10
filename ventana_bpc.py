@@ -127,7 +127,7 @@ class VentanaBPC(Frame):
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                     messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
@@ -152,7 +152,7 @@ class VentanaBPC(Frame):
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                    messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
@@ -177,7 +177,7 @@ class VentanaBPC(Frame):
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                     messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
