@@ -140,7 +140,7 @@ class Ventana(Frame):
 
                                                 nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
                                                 messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                                self.cerrar_ventana()
+                                                #self.cerrar_ventana()
 
                                             else:
                                                 messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            

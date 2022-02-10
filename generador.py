@@ -206,10 +206,13 @@ class Generador():
         #print(vector_con_indices_a_mostrar_dp)
         #print(vector_dp_datos_a_mostrar)
 
-        with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5]}" + ".zip", 'w') as zf:
-            tree = ET.ElementTree(general)    
-            tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
-            zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5])
+        tree = ET.ElementTree(general)    
+        tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
+
+        #with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5]}" + ".zip", 'w') as zf:
+        #    tree = ET.ElementTree(general)    
+        #    tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
+        #    zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5])
                        
  
             
