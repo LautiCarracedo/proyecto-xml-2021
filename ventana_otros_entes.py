@@ -194,7 +194,6 @@ class Ventana(Frame):
             self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
             self.input_cuotaactual.grid(row=5, column=9)   
     
-
     def verificar_cant_registros(self):
         try:
             #toma de datos origen
