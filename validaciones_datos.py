@@ -1,5 +1,5 @@
 def validar_fecha_rendicion(fecha_rendicion):
-    fecha_rendicion_t = fecha_rendicion.replace('/','-')
+    fecha_rendicion_t = fecha_rendicion.replace(" ", "").replace('/','-')
     if ((len(fecha_rendicion_t) == 10) and (str(fecha_rendicion_t[0:2]).isnumeric() and (int(fecha_rendicion[0:2]) <= 31)) and (fecha_rendicion_t[2] == '-') and (str(fecha_rendicion_t[3:5]).isnumeric() and (int(fecha_rendicion[3:5]) <= 12)) and (fecha_rendicion_t[5] == '-') and (str(fecha_rendicion_t[6:10]).isnumeric())):
         fecha_rendicion_format_ok = True
         fecha_rendicion_t = fecha_rendicion_t[6:10] + fecha_rendicion_t[5] + fecha_rendicion_t[3:5] + fecha_rendicion_t[2] + fecha_rendicion_t[0:2]
@@ -10,7 +10,7 @@ def validar_fecha_rendicion(fecha_rendicion):
     return fecha_rendicion_format_ok, fecha_rendicion_t
     
 def validar_importes(importes):
-    vector_importes = importes.split('\n')
+    vector_importes = importes.replace(" ", "").split('\n')
     #print('vector importes', vector_importes)
     vector_importes_format_ok = []
     importes_es_float = False
@@ -26,7 +26,7 @@ def validar_importes(importes):
     return importes_es_float, vector_importes_format_ok
     
 def validar_fechapagos(fecha_pagos):
-    vector_fechapagos = fecha_pagos.split('\n')
+    vector_fechapagos = fecha_pagos.replace(" ", "").split('\n')
     vector_fechapagos_format_ok = []
     format_fechas = False
     for fechas in vector_fechapagos:
@@ -40,7 +40,7 @@ def validar_fechapagos(fecha_pagos):
     return format_fechas, vector_fechapagos_format_ok
     
 def validar_cant_cuotas(banco, cant_cuotas):
-    vector_cantcuotas = cant_cuotas.split('\n')
+    vector_cantcuotas = cant_cuotas.replace(" ", "").split('\n')
     #vector_dp_calculos = []
     cuotas_es_numero_cred_deb = False
     for cuota in vector_cantcuotas:
@@ -58,8 +58,8 @@ def validar_cant_cuotas(banco, cant_cuotas):
     
 
 def validar_cuota_actual(banco, boletas, cuota_actual):
-    vector_boletas = boletas.split('\n')
-    vector_cuotaactual = cuota_actual.split('\n')
+    vector_boletas = boletas.replace(" ", "").split('\n')
+    vector_cuotaactual = cuota_actual.replace(" ", "").split('\n')
     cuotaactual_es_numero = False
     if (banco != '00935'): 
         # como los text aunque no carguemos nada lo toma como len=1, para el caso de visa y master 
@@ -80,7 +80,7 @@ def validar_cuota_actual(banco, boletas, cuota_actual):
     return cuotaactual_es_numero, vector_cuotaactual
     
 def validar_boletas(boletas):
-    vector_boletas = boletas.split('\n')
+    vector_boletas = boletas.replace(" ", "").split('\n')
     
     return vector_boletas
     
@@ -118,19 +118,38 @@ def validar_banco(banco_t):
     return banco_cargado, banco
 
 def validar_cant_registros(boletas, importes, fecha_pagos, cant_cuotas, cuota_actual):
-    vector_boletas = boletas.split('\n')
-    vector_importes = importes.split('\n')
-    vector_fechapagos = fecha_pagos.split('\n')
-    vector_cantcuotas = cant_cuotas.split('\n')
-    vector_cuotaactual = cuota_actual.split('\n')
+    if boletas == "" or boletas == " ":
+        vector_boletas = []
+    else:
+        vector_boletas = boletas.replace(" ", "").split('\n')
+    
+    if importes == "" or importes == " ":
+        vector_importes = []
+    else:
+        vector_importes = importes.replace(" ", "").split('\n')
+    
+    if fecha_pagos == "" or fecha_pagos == " ":
+        vector_fechapagos = []
+    else:
+        vector_fechapagos = fecha_pagos.replace(" ", "").split('\n')
+    
+    if cant_cuotas == "" or cant_cuotas == " ":
+        vector_cantcuotas = []
+    else:
+        vector_cantcuotas = cant_cuotas.replace(" ", "").split('\n')
+    
+    if cuota_actual == "" or cuota_actual == " ":
+        vector_cuotaactual = []
+    else:
+        vector_cuotaactual = cuota_actual.replace(" ", "").split('\n')
 
     return vector_boletas, vector_importes, vector_fechapagos, vector_cantcuotas, vector_cuotaactual
 
 def validar_codbarra1(codbarras1_p, codbarras1_e):
     bandera_codbarra1_p_ok = False
     bandera_codbarra1_e_ok = False
-    vec_codbarra1_p = codbarras1_p.split('\n')
-    vec_codbarra1_e = codbarras1_e.split('\n')
+    vec_codbarra1_p = codbarras1_p.replace(" ", "").split('\n')
+    vec_codbarra1_e = codbarras1_e.replace(" ", "").split('\n')
     #print(vec_codbarra1_p)
     #print(vec_codbarra1_e)
     for codigo in vec_codbarra1_p:
@@ -154,8 +173,8 @@ def validar_codbarra1(codbarras1_p, codbarras1_e):
 def validar_codbarra2(codbarras2_p, codbarras2_e):
     bandera_codbarra2_p_ok = False
     bandera_codbarra2_e_ok = False
-    vec_codbarra2_p = codbarras2_p.split('\n')
-    vec_codbarra2_e = codbarras2_e.split('\n')
+    vec_codbarra2_p = codbarras2_p.replace(" ", "").split('\n')
+    vec_codbarra2_e = codbarras2_e.replace(" ", "").split('\n')
     for codigo in vec_codbarra2_p:
         if codigo.isnumeric():
             bandera_codbarra2_p_ok = True
@@ -228,12 +247,25 @@ def validar_igualdad_largo_vector(codbarra1_p, codbarra2_p, codbarra1_e, codbarr
     return cant_vectores_ok
 
 def validar_cant_registros_bpc(codbarra1_p, codbarra2_p, codbarra1_e, codbarra2_e):
-    vector_codbarra1_p = codbarra1_p.split('\n')
-    vector_codbarra2_p = codbarra2_p.split('\n')
-    vector_codbarra1_e = codbarra1_e.split('\n')
-    vector_codbarra2_e = codbarra2_e.split('\n')
-    #vector_tipopagos = tipopago.split('\n')
-
+    if codbarra1_p == "" or codbarra1_p == " ":
+        vector_codbarra1_p = []
+    else:
+        vector_codbarra1_p = codbarra1_p.replace(" ", "").split('\n')
+    
+    if codbarra2_p == "" or codbarra2_p == " ":
+        vector_codbarra2_p = []
+    else:
+        vector_codbarra2_p = codbarra2_p.replace(" ", "").split('\n')
+    
+    if codbarra1_e == "" or codbarra1_e == " ":
+        vector_codbarra1_e = []
+    else:
+        vector_codbarra1_e = codbarra1_e.replace(" ", "").split('\n')
+    
+    if codbarra2_e == "" or codbarra2_e == " ":
+        vector_codbarra2_e = []
+    else:
+        vector_codbarra2_e = codbarra2_e.replace(" ", "").split('\n')
 
     return vector_codbarra1_p, vector_codbarra2_p, vector_codbarra1_e, vector_codbarra2_e
 
@@ -246,8 +278,3 @@ def validar_campo_formato_xml(formato_xml):
     else:
         formato_cargado = True
     return formato_cargado, formato
-    
-
-
-
-
