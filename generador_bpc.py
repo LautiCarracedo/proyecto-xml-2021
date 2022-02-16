@@ -219,7 +219,7 @@ class GeneradorBPC():
 
 
             instancia_depositos_output = PagosBPC(fecharendicion)
-            cod_registro = instancia_depositos_output.getCodRegistro(formapago)
+            cod_registro_depo = instancia_depositos_output.getCodRegistro(formapago)
             caja = instancia_depositos_output.getCaja()
             cajero = instancia_depositos_output.getCajero()
             lote = instancia_depositos_output.getLote()
@@ -232,8 +232,8 @@ class GeneradorBPC():
 
             instancia_dp_output = DetallePagoPresencialBPC(codbarra1_p, codbarra2_p)
             cod_barra1, cod_barra2 = instancia_dp_output.getCodBarra()
-            print(cod_barra1)
-            print(cod_barra2)
+            #print(cod_barra1)
+            #print(cod_barra2)
 
             cod_registro_dp = instancia_dp_output.getCodRegistro()
             fecha_venc = instancia_dp_output.getFechaVenc(codbarra2_p)
@@ -251,19 +251,19 @@ class GeneradorBPC():
             fecha_pago = instancia_dp_output.getFechaPago()
             comision, iva = instancia_dp_output.calculo_comision_iva_x_dp()
 
-            instancia_dp_output = DetallePagoElectronicoBPC(codbarra1_e, codbarra2_e)
-            nro_registro = instancia_dp_output.getNroRegistro()
-            cod_registro_dp = instancia_dp_output.getCodRegistro()
-            cod_depositante = instancia_dp_output.getCodigoER(codbarra1_e)
-            sucursal_depositante = instancia_dp_output.getSucursalER(codbarra1_e)
-            boleta_ente_depo = instancia_dp_output.getBoletaER(codbarra1_e)
-            nro_control_depo = instancia_dp_output.getNroControlBoletaER(codbarra1_e)
-            imp_recaudado_depo = instancia_dp_output.getImpRecaudadoBoletaER()
-            imp_depositado_depo = instancia_dp_output.getImpADepositarYDepositadoER()
-            imp_a_depositar_depo = instancia_dp_output.getImpADepositarYDepositadoER()
-            fecha_deposito_depo = instancia_dp_output.getFechaDepositoBoletaER(fecharendicion)
-            fecha_emision_depo = instancia_dp_output.getFechaEmisionBoletaER()
-            comision, iva = instancia_dp_output.getImpComisionEIvaER()
+            instancia_dpe_output = DetallePagoElectronicoBPC(codbarra1_e, codbarra2_e)
+            nro_registro = instancia_dpe_output.getNroRegistro()
+            cod_registro_dp = instancia_dpe_output.getCodRegistro()
+            cod_depositante = instancia_dpe_output.getCodigoER(codbarra1_e)
+            sucursal_depositante = instancia_dpe_output.getSucursalER(codbarra1_e)
+            boleta_ente_depo = instancia_dpe_output.getBoletaER(codbarra1_e)
+            nro_control_depo = instancia_dpe_output.getNroControlBoletaER(codbarra1_e)
+            imp_recaudado_depo = instancia_dpe_output.getImpRecaudadoBoletaER()
+            imp_depositado_depo = instancia_dpe_output.getImpADepositarYDepositadoER()
+            imp_a_depositar_depo = instancia_dpe_output.getImpADepositarYDepositadoER()
+            fecha_deposito_depo = instancia_dpe_output.getFechaDepositoBoletaER(fecharendicion)
+            fecha_emision_depo = instancia_dpe_output.getFechaEmisionBoletaER()
+            comision, iva = instancia_dpe_output.getImpComisionEIvaER()
 #
             #cuando se selecciona opc ambos pagos
             #cant_registros_detpag, cant_registros_detdep = instancia_general_output.calcular_registros(tipopago)
@@ -287,12 +287,12 @@ class GeneradorBPC():
                                 totalImpADepositar = str(imp_a_depositar_sucursal), totalImpComision = str(total_comision_sucursal), 
                                 totalImpIVA = str(total_iva_sucursal))  
             
-            pagos = ET.SubElement(sucursal_tag,"Pagos", codigoRegistro = cod_registro, caja = caja, cajero = cajero, fechaAcreditacion = str(fec_acreditacion), lote = lote,
+            pagos = ET.SubElement(sucursal_tag,"Pagos", codigoRegistro = "021", caja = caja, cajero = cajero, fechaAcreditacion = str(fec_acreditacion), lote = lote,
                                 registros = str(contador_pagos_p), totalImpDeterminado = str(imp_determinado_pagos),
                                 totalImpPagado = str(imp_pagado_pagos), totalImpComision = str(total_comision_pagos),
                                 totalImpIVA = str(total_iva_pagos))  
             
-            deposito = ET.SubElement(sucursal_tag,"Deposito", codigoRegistro = cod_registro, caja = caja, cajero = cajero, fechaAcreditacion = str(fec_acreditacion), lote = lote,
+            deposito = ET.SubElement(sucursal_tag,"Deposito", codigoRegistro = "031", caja = caja, cajero = cajero, fechaAcreditacion = str(fec_acreditacion), lote = lote,
                                 registros = str(contador_pagos_e), totalImpRecaudado = str(total_imp_recaudado_depo_gral),
                                 totalImpDepositado = str(imp_depositado_sucursal), totalImpADepositar = str(imp_a_depositar_sucursal),
                                 totalImpComision = str(total_comision_pagos), totalImpIVA = str(total_iva_pagos))
@@ -300,7 +300,7 @@ class GeneradorBPC():
 
             for numero in range(contador_pagos_p):
                 #if tipopago[numero] == "P" or tipopago[numero] == "p":
-                det_pago = ET.SubElement(pagos,"DetallePago", codigoRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), impuesto = str(impuesto[numero]), 
+                det_pago = ET.SubElement(pagos,"DetallePago", codigoRegistro = "022", nroRegistro = str(numero + 1), impuesto = str(impuesto[numero]), 
                                         fechaVencimiento = str(fecha_venc[numero]), idObjetoImponible = str(obj_imponible[numero]), nroControl = str(nro_control[numero]),
                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
                                         moneda = str(moneda), nroLiquidacionOriginal = str(nro_boleta[numero]), nroLiquidacionActualizado = str(nro_boleta[numero]), 
@@ -312,7 +312,7 @@ class GeneradorBPC():
                 #if tipopago[numero] == "E" or tipopago[numero] == "e":
             
             for numero in range(contador_pagos_e):
-                det_depo = ET.SubElement(deposito,"DetalleDeposito", codigoRegistro = str(cod_registro_dp), nroRegistro = str(numero + 1), codigoER = str(cod_depositante[numero]), 
+                det_depo = ET.SubElement(deposito,"DetalleDeposito", codigoRegistro = "032", nroRegistro = str(numero + 1), codigoER = str(cod_depositante[numero]), 
                                         sucursal = str(sucursal_depositante[numero]), boletaDeposito = str(boleta_ente_depo[numero]), fechaEmision = str(fecha_emision_depo[numero]),
                                         nroControl = str(nro_control_depo[numero]), fechaDeposito = str(fecha_deposito_depo), impRecaudado = str(imp_recaudado_depo[numero]), 
                                         impDepositado = str(imp_depositado_depo[numero]), impADepositar = str(imp_a_depositar_depo[numero]),

@@ -5,7 +5,7 @@ class DetallePagoElectronicoBPC():
     def __init__(self, codbarra1_e, codbarra2_e):
         self.codbarra1 = codbarra1_e
         self.codbarra2 = codbarra2_e
-        self.cod_registro = '022'
+        self.cod_registro = '032'
         self.marca_movimiento = 'P' 
         self.tipo_operacion = '01'
         self.tipo_rendicion = '01'
@@ -28,7 +28,7 @@ class DetallePagoElectronicoBPC():
         return nro_comercio
     
     def getCodRegistro(self):
-        self.cod_registro = '032'
+        self.cod_registro
         
         return self.cod_registro
     
@@ -172,8 +172,6 @@ class DetallePagoPresencialBPC():
         return self.codbarra1, self.codbarra2
 
     def getCodRegistro(self):
-        self.cod_registro = '022'
-
         return self.cod_registro
 
     def getMarcaMovimiento(self):
