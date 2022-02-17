@@ -323,7 +323,7 @@ class GeneradorBPC():
         tree = ET.ElementTree(general)    
         tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1', xml_declaration=True, encoding='utf-8')
 
-        #with zipfile.ZipFile(f"{fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + fecha_rendicion[2:5]}" + ".zip", 'w') as zf:
-        #    tree = ET.ElementTree(general)    
-        #    tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1', xml_declaration=True, encoding='utf-8')
-        #    zf.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P' + fecha_rendicion[2:5])
+        with zipfile.ZipFile(f"{fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10]}" + '.P1' + ".zip", 'w') as zf:
+            tree = ET.ElementTree(general)    
+            tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1', xml_declaration=True, encoding='utf-8')
+            zf.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1')
