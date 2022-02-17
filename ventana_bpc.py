@@ -179,7 +179,7 @@ class VentanaBPC(Frame):
                     messagebox.showerror(message="El codigo de barra 1 debe ser numerico, empezar con 04 y contener al menos 42 caracteres Revise que no tenga espacios al final ni un enter demas", title="Error")
 
         
-        except(UnboundLocalError):
+        except:
             messagebox.showerror(message="Excepcion no controlada", title="Error")
 
     
