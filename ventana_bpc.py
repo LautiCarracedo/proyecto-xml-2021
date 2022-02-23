@@ -2,12 +2,13 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
+from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 
 from generador_bpc import GeneradorBPC
 from validaciones_datos import validar_campo_formato_xml, validar_cant_registros_bpc, validar_codbarra1, validar_codbarra2, validar_fecha_rendicion, validar_igualdad_largo_vector, validar_tipopagos
 
 
-class VentanaBPC:
+class VentanaBPC(Frame):
     
     def __init__(self, master):
         self.master = master
@@ -22,6 +23,7 @@ class VentanaBPC:
         self.cbbox_opc["values"] = opc
 
         self.cbbox_opc.bind("<<ComboboxSelected>>", self.ocultar_mostrar_codbarra_segun_formato)
+        #self.cbbox_opc.bind("<<ComboboxSelected>>", self.mostrar_importes_codbarra_ingresados)
 
         self.label_general = Label(self.frame,text='GENERAL',bg='grey')
         self.label_general.grid(row=1,column=0,sticky= 'WE')
@@ -31,15 +33,6 @@ class VentanaBPC:
 
         self.input_fecharendicion = ttk.Entry(self.frame,width=20)
         self.input_fecharendicion.grid(row=1, column=2)
-
-        #self.label_deposito = Label(self.frame,text='DEPÓSITO/PAGOS',bg='grey')
-        #self.label_deposito.grid(row=2,column=0,sticky= 'WE')
-
-        #self.label_fechaacreditacion = Label(self.frame,text='Fecha acreditación:',pady=10,padx=20)
-        #self.label_fechaacreditacion.grid(row=2,column=1)
-#
-        #self.input_fechaacreditacion = ttk.Entry(self.frame,width=20)
-        #self.input_fechaacreditacion.grid(row=2, column=2)
 
         self.titulo = Label(self.frame,text='COD DE BARRAS P/ PAGOS PRESENCIALES',bg='grey')
         self.titulo.grid(row=2,column=0,sticky= 'WE')
@@ -73,21 +66,16 @@ class VentanaBPC:
         self.label_codbarra2_e.grid(row=5,column=2,sticky='N', pady=10)
 
         self.input_codbarra2_e = Text(self.frame, height = 10, width = 50, state="disabled")
-        self.input_codbarra2_e.grid(row=5, column=3, pady=10)
-
-        #Tipo pago
-        #self.label_tipopago = Label(self.frame,text='Tipo Pago:',pady=10,padx=20, state="disabled")
-        #self.label_tipopago.grid(row=6,column=4,sticky='N')
-#
-        #self.input_tipopago = Text(self.frame, height = 10, width = 10)
-        #self.input_tipopago.grid(row=6, column=5)
- 
+        self.input_codbarra2_e.grid(row=5, column=3, pady=10) 
         
         self.btn_generarXML = Button(self.frame, text="Generar XML", command=self.tomar_datos, width=13, height=2)
-        self.btn_generarXML.grid(row=7, column=1, pady=10)
+        self.btn_generarXML.grid(row=8, column=1, pady=10)
 
         self.btn_calcular_registros = Button(self.frame, text="Verif cant registros", command=self.verificar_cant_registros, width=13, height=2)
-        self.btn_calcular_registros.grid(row=7, column=2, pady=10)
+        self.btn_calcular_registros.grid(row=8, column=2, pady=10)
+
+        self.btn_sumar_registros = Button(self.frame, text="Sumar registros", command=self.mostrar_importes_codbarra_ingresados, width=13, height=2)
+        self.btn_sumar_registros.grid(row=8, column=3, pady=10)
 
 
         self.frame.pack()
@@ -127,7 +115,7 @@ class VentanaBPC:
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                     messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
@@ -152,7 +140,7 @@ class VentanaBPC:
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                    messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
@@ -177,7 +165,7 @@ class VentanaBPC:
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                    self.cerrar_ventana()
+                                    #self.cerrar_ventana()
 
                                 else:
                                     messagebox.showerror(message="La cantidad de datos a ingresar en cada lista deben ser iguales", title="Error")
@@ -194,6 +182,80 @@ class VentanaBPC:
         except:
             messagebox.showerror(message="Excepcion no controlada", title="Error")
 
+    
+    def mostrar_importes_codbarra_ingresados(self):
+        opc_pagos = self.cbbox_opc.get()
+        cod_barras1_p = self.input_codbarra1_p.get("1.0","end-1c")  #estos param son tomar desde el primer caracter hasta el ultimo
+        cod_barras2_p = self.input_codbarra2_p.get("1.0","end-1c")
+        cod_barras1_e = self.input_codbarra1_e.get("1.0","end-1c")
+        cod_barras2_e = self.input_codbarra2_e.get("1.0","end-1c")
+
+        validacion_dato_formato, dato_formatoxml = validar_campo_formato_xml(opc_pagos)
+
+        validacion_dato_codbarra1_p, validacion_dato_codbarra1_e, dato_codbarra1_p, dato_codbarra1_e = validar_codbarra1(cod_barras1_p, cod_barras1_e)
+        validacion_dato_codbarra2_p, validacion_dato_codbarra2_e, dato_codbarra2_p, dato_codbarra2_e = validar_codbarra2(cod_barras2_p, cod_barras2_e)
+        
+        
+        instancia_dp_presencial = DetallePagoPresencialBPC(dato_codbarra1_p, dato_codbarra2_p)
+        instancia_dp_electronico = DetallePagoElectronicoBPC(dato_codbarra1_e, dato_codbarra2_e)
+
+        if dato_formatoxml == "Pagos presenciales":
+            vector_imp_determinados = instancia_dp_presencial.getImporte()
+            suma_importes_det = 0
+            for importe in vector_imp_determinados:
+                suma_importes_det += importe
+            
+            sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
+            sumatoria_imp_determinado.grid(row=7, column=1)
+        
+        elif dato_formatoxml == "Pagos electronicos":
+            vector_imp_recaudado = instancia_dp_electronico.getImpRecaudadoBoletaER()
+            vector_imp_depositado_depositar = instancia_dp_electronico.getImpADepositarYDepositadoER()
+
+            suma_importes_rec = 0
+            suma_importes_depo = 0
+
+            for importe in vector_imp_recaudado:
+                suma_importes_rec += importe
+            
+            for importe in vector_imp_depositado_depositar:
+                suma_importes_depo += importe
+            
+            sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
+            sumatoria_imp_recaudado.grid(row=7, column=2)
+
+            sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado (electronico): ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
+            sumatoria_imp_depo.grid(row=7, column=3)
+        
+        elif dato_formatoxml == "Ambos pagos":
+            vector_imp_determinados = instancia_dp_presencial.getImporte()
+            suma_importes_det = 0
+            for importe in vector_imp_determinados:
+                suma_importes_det += importe
+
+            vector_imp_recaudado = instancia_dp_electronico.getImpRecaudadoBoletaER()
+            suma_importes_rec = 0
+            for importe in vector_imp_recaudado:
+                suma_importes_rec += importe
+
+            vector_imp_depositado_depositar = instancia_dp_electronico.getImpADepositarYDepositadoER()
+            suma_importes_depo = 0
+            for importe in vector_imp_depositado_depositar:
+                suma_importes_depo += importe
+            
+            sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
+            sumatoria_imp_determinado.grid(row=7, column=1)
+
+            sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
+            sumatoria_imp_recaudado.grid(row=7, column=2)
+
+            sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado(electronico) : ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
+            sumatoria_imp_depo.grid(row=7, column=3)
+
+
+
+        
+    
     def ocultar_mostrar_codbarra_segun_formato(self, event):
         tipo_pago_selec = str(self.cbbox_opc.get())
 
@@ -294,6 +356,8 @@ class VentanaBPC:
             cod_barras1_e = self.input_codbarra1_e.get("1.0","end-1c")
             cod_barras2_e = self.input_codbarra2_e.get("1.0","end-1c")
 
+
+
             vector_codbarra1_p, vector_codbarra2_p, vector_codbarra1_e, vector_codbarra2_e = validar_cant_registros_bpc(cod_barras1_p, cod_barras2_p, cod_barras1_e, cod_barras2_e)
             
             
@@ -309,7 +373,7 @@ class VentanaBPC:
             cant_codbarra2_e = Label(self.frame, text='Cant registros: ' + str(len(vector_codbarra2_e)), pady=10,padx=20 )
             cant_codbarra2_e.grid(row=6, column=3)
 
-        except(UnboundLocalError):
+        except:
             messagebox.showerror(message='Error al calcular registros. Pruebe nevamente', title='Error')
     
     def cerrar_ventana(self):

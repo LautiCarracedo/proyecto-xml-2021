@@ -9,7 +9,7 @@ from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
 
 
-class Ventana:
+class Ventana(Frame):
     
     def __init__(self, master):
         self.master = master
@@ -140,7 +140,7 @@ class Ventana:
 
                                                 nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
                                                 messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
-                                                self.cerrar_ventana()
+                                                #self.cerrar_ventana()
 
                                             else:
                                                 messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para el resto ingresar C o D según corresponda.", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
@@ -194,7 +194,6 @@ class Ventana:
             self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
             self.input_cuotaactual.grid(row=5, column=9)   
     
-
     def verificar_cant_registros(self):
         try:
             #toma de datos origen
