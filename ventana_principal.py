@@ -42,37 +42,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-#def ventana_bpcc():
-#        ventana_bpc = Toplevel()
-#        aplicacion_bpc = VentanaBPC(ventana_bpc)
-#        ventana_bpc.geometry('1450x650')
-#    
-#def ventana_otros_entes():
-#    ventana_entes = Toplevel()
-#    aplicacion_otros_entes = Ventana(ventana_entes)
-#    ventana_entes.geometry('1450x520')
-#
-#if __name__ == '__main__':
-#    
-#    root = Tk()
-#    
-#
-#
-#    root.title('XML Generator')
-#    root.geometry('700x200')
-#
-#    #Titulo
-#    titulo = Label(root, bg='grey', text='GENERADOR XML')
-#    titulo.grid(row=0, column=2, pady=20, sticky= 'WE')
-#
-#    btn_ventana_bpc = Button(root, text="BPC", command=ventana_bpcc, width=13, height=2)
-#    btn_ventana_bpc.grid(row=1, column=1, pady=10)   
-#    btn_ventana_otros_entes = Button(root, text="Otros entes", command=ventana_otros_entes, width=13, height=2)
-#    btn_ventana_otros_entes.grid(row=1, column=3, pady=10)
-#    
-#   
-#
-#
-#    #Main loop
-#    root.mainloop()

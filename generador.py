@@ -29,7 +29,7 @@ class Generador():
         vec_claves, vec_comisiones = datos_arc_config.leer_ini_comisiones(banco_ok)
         nro_bancos, nombres_bancos = datos_arc_config.leer_ini_bancos()
         tag_general, tag_sucursal, tag_pagos, tag_dp = datos_arc_config.leer_ini_tags(origen_ok, banco_ok)
-        #print(vector_importes_ok)
+
         instancia_general_output = GeneralOutput(banco_ok, fecha_rendicion_ok)
         banco = instancia_general_output.getBanco()
         fecha_rendicion = instancia_general_output.getFechaRendicion()
@@ -68,7 +68,6 @@ class Generador():
         instancia_dp_output = DetallePagoOutput(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok)
         cod_registro_dp = instancia_dp_output.getCodRegistro()
         nro_registro = instancia_dp_output.calculo_nro_registro_ycontrol()
-        #print('cant registros', nro_registro)
         marca_movimiento = instancia_dp_output.getMarcaMovimiento()
         tipo_operacion = instancia_dp_output.getTipoOperacion()
         tipo_rendicion = instancia_dp_output.getTipoRendicion()

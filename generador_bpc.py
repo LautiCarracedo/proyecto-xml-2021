@@ -74,11 +74,6 @@ class GeneradorBPC():
             obligacion = instancia_dp_output.getObligacion(codbarra1_p) 
             fecha_pago = instancia_dp_output.getFechaPago()
             comision, iva = instancia_dp_output.calculo_comision_iva_x_dp()
-           
-            
-            #total_imp_recaudado_depo = instancia_pagos_output.calcular_imp_recaudado_depositos(codbarra1_p, codbarra2_p)
-            #total_imp_depositado_depositar_depo = instancia_pagos_output.calcular_imp_depositado_y_depositar_deposito(codbarra1_p, codbarra2_p)
-         
         
             general = ET.Element("General", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = str(fecha_rendicion) , 
                             cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
@@ -105,8 +100,7 @@ class GeneradorBPC():
                                         moneda = str(moneda), nroLiquidacionOriginal = str(nro_boleta[numero]), nroLiquidacionActualizado = str(nro_boleta[numero]), 
                                         obligacion = str(obligacion[numero]), barra1 = str(cod_barra1[numero]), barra2 = str(cod_barra2[numero]), fechaPago = str(fecha_pago[numero]), 
                                         impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision), 
-                                    impIVA = str(iva)
-                                    )
+                                    impIVA = str(iva))
         
         elif formapago == "Pagos electronicos":
 
@@ -179,7 +173,7 @@ class GeneradorBPC():
                                         impDepositado = str(imp_depositado_depo[numero]), impADepositar = str(imp_a_depositar_depo[numero]),
                                         impComision = str(comision), impIVA = str(iva)
                                     )
-        
+
         elif formapago == "Ambos pagos":
             instancia_general_output = GeneralBPC(fecharendicion)
             banco = instancia_general_output.getBanco()
@@ -232,9 +226,6 @@ class GeneradorBPC():
 
             instancia_dp_output = DetallePagoPresencialBPC(codbarra1_p, codbarra2_p)
             cod_barra1, cod_barra2 = instancia_dp_output.getCodBarra()
-            #print(cod_barra1)
-            #print(cod_barra2)
-
             cod_registro_dp = instancia_dp_output.getCodRegistro()
             fecha_venc = instancia_dp_output.getFechaVenc(codbarra2_p)
             nro_registro = instancia_dp_output.getNroRegistro()
@@ -264,23 +255,13 @@ class GeneradorBPC():
             fecha_deposito_depo = instancia_dpe_output.getFechaDepositoBoletaER(fecharendicion)
             fecha_emision_depo = instancia_dpe_output.getFechaEmisionBoletaER()
             comision, iva = instancia_dpe_output.getImpComisionEIvaER()
-#
-            #cuando se selecciona opc ambos pagos
-            #cant_registros_detpag, cant_registros_detdep = instancia_general_output.calcular_registros(tipopago)
-#
-            #para presenciales
-            #importe_determ_pagado = instancia_general_output.calcular_imp_determinado_pagado_presencial(codbarra1_p, codbarra2_p, contador_pagos_p)
-            
-            #para electronicos
-            #importe_recaudado, importe_depositado = instancia_general_output.calcular_imp_recaudado_depositado_adepositar_electronico(codbarra1_e, codbarra2_e, contador_pagos_e)
-            
-#
+
             general = ET.Element("General", banco = banco, nroTransaccion = "0", nroRendicion = str(nro_rendicion), fechaRendicion = str(fecha_rendicion) , 
                             cbuOrigen = str(cbu_origen), cuitOrigen = str(cuit_origen), cbuDestino = str(cbu_destino), cuitDestino = str(cuit_destino),
                             registros = str(contador_pagos_p + contador_pagos_e), totalImpDeterminado = str(imp_determinado), totalImpPagado = str(imp_pagado), 
                             totalImpRecaudado = str(total_imp_recaudado_depo_gral), totalImpDepositado = str(total_imp_depositado_depositar_depo_gral),
                             totalImpADepositar = str(total_imp_depositado_depositar_depo_gral), totalImpComision = str(imp_comision), totalImpIVA = str(imp_iva))
-#
+
             sucursal_tag = ET.SubElement(general,"Sucursal", sucursal = sucursal_id, registros = str(contador_pagos_e + contador_pagos_p),
                                 totalImpDeterminado = str(imp_determinado_sucursal), totalImpPagado = str(imp_pagado_sucursal),
                                 totalImpRecaudado = str(imp_recaudado_sucursal), totalImpDepositado = str(imp_depositado_sucursal),
@@ -299,7 +280,6 @@ class GeneradorBPC():
 
 
             for numero in range(contador_pagos_p):
-                #if tipopago[numero] == "P" or tipopago[numero] == "p":
                 det_pago = ET.SubElement(pagos,"DetallePago", codigoRegistro = "022", nroRegistro = str(numero + 1), impuesto = str(impuesto[numero]), 
                                         fechaVencimiento = str(fecha_venc[numero]), idObjetoImponible = str(obj_imponible[numero]), nroControl = str(nro_control[numero]),
                                         marcaMovimiento = str(marca_movimiento), tipoOperacion = str(tipo_operacion), tipoRendicion = str(tipo_rendicion),
@@ -308,8 +288,6 @@ class GeneradorBPC():
                                         impDeterminado = str(importe[numero]), impPagado = str(importe[numero]), impComision = str(comision), 
                                     impIVA = str(iva)
                                     )
-#
-                #if tipopago[numero] == "E" or tipopago[numero] == "e":
             
             for numero in range(contador_pagos_e):
                 det_depo = ET.SubElement(deposito,"DetalleDeposito", codigoRegistro = "032", nroRegistro = str(numero + 1), codigoER = str(cod_depositante[numero]), 
@@ -318,8 +296,8 @@ class GeneradorBPC():
                                         impDepositado = str(imp_depositado_depo[numero]), impADepositar = str(imp_a_depositar_depo[numero]),
                                         impComision = str(comision), impIVA = str(iva)
                                     )
-#
-#
+
+
         tree = ET.ElementTree(general)    
         tree.write(fecha_rendicion[0:4] + fecha_rendicion[5:7] + fecha_rendicion[8:10] + '.P1', xml_declaration=True, encoding='utf-8')
 
