@@ -1,6 +1,6 @@
 import random
 
-from clase_dp import DetallePagoOutput
+from logica_negocio_entes.clase_dp import DetallePagoOutput
 
 vector = []
 

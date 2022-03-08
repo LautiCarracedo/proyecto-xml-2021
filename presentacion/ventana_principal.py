@@ -2,9 +2,16 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
+import os
+import sys
 
-from ventana_otros_entes import Ventana
-from ventana_bpc import VentanaBPC
+#necesito tomar el directorio actual para agregarlo a la variable de entorno PYTHONPATH ya que no existe en la lista para ejecutar la app
+directorio_actual = os.getcwd()
+sys.path.append(directorio_actual)
+
+from presentacion.ventana_otros_entes import Ventana
+from presentacion.ventana_bpc import VentanaBPC
+
 
 class VentanaPrincipal(Frame):
 

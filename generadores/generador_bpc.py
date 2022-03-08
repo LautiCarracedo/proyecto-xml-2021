@@ -1,10 +1,15 @@
 import xml.etree.ElementTree as ET
 
 from numpy import isnat
-from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
-from clase_general_bpc import GeneralBPC
-from clase_pagos_bpc import PagosBPC
-from clase_sucursal_bpc import SucursalBPC
+#import logica_negocio_bpc.clase_dp_bpc as cl_dp_bpc
+#import logica_negocio_bpc.clase_general_bpc as cl_general_bpc
+#import logica_negocio_bpc.clase_pagos_bpc as cl_pagos_bpc
+#import logica_negocio_bpc.clase_sucursal_bpc as cl_sucursal_bpc
+
+from logica_negocio_bpc.clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
+from logica_negocio_bpc.clase_general_bpc import GeneralBPC
+from logica_negocio_bpc.clase_pagos_bpc import PagosBPC
+from logica_negocio_bpc.clase_sucursal_bpc import SucursalBPC
 
 import zipfile
 

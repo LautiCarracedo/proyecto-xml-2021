@@ -1,4 +1,4 @@
-from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
+from logica_negocio_bpc.clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 
 
 class PagosBPC():

@@ -2,9 +2,13 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
-from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 
-from generador_bpc import GeneradorBPC
+from logica_negocio_bpc.clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
+
+#import generadores.generador_bpc as gbpc
+#import logica_negocio_bpc.clase_dp_bpc as cl_dp_bpc
+
+from generadores.generador_bpc import GeneradorBPC
 from validaciones_datos import validar_campo_formato_xml, validar_cant_registros_bpc, validar_codbarra1, validar_codbarra2, validar_fecha_rendicion, validar_igualdad_largo_vector, validar_tipopagos
 
 

@@ -1,8 +1,15 @@
 from statistics import mode
-from clase_general import GeneralOutput
-from clase_sucursal import SucursalOutput
-from clase_pagos import PagosOutput
-from clase_dp import DetallePagoOutput
+
+#import logica_negocio_entes.clase_general as cl_general
+#import logica_negocio_entes.clase_sucursal as cl_sucursal
+#import logica_negocio_entes.clase_pagos as cl_pagos
+#import logica_negocio_entes.clase_dp as cl_dp
+
+
+from logica_negocio_entes.clase_general import GeneralOutput
+from logica_negocio_entes.clase_sucursal import SucursalOutput
+from logica_negocio_entes.clase_pagos import PagosOutput
+from logica_negocio_entes.clase_dp import DetallePagoOutput
 
 from lectura_archivo_config import ArchivoConfig
 

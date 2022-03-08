@@ -3,7 +3,8 @@ from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
 
-from generador import Generador
+#import generadores.generador as gen
+from generadores.generador import Generador
 from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
 from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen

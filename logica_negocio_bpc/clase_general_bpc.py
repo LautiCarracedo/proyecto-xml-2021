@@ -1,6 +1,6 @@
 import random
 
-from clase_dp_bpc import DetallePagoPresencialBPC, DetallePagoElectronicoBPC
+from logica_negocio_bpc.clase_dp_bpc import DetallePagoPresencialBPC, DetallePagoElectronicoBPC
 
 
 vector = []
