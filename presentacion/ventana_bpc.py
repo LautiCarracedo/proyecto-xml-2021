@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
+from generadorr import GeneradorrBPC, generar_xml
 
 from logica_negocio_bpc.clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 
@@ -113,9 +114,12 @@ class VentanaBPC(Frame):
                         if validacion_dato_formato:
                             if validacion_dato_fec_rendicion:
                                 if validacion_largo_vectores:
+
+                                    xml_a_generar = GeneradorrBPC(None, None, None, None, None, None, None, None, dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    generar_xml(xml_a_generar)
                         
-                                    generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
-                                    generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    #generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    #generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
@@ -138,9 +142,12 @@ class VentanaBPC(Frame):
                         if validacion_dato_formato:
                             if validacion_dato_fec_rendicion:
                                 if validacion_largo_vectores:
-
-                                    generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
-                                    generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    
+                                    xml_a_generar = GeneradorrBPC(None, None, None, None, None, None, None, None, dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    generar_xml(xml_a_generar)
+                                    
+                                    #generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    #generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
@@ -163,9 +170,12 @@ class VentanaBPC(Frame):
                         if validacion_dato_formato:
                             if validacion_dato_fec_rendicion:
                                 if validacion_largo_vectores:
+                                    
+                                    xml_a_generar = GeneradorrBPC(None, None, None, None, None, None, None, None, dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    generar_xml(xml_a_generar)
 
-                                    generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
-                                    generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    #generador = GeneradorBPC(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
+                                    #generador.generar_xml(dato_codbarra1_p, dato_codbarra2_p, dato_codbarra1_e, dato_codbarra2_e, dato_fec_rendicion, dato_formatoxml, dato_contador_barras_p, dato_contador_barras_e)
 
                                     nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P1'
                                     messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")

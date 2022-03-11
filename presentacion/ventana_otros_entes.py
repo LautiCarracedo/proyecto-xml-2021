@@ -5,6 +5,7 @@ from tkinter import messagebox
 
 #import generadores.generador as gen
 from generadores.generador import Generador
+from generadorr import GeneradorrOtrosEntes, generar_xml
 from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
 from validaciones_datos import validar_banco, validar_boletas, validar_cant_cuotas, validar_cant_registros, validar_cant_vectores_dp, validar_cuota_actual, validar_fecha_rendicion, validar_fechapagos, validar_importes, validar_origen
@@ -135,9 +136,12 @@ class Ventana(Frame):
                                     if validacion_dato_fec_rendicion:
                                         if validacion_datos_cant_vectores:
                                             if validacion_vector_comisiones_p_calculo:
+                                                
+                                                xml_a_generar = GeneradorrOtrosEntes(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual, None, None, None, None, None, None, None, None)
+                                                generar_xml(xml_a_generar)
 
-                                                generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
-                                                generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+                                                #generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
+                                                #generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, datos_boletas, datos_importes, datos_fec_pagos, datos_cant_cuotas, datos_cuota_actual)
 
                                                 nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
                                                 messagebox.showinfo(message=f"XML generado correctamente en carpeta dist en el archivo con nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
