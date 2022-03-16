@@ -1,3 +1,4 @@
+from os import stat
 from tkinter import *
 from tkinter import ttk
 from tkinter.constants import CENTER, N
@@ -36,8 +37,14 @@ class VentanaBPC(Frame):
         self.label_fecharendicion = Label(self.frame,text='Fecha de rendición:',pady=10,padx=20)
         self.label_fecharendicion.grid(row=1,column=1)
 
-        self.input_fecharendicion = ttk.Entry(self.frame,width=20)
+        self.entry_text = StringVar() 
+        self.input_fecharendicion = ttk.Entry(self.frame,width=20, textvariable = self.entry_text)
         self.input_fecharendicion.grid(row=1, column=2)
+        self.input_fecharendicion.insert(0,"__/__/____")
+        self.input_fecharendicion.config(state=DISABLED)
+        self.input_fecharendicion.bind("<Button-1>", self.click)
+        self.entry_text.trace("w", self.limitar_10_caracteres)
+        
 
         self.titulo = Label(self.frame,text='COD DE BARRAS P/ PAGOS PRESENCIALES',bg='grey')
         self.titulo.grid(row=2,column=0,sticky= 'WE')
@@ -82,8 +89,17 @@ class VentanaBPC(Frame):
         self.btn_sumar_registros = Button(self.frame, text="Sumar registros", command=self.mostrar_importes_codbarra_ingresados, width=13, height=2)
         self.btn_sumar_registros.grid(row=8, column=3, pady=10)
 
-
+        
         self.frame.pack()
+    
+    def limitar_10_caracteres(self):
+            if len(self.entry_text.get()) > 0:
+                self.entry_text.set(self.entry_text.get()[:5])
+    #entry_text.trace("w", lambda *args: limitador(self.entry_text))
+
+    def click(self, event):
+        self.input_fecharendicion.config(state=NORMAL)
+        self.input_fecharendicion.delete(0, END)
 
     def tomar_datos(self):
         try:
