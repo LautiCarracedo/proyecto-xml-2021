@@ -9,17 +9,54 @@ class SucursalOutput():
 
 
     #Getters
-    def getSucursal(self):
+    def getSucursal(self, banco):
+        if banco == '00082':
+            self.sucursal = '0001'
+        elif banco == '00079':
+            self.sucursal = '1011'
+        else:
+            self.sucursal
+
         return self.sucursal
 
-    def getImpRecaudado(self):
-        return self.imp_recaudado
+    def getImpRecaudado(self, banco):
+        if banco == "00079":
+            imp_recaudado = "000000000000"
+        elif banco == "00082":
+            imp_recaudado = "0"
+        else:
+            imp_recaudado = self.imp_recaudado
 
-    def getImpDepositado(self):
-        return self.imp_depositado
+        return imp_recaudado
 
-    def getImpADepositar(self):
-        return self.imp_a_depositar
+    def getImpDepositado(self, banco):
+        if banco == "00079":
+            imp_depositado = "000000000000"
+        elif banco == "00082":
+            imp_depositado = "0"
+        else:
+            imp_depositado = self.imp_depositado
+
+        return imp_depositado
+
+    def getImpADepositar(self, banco):
+        if banco == "00079":
+            imp_adepositar = "000000000000"
+        elif banco == "00082":
+            imp_adepositar = "0"
+        else:
+            imp_adepositar = self.imp_a_depositar
+
+        return imp_adepositar
+    
+    def getImpAnulacionTim(self, banco):
+        if banco == "00079":
+            total_imp_anul_timbradoras = "000000000000"
+        elif banco == "00082":
+            total_imp_anul_timbradoras = "0"
+        return total_imp_anul_timbradoras
+
+
 
     def calcular_cant_registros(self, boletas):
         #
@@ -30,11 +67,16 @@ class SucursalOutput():
         return cantidad_registros
 
 
-    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas, codbarra2):
         suma_importes = 0
         if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
             for indice in range(len(importes)):
                 suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        
+        elif banco == '00079' or banco == '00082':
+            for importe in codbarra2:
+                suma_importes += float(float(importe[30:40]) / 100) #VER EN FUNCION EXTRAER_IMPORTE_CODBARRA2 EN DP
             suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         
         else:
@@ -45,8 +87,8 @@ class SucursalOutput():
         
 
 
-    def calcular_total_comision_iva_sucursal(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
+    def calcular_total_comision_iva_sucursal(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
         #print('DP:',dp)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
         sumatoria_comision = 0
