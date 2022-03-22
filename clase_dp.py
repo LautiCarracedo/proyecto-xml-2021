@@ -1,24 +1,27 @@
 from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
 class DetallePagoInput():
-    def __init__(self, boletas, fechapagos, importes, cuotaactual, cantcuotas):
+    def __init__(self, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
         #
         self.boletas = boletas
         self.fecha_pagos = fechapagos
         self.importes = importes
         self.obj_imp = cuotaactual
         self.cuotas = cantcuotas
+        self.codbarra1 = codbarra1
+        self.codbarra2 = codbarra2
 
 
 class DetallePagoOutput(DetallePagoInput):
-    def __init__(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        super().__init__(boletas, fechapagos, importes, cuotaactual, cantcuotas)
+    def __init__(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+        super().__init__(boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
         self.cod_registro = '022'
         self.marca_movimiento = 'P'
         self.tipo_operacion = '01'
         self.tipo_rendicion = '01'
         self.moneda = '01'
         self.nro_comercio = banco
+        self.impuesto = '501' #para 079 y 082
 
     def getCodRegistro(self):
         return self.cod_registro
@@ -45,6 +48,13 @@ class DetallePagoOutput(DetallePagoInput):
                 importes = "{0:.2f}".format(float(self.importes[indice]) / float(cantcuotas[indice]))
                 importe_redeondeado.append(importes)
                 #print(importe_redeondeado)
+
+        elif banco == '00079' or banco == '00082':
+            importes_codbarra = self.extraer_importe_codbarra2()
+            for importes in importes_codbarra:
+                importe_pago = "{0:.2f}".format(float(importes))
+                importe_redeondeado.append(importe_pago)
+
         else:
             for importes in self.importes:
                 importe_pago = "{0:.2f}".format(float(importes))
@@ -84,12 +94,25 @@ class DetallePagoOutput(DetallePagoInput):
 
         return vec_valores[0]
 
-    def calculo_nro_registro_ycontrol(self):
+
+    def calculo_nro_registro_ycontrol(self, banco):
         registros_ycontrol = []
         for numero in range(len(self.boletas)):
             registros_ycontrol.append(numero + 1)
             #print(registros_ycontrol)
         return registros_ycontrol
+    
+    def calculo_nro_registro_x_codbarras(self):
+        registros = []
+        for numero in range(len(self.codbarra1)):
+            registros.append(numero + 1)
+        return registros
+    
+    def getNroControl(self, banco): # esto es para 079 y 083 que siempre es un nro fijo, para los demas entes siempre es un numero incremental según la cantidad de boletas ingresadas
+        datos_archivo_config = ArchivoConfig()
+        vec_claves_tag, vec_valores = datos_archivo_config.leer_ini_valores_tags_variables(banco)
+
+        return vec_valores[2]
 
     def comision_x_ente(self, banco, cantcuotas):
         #print('PRINTEO COMISIONXENTE: ', datos_general)
@@ -131,4 +154,59 @@ class DetallePagoOutput(DetallePagoInput):
             comisiones.append(comision)
             ivas.append(iva)
         return comisiones, ivas
+    
+    def extraer_obligacion_codbarra1(self):
+        obligaciones = []
+        for obligacion in self.codbarra1:
+            obligaciones.append(obligacion[22:42])  #32:36-36:38-38:40
+        return obligaciones
+    
+    def extraer_fechaVenc_codbarra2(self):
+        fechasVenc = []
+        for fecha in self.codbarra2:
+            fechasVenc.append(fecha[10:18])  #32:36-36:38-38:40
+        return fechasVenc
+    
+    def extraer_objImponible_codbarra2(self):
+        obj_imponibles = []
+        for obj in self.codbarra2:
+            obj_imponibles.append(obj[18:30])  #32:36-36:38-38:40
+        return obj_imponibles
+    
+    def extraer_nroLiquidacion_codbarra1(self): #boletas
+        nro_boleta = []
+        for boleta in self.codbarra1:
+            nro_boleta.append(boleta[3:19])  #32:36-36:38-38:40
+        return nro_boleta
+    
+    def extraer_importe_codbarra2(self):
+        importes = []
+        importe = 0
+        #print("cod barra2",self.codbarra2)
+        for numero in self.codbarra2:
+            #print(numero[30:40])
+        
+            importe += float(str(numero[30:40]))
+            #print(importe)
+
+            importe_final = importe/100 #de excel
+            importes.append(importe_final)
+            importe = 0
+
+        return importes
+    
+    def extraer_fechaVenc_codbarra2(self):
+        fechas_vencimiento = []
+        for fecha in self.codbarra2:
+            fechas_vencimiento.append(str(fecha[14:18]) + "-" + str(fecha[12:14]) +  "-" + str(fecha[10:12])) 
+        return fechas_vencimiento
+
+    def getImpuestoEnte079y082(self):
+        return self.impuesto
+    
+    def getCodBarra1(self):
+        return self.codbarra1
+    
+    def getCodBarra2(self):
+        return self.codbarra2
     
