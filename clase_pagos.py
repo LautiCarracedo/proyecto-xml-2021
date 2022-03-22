@@ -36,12 +36,17 @@ class PagosOutput():
             #print("REGISTROS: ", cantidad_registros)
         return cantidad_registros
 
-    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas, codbarra2):
         suma_importes = 0
         if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
             for indice in range(len(importes)):
                 suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
                 #print(suma_importes)
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+        
+        elif banco == '00079' or banco == '00082':
+            for importe in codbarra2:
+                suma_importes += float(float(importe[30:40]) / 100) #VER EN FUNCION EXTRAER_IMPORTE_CODBARRA2 EN DP
             suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         
         else:
@@ -51,8 +56,8 @@ class PagosOutput():
             suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         return suma_imp_dos_decimales
 
-    def calcular_total_comision_iva_pagos(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
+    def calcular_total_comision_iva_pagos(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
