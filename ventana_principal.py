@@ -31,7 +31,7 @@ class VentanaPrincipal(Frame):
     def ventana_otros_entess(self):
         self.ventana_entes = Toplevel()
         self.aplicacion_otros_entes = Ventana(self.ventana_entes)
-        self.ventana_entes.geometry('1450x520')
+        self.ventana_entes.geometry('1450x500')
 
 def main():
     ventana_principal = Tk()
