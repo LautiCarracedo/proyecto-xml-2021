@@ -154,6 +154,9 @@ class ComisionesArchivo():
             elif (valor_cuota == 'D') and (banco != '00935'):
                 vector_comisiones_calculo_ok = True
                 vector_comisiones_p_calculo.append(vec_comisiones[1])
+            elif (valor_cuota == 'P') and (banco != '00935'):
+                vector_comisiones_calculo_ok = True
+                vector_comisiones_p_calculo.append(vec_comisiones[0])
             elif (valor_cuota == '12' or valor_cuota == '18') and (banco == '00935'):
                 vector_comisiones_calculo_ok = True
                 vector_comisiones_p_calculo.append(vec_comisiones[0])
