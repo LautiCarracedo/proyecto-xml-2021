@@ -1,6 +1,7 @@
 import random
 
 from clase_dp import DetallePagoOutput
+from lectura_archivo_config import ArchivoConfig
 
 vector = []
 
@@ -34,13 +35,34 @@ class GeneralOutput(GeneralInput):
 
     #Getters
     def getImpRecaudado(self):
-        return self.imp_recaudado
+        if self.banco == "00079" or self.banco == "00082":
+            imp_recaudado = "000000000000"
+        else:
+            imp_recaudado = self.imp_recaudado
+
+        return imp_recaudado
 
     def getImpDepositado(self):
-        return self.imp_depositado
+        if self.banco == "00079" or self.banco == "00082":
+            imp_depositado = "000000000000"
+        else:
+            imp_depositado = self.imp_depositado
+
+        return imp_depositado
 
     def getImpADepositar(self):
-        return self.imp_a_depositar
+        if self.banco == "00079" or self.banco == "00082":
+            imp_adepositar = "000000000000"
+        else:
+            imp_adepositar = self.imp_a_depositar
+
+        return imp_adepositar
+    
+    def getImpAnulacionTimbradoras(self):
+        datos_archivo_config = ArchivoConfig()
+        vec_claves_tag, vec_valores = datos_archivo_config.leer_ini_valores_tags_variables(self.banco)
+
+        return vec_valores[3]
 
     def calcular_cbus_y_cuits(self):
         self.cbu_origen = '0200925801000040012697'
@@ -51,7 +73,12 @@ class GeneralOutput(GeneralInput):
         return self.cbu_origen, self.cuit_origen, self.cbu_destino, self.cuit_destino
 
     def generar_nro_rendicion(self):
-        self.nro_rendicion = random.randint(00000,99999)
+        if self.banco == '00079':
+            self.nro_rendicion = "00" + str(random.randint(0000,9999))
+        elif self.banco == '00082':
+            self.nro_rendicion = "0" + str(random.randint(0000,9999))
+        elif self.banco != '00079' and self.banco != '00082':
+            self.nro_rendicion = random.randint(00000,99999)
         return self.nro_rendicion
 
 
@@ -64,13 +91,19 @@ class GeneralOutput(GeneralInput):
             cantidad_registros += 1
         return cantidad_registros
 
-    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas):
+    def calcular_importe_determinado_y_pagado(self, banco, importes, cantcuotas, codbarra2):
         suma_importes = 0
+
         if banco == '00935': #solo para cordobesa hay que dividir el importe ingresado en la cant cuotas
             for indice in range(len(importes)):
                 suma_importes += (float(importes[indice]) / float(cantcuotas[indice]))
             suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         
+        elif banco == '00079' or banco == '00082':
+            for importe in codbarra2:
+                suma_importes += float(float(importe[30:40]) / 100) #VER EN FUNCION EXTRAER_IMPORTE_CODBARRA2 EN DP
+            suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
+
         else:
             for importe in importes:
                 suma_importes += float(importe)
@@ -80,8 +113,8 @@ class GeneralOutput(GeneralInput):
     
 
 
-    def calcular_total_comision_iva(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas):
-        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas)
+    def calcular_total_comision_iva(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+        dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
         valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(self.banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
