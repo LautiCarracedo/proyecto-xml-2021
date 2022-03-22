@@ -44,12 +44,11 @@ def validar_cant_cuotas(banco, cant_cuotas):
     #vector_dp_calculos = []
     cuotas_es_numero_cred_deb = False
     for cuota in vector_cantcuotas:
-        if (cuota == 'C' or cuota == 'D') and banco != '00935':
+        if (cuota == 'C' or cuota == 'D' or cuota == "P") and banco != '00935':
             cuotas_es_numero_cred_deb = True
         elif banco == '00935' and cuota == '18' or cuota == '12':
             cuotas_es_numero_cred_deb = True
-        #elif (cuota == 'C' or cuota == 'D' or cuota.isnumeric()):
-        #    cuotas_es_numero_cred_deb = True
+        
         else:
             cuotas_es_numero_cred_deb = False
 
@@ -190,6 +189,29 @@ def validar_codbarra2(codbarras2_p, codbarras2_e):
             break
 
     return bandera_codbarra2_p_ok, bandera_codbarra2_e_ok, vec_codbarra2_p, vec_codbarra2_e
+
+def validar_codbarra_otros_entes(codbarra1, codbarra2):
+    bandera_codbarra1_ok = False
+    bandera_codbarra2_ok = False
+    vec_codbarra1 = codbarra1.replace(" ", "").split('\n')
+    vec_codbarra2 = codbarra2.replace(" ", "").split('\n')
+    #print(vec_codbarra1_p)
+    #print(vec_codbarra1_e)
+    for codigo in vec_codbarra1:
+        if codigo.isnumeric() and len(codigo) == 42:
+            bandera_codbarra1_ok = True
+        else:
+            bandera_codbarra1_ok = False
+            break
+    
+    for codigo in vec_codbarra2:
+        if codigo.isnumeric() and len(codigo) == 42:
+            bandera_codbarra2_ok = True
+        else:
+            bandera_codbarra2_ok = False
+            break
+
+    return bandera_codbarra1_ok, bandera_codbarra2_ok, vec_codbarra1, vec_codbarra2
 
 def validar_tipopagos(codbarra1_p, codbarra2_p, codbarra1_e, codbarra2_e, formato_xml):
     bandera_codbarra1_p_ok, bandera_codbarra1_e_ok, vector_codbarra1_p, vector_codbarra1_e = validar_codbarra1(codbarra1_p, codbarra1_e)
