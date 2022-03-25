@@ -259,6 +259,9 @@ class Ventana(Frame):
             self.text_importe_or_barra.set("Importe $")
 
         elif banco_selec == "00082" or banco_selec == "00079":
+            self.input_nroboleta_o_codbarra1.destroy()
+            self.input_importe_o_codbarra2.destroy()
+
             self.input_nroboleta_o_codbarra1 = Text(self.frame, height = 15, width = 43)
             self.input_nroboleta_o_codbarra1.grid(row=5, column=1)
 
@@ -268,6 +271,8 @@ class Ventana(Frame):
             self.text_barra_or_boleta.set("Codbarra1")
             self.text_importe_or_barra.set("Codbarra2")
             self.text_cuotaactual.set("                                             ")
+
+            
 
             
         
@@ -290,61 +295,6 @@ class Ventana(Frame):
             self.input_cuotaactual = Text(self.frame, height = 15, width = 10, state="disabled")
             self.input_cuotaactual.grid(row=5, column=9)
         
-        #while banco_selec == "00935":
-        #    self.label_cuotaactual = Label(self.frame,text='Cuota Actual:',pady=10,padx=20)
-        #    self.label_cuotaactual.grid(row=5,column=8,sticky='N')
-#
-        #    self.input_cuotaactual = Text(self.frame, height = 15, width = 10)
-        #    self.input_cuotaactual.grid(row=5, column=9)
-#
-        #    self.label_codbarra1.destroy()
-        #    self.input_codbarra1.destroy()
-        #    self.label_codbarra2.destroy()
-        #    self.input_codbarra2.destroy()
-#
-        #    self.label_cuotaactual.destroy()
-        #    self.input_cuotaactual.destroy()
-#
-        #    if banco_selec != "00935":
-        #        break
-    #
-        #
-        #while banco_selec == "00079" or banco_selec == "00082":
-        #    self.label_cuotaactual.destroy()
-        #    self.input_cuotaactual.destroy()
-#
-        #    self.label_codbarra1 = Label(self.frame,text='Cod Barra 1:',pady=10,padx=20 )
-        #    self.label_codbarra1.grid(row=5,column=0,sticky='N')
-#
-        #    self.input_codbarra1 = Text(self.frame, height = 15, width = 43)
-        #    self.input_codbarra1.grid(row=5, column=1)
-#
-        #    self.label_codbarra2 = Label(self.frame,text='Cod Barra 2:',pady=10,padx=20 )
-        #    self.label_codbarra2.grid(row=5,column=2,sticky='N')
-#
-        #    self.input_codbarra2 = Text(self.frame, height = 15, width = 43)
-        #    self.input_codbarra2.grid(row=5, column=3)
-#
-        #    self.label_cuotaactual.destroy()
-        #    self.input_cuotaactual.destroy()
-#
-        #    if banco_selec != "00079" or banco_selec != "00082":
-        #        break
-        #
-        #while banco_selec != "00079" and banco_selec == "00082" != banco_selec == "00935":
-        #    self.label_cuotaactual.destroy()
-        #    self.input_cuotaactual.destroy()
-        #    self.label_codbarra1.destroy()
-        #    self.input_codbarra1.destroy()
-        #    self.label_codbarra2.destroy()
-        #    self.input_codbarra2.destroy()
-#
-        #    if banco_selec != "00079" and banco_selec != "00082" and banco_selec == "00935":
-        #        break
-#
-            
-
-            
         
         
     
