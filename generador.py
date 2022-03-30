@@ -1,4 +1,6 @@
 from statistics import mode
+
+from django.test import tag
 from clase_general import GeneralOutput
 from clase_sucursal import SucursalOutput
 from clase_pagos import PagosOutput
@@ -13,10 +15,14 @@ import zipfile
 import os
 
 class Generador():
-    def __init__(self, origen_ok, banco_ok, fecha_rendicion_ok, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok, vector_codbarra1_ok, vector_codbarra2_ok):
+    def __init__(self, origen_ok, banco_ok, fecha_rendicion_ok, decision_comision, comision_deb, comision_cred, comision_pres, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok, vector_codbarra1_ok, vector_codbarra2_ok):
         self.origen = origen_ok
         self.banco = banco_ok
         self.fecha_rendicion = fecha_rendicion_ok
+        self.decision_comision = decision_comision
+        self.comision_deb_ingresada = comision_deb
+        self.comision_cred_ingresada = comision_cred
+        self.comision_pres_ingresada = comision_pres
         self.boletas = vector_boletas_ok
         self.importes = vector_importes_ok
         self.fechas_pagos = vector_fechapagos_ok
@@ -25,7 +31,7 @@ class Generador():
         self.codbarra1 = vector_codbarra1_ok
         self.codbarra2 = vector_codbarra2_ok
 
-    def generar_xml(self, origen_ok, banco_ok, fecha_rendicion_ok, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok, vector_codbarra1_ok, vector_codbarra2_ok):
+    def generar_xml(self, origen_ok, banco_ok, fecha_rendicion_ok, decision_comision, comision_deb, comision_cred, comision_pres, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok, vector_codbarra1_ok, vector_codbarra2_ok):
         datos_arc_config = ArchivoConfig()
 
         vec_claves, vec_comisiones = datos_arc_config.leer_ini_comisiones(banco_ok)
@@ -45,7 +51,7 @@ class Generador():
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
             imp_anul_timbradora = instancia_general_output.getImpAnulacionTimbradoras()
-            imp_comision, imp_iva = instancia_general_output.calcular_total_comision_iva(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            imp_comision, imp_iva = instancia_general_output.calcular_total_comision_iva(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
 
 
             instancia_sucursal_output = SucursalOutput()
@@ -57,7 +63,7 @@ class Generador():
             imp_depositado_sucursal = instancia_sucursal_output.getImpDepositado(banco_ok)
             imp_a_depositar_sucursal = instancia_sucursal_output.getImpADepositar(banco_ok)
             imp_anul_timbradora_sucursal = instancia_sucursal_output.getImpAnulacionTim(banco_ok)
-            total_comision_sucursal, total_iva_sucursal = instancia_sucursal_output.calcular_total_comision_iva_sucursal(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            total_comision_sucursal, total_iva_sucursal = instancia_sucursal_output.calcular_total_comision_iva_sucursal(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
 
 
             instancia_pagos_output = PagosOutput(banco_ok)
@@ -68,7 +74,7 @@ class Generador():
             cant_registros_pagos = instancia_pagos_output.calcular_cant_registros_pagos(vector_codbarra1_ok)
             imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_ok, vector_importes_ok, vector_cantcuotas_ok, vector_codbarra2_ok)
             imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_ok, vector_importes_ok, vector_cantcuotas_ok, vector_codbarra2_ok)
-            total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
             fechaAcreditacion = "0001-01-01"
 
             instancia_dp_output = DetallePagoOutput(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
@@ -84,7 +90,7 @@ class Generador():
             cuota = instancia_dp_output.getCantCuotas(banco_ok)
             obligacion = instancia_dp_output.extraer_obligacion_codbarra1()
             fecha_pago = instancia_dp_output.getFechaPago()
-            comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(banco_ok, vector_cantcuotas_ok)
+            comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_cantcuotas_ok)
             impuesto = instancia_dp_output.getImpuestoEnte079y082()
             id_obj_imp = instancia_dp_output.extraer_objImponible_codbarra2()
             codbarra1 = instancia_dp_output.getCodBarra1()
@@ -231,7 +237,7 @@ class Generador():
             imp_recaudado = instancia_general_output.getImpRecaudado()
             imp_depositado = instancia_general_output.getImpDepositado()
             imp_a_depositar = instancia_general_output.getImpADepositar()
-            imp_comision, imp_iva = instancia_general_output.calcular_total_comision_iva(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            imp_comision, imp_iva = instancia_general_output.calcular_total_comision_iva(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
 
 
             instancia_sucursal_output = SucursalOutput()
@@ -242,7 +248,7 @@ class Generador():
             imp_recaudado_sucursal = instancia_sucursal_output.getImpRecaudado(banco_ok)
             imp_depositado_sucursal = instancia_sucursal_output.getImpDepositado(banco_ok)
             imp_a_depositar_sucursal = instancia_sucursal_output.getImpADepositar(banco_ok)
-            total_comision_sucursal, total_iva_sucursal = instancia_sucursal_output.calcular_total_comision_iva_sucursal(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            total_comision_sucursal, total_iva_sucursal = instancia_sucursal_output.calcular_total_comision_iva_sucursal(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
 
             instancia_pagos_output = PagosOutput(banco_ok)
             cod_registro = instancia_pagos_output.getCodRegistro()
@@ -252,7 +258,7 @@ class Generador():
             cant_registros_pagos = instancia_pagos_output.calcular_cant_registros_pagos(vector_boletas_ok)
             imp_pagado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_ok, vector_importes_ok, vector_cantcuotas_ok, vector_codbarra2_ok)
             imp_determinado_pagos = instancia_pagos_output.calcular_importe_determinado_y_pagado(banco_ok, vector_importes_ok, vector_cantcuotas_ok, vector_codbarra2_ok)
-            total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
+            total_comision_pagos, total_iva_pagos = instancia_pagos_output.calcular_total_comision_iva_pagos(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
 
 
             instancia_dp_output = DetallePagoOutput(banco_ok, vector_boletas_ok, vector_fechapagos_ok, vector_importes_ok, vector_cuotaactual_ok, vector_cantcuotas_ok, vector_codbarra1_ok, vector_codbarra2_ok)
@@ -269,7 +275,7 @@ class Generador():
             obligacion = instancia_dp_output.getNroBoletas() #obligacion es el nroBoleta para gant. para psrm y otax es 0
             fecha_pago = instancia_dp_output.getFechaPago()
             nro_comercio = instancia_dp_output.getNroComercio(banco_ok)
-            comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(banco_ok, vector_cantcuotas_ok)
+            comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_cantcuotas_ok)
 
    
             

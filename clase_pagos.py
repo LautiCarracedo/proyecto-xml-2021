@@ -56,9 +56,9 @@ class PagosOutput():
             suma_imp_dos_decimales = "{0:.2f}".format(suma_importes)
         return suma_imp_dos_decimales
 
-    def calcular_total_comision_iva_pagos(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+    def calcular_total_comision_iva_pagos(self, decision_comision, comision_deb, comision_cred, comision_pres, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
-        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:

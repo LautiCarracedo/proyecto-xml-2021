@@ -41,7 +41,6 @@ def validar_fechapagos(fecha_pagos):
     
 def validar_cant_cuotas(banco, cant_cuotas):
     vector_cantcuotas = cant_cuotas.replace(" ", "").split('\n')
-    #vector_dp_calculos = []
     cuotas_es_numero_cred_deb = False
     for cuota in vector_cantcuotas:
         if (cuota == 'C' or cuota == 'D' or cuota == "P") and banco != '00935':
@@ -54,7 +53,7 @@ def validar_cant_cuotas(banco, cant_cuotas):
 
     #print('vector cantcuotas:', vector_cantcuotas)
     return cuotas_es_numero_cred_deb, vector_cantcuotas
-    
+
 
 def validar_cuota_actual(banco, boletas, cuota_actual):
     vector_boletas = boletas.replace(" ", "").split('\n')
@@ -300,3 +299,4 @@ def validar_campo_formato_xml(formato_xml):
     else:
         formato_cargado = True
     return formato_cargado, formato
+

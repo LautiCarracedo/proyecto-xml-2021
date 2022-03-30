@@ -31,8 +31,10 @@ class ArchivoConfig():
     def leer_ini_comisiones(self, banco):
         try:
             banco_selec = str(banco)
+            #print(banco_selec)
     
             comisiones = config.items('Comisiones' + str(banco_selec))
+            #print(comisiones)
 
             vec_claves = []
             vec_comisiones = []
@@ -67,7 +69,7 @@ class ArchivoConfig():
 
     def leer_ini_tags(self, origen, banco):
         try:
-            banco_selec = str(banco)    
+            banco_selec = str(banco)  
 
             tag_general = []
             tag_sucursal = []
@@ -112,6 +114,8 @@ class ArchivoConfig():
                         tag_dp.append(valor)
                         break
 
+    
+
             elif origen == 'GANT':
                 tags = config.items('ElementosGANT' + str(banco_selec))
 
@@ -132,13 +136,13 @@ class ArchivoConfig():
                         break
 
             return tag_general, tag_sucursal, tag_pagos, tag_dp
-        
+
         except:
             return 0,0,0,0
 
 
 class ComisionesArchivo():
-    def calcular_comisiones(self, banco, cantcuotas):
+    def calcular_comisiones(self, decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas):
         
         datos_archivo_config = ArchivoConfig()
         vec_claves, vec_comisiones = datos_archivo_config.leer_ini_comisiones(banco)
@@ -146,20 +150,68 @@ class ComisionesArchivo():
         vector_comisiones_p_calculo = []
         vector_comisiones_calculo_ok = False
         vector_cant_cuotas = cantcuotas
+        vector_comisiones_calculadas_interfaz = []
+
 
         for valor_cuota in vector_cant_cuotas:
-            if (valor_cuota == 'C') and (banco != '00935'):
-                vector_comisiones_calculo_ok = True
-                vector_comisiones_p_calculo.append(vec_comisiones[0])
-            elif (valor_cuota == 'D') and (banco != '00935'):
-                vector_comisiones_calculo_ok = True
-                vector_comisiones_p_calculo.append(vec_comisiones[1])
-            elif (valor_cuota == 'P') and (banco != '00935'):
-                vector_comisiones_calculo_ok = True
-                vector_comisiones_p_calculo.append(vec_comisiones[0])
+            if (valor_cuota == 'C') and (banco != '00079' and banco != '00082' and banco != '00935'):
+                if decision_comision == "Por defecto" or decision_comision == "":
+                    vector_comisiones_calculo_ok = True
+                    vector_comisiones_p_calculo.append(vec_comisiones[0])
+                else:
+                    if (comision_cred != "" and comision_deb == "") or (comision_cred != "" and comision_deb != ""):
+                        vector_comisiones_calculo_ok = True
+                        comision_cred_p_calculo = float(comision_cred) / 100
+                        vector_comisiones_calculadas_interfaz = [comision_cred_p_calculo]
+                        vector_comisiones_p_calculo.append(vector_comisiones_calculadas_interfaz[0])
+
+                    else:
+                        vector_comisiones_calculo_ok = False
+
+            elif (valor_cuota == 'D') and (banco != '00079' and banco != '00082' and banco != '00935'):
+                if decision_comision == "Por defecto" or decision_comision == "":
+                    vector_comisiones_calculo_ok = True
+                    vector_comisiones_p_calculo.append(vec_comisiones[1])
+
+                else:
+                    if (comision_cred == "" and comision_deb != "") or (comision_cred != "" and comision_deb != ""):
+                        vector_comisiones_calculo_ok = True
+                        comision_deb_p_calculo = float(comision_deb) / 100
+                        vector_comisiones_calculadas_interfaz = [comision_deb_p_calculo]
+                        vector_comisiones_p_calculo.append(vector_comisiones_calculadas_interfaz[0])
+                    
+                    else:
+                        vector_comisiones_calculo_ok = False
+
+
+            elif (valor_cuota == 'P') and (banco == '00079' or banco == '00082'):
+                if decision_comision == "Por defecto" or decision_comision == "":
+                    vector_comisiones_calculo_ok = True
+                    vector_comisiones_p_calculo.append(vec_comisiones[0])
+                else:
+                    if comision_pres != "" and (comision_cred == "" and comision_deb == ""):
+                        vector_comisiones_calculo_ok = True
+                        comision_pres_p_calculo = float(comision_pres) / 100
+                        vector_comisiones_calculadas_interfaz = [comision_pres_p_calculo]
+                        vector_comisiones_p_calculo.append(vector_comisiones_calculadas_interfaz[0])
+                    
+                    else:
+                        vector_comisiones_calculo_ok = False
+
             elif (valor_cuota == '12' or valor_cuota == '18') and (banco == '00935'):
-                vector_comisiones_calculo_ok = True
-                vector_comisiones_p_calculo.append(vec_comisiones[0])
+                if decision_comision == "Por defecto" or decision_comision == "":
+                    vector_comisiones_calculo_ok = True
+                    vector_comisiones_p_calculo.append(vec_comisiones[0])
+                else:
+                    if comision_cred != "" and comision_deb == "":
+                        vector_comisiones_calculo_ok = True
+                        comision_cred_p_calculo = float(comision_cred) / 100
+                        vector_comisiones_calculadas_interfaz = [comision_cred_p_calculo]
+                        vector_comisiones_p_calculo.append(vector_comisiones_calculadas_interfaz[0])
+                    
+                    else:
+                        vector_comisiones_calculo_ok = False
+
             else:
                 vector_comisiones_calculo_ok = False
 

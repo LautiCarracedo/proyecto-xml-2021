@@ -87,10 +87,10 @@ class SucursalOutput():
         
 
 
-    def calcular_total_comision_iva_sucursal(self, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
+    def calcular_total_comision_iva_sucursal(self, decision_comision, comision_deb, comision_cred, comision_pres, banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2):
         dp = DetallePagoOutput(banco, boletas, fechapagos, importes, cuotaactual, cantcuotas, codbarra1, codbarra2)
         #print('DP:',dp)
-        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(banco, cantcuotas)
+        valores_comisiones, valores_iva = dp.calculo_comision_iva_x_dp(decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas)
         sumatoria_comision = 0
         sumatoria_iva = 0
         for valor_com in valores_comisiones:

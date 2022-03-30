@@ -95,7 +95,7 @@ class DetallePagoOutput(DetallePagoInput):
         return vec_valores[0]
 
 
-    def calculo_nro_registro_ycontrol(self, banco):
+    def calculo_nro_registro_ycontrol(self):
         registros_ycontrol = []
         for numero in range(len(self.boletas)):
             registros_ycontrol.append(numero + 1)
@@ -114,35 +114,16 @@ class DetallePagoOutput(DetallePagoInput):
 
         return vec_valores[2]
 
-    def comision_x_ente(self, banco, cantcuotas):
-        #print('PRINTEO COMISIONXENTE: ', datos_general)
-        #instancia_general = GeneralInput(datos_general)
-        
-        #vector_comisiones = Ventana.calcular_comisiones()
+    def comision_x_ente(self, decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas):
         banco = banco
         comisiones_archivo_conf = ComisionesArchivo()
-        comisiones_ok, vector_comisiones = comisiones_archivo_conf.calcular_comisiones(banco, cantcuotas)
-        #print('BANCO CMISION X ENTE' ,banco)
-        #for valor_cuota in cantcuotas:
-        #    #print(valor_cuota)
-        #    if banco == '00935': #cordobesa
-        #        comision = 0.01
-        #        vector_comisiones.append(comision)
-        #    elif (banco == '00216') and (valor_cuota == 'C' or valor_cuota == 'D'): #master
-        #        comision = 0.01
-        #        vector_comisiones.append(comision)
-        #    elif banco == '00202' and valor_cuota == 'C': #visa
-        #        comision = 0.01
-        #        vector_comisiones.append(comision)
-        #    elif banco == '00202' and valor_cuota == 'D': #visa
-        #        comision = 0.0035
-        #        vector_comisiones.append(comision)
-        ##print(vector_comisiones)
+        comisiones_ok, vector_comisiones = comisiones_archivo_conf.calcular_comisiones(decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas)
+        
         return vector_comisiones
 
-    def calculo_comision_iva_x_dp(self, banco, cantcuotas):
+    def calculo_comision_iva_x_dp(self, decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas):
         vector_importes_x_dp = self.getImporte(banco, cantcuotas)
-        vector_comision_ente = self.comision_x_ente(banco, cantcuotas) #Ventana.calcular_comisiones() #self.comision_x_ente(banco, cantcuotas)
+        vector_comision_ente = self.comision_x_ente(decision_comision, comision_deb, comision_cred, comision_pres, banco, cantcuotas) #Ventana.calcular_comisiones() #self.comision_x_ente(banco, cantcuotas)
         #print('comision ente', comision_ente)
         comisiones = []
         ivas = []
