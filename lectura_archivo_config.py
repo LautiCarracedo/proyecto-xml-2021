@@ -1,6 +1,4 @@
 from configparser import ConfigParser
-from tkinter import messagebox
-from tkinter.constants import E
 import os
 
 directorio_actual = os.getcwd()

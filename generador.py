@@ -1,6 +1,3 @@
-from statistics import mode
-
-from django.test import tag
 from clase_general import GeneralOutput
 from clase_sucursal import SucursalOutput
 from clase_pagos import PagosOutput
@@ -11,8 +8,6 @@ from lectura_archivo_config import ArchivoConfig
 import xml.etree.ElementTree as ET
 
 import zipfile
-
-import os
 
 class Generador():
     def __init__(self, origen_ok, banco_ok, fecha_rendicion_ok, decision_comision, comision_deb, comision_cred, comision_pres, vector_boletas_ok, vector_importes_ok, vector_fechapagos_ok, vector_cantcuotas_ok, vector_cuotaactual_ok, vector_codbarra1_ok, vector_codbarra2_ok):

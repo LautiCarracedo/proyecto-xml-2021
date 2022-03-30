@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 
-from numpy import isnat
 from clase_dp_bpc import DetallePagoElectronicoBPC, DetallePagoPresencialBPC
 from clase_general_bpc import GeneralBPC
 from clase_pagos_bpc import PagosBPC
