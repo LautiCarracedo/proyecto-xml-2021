@@ -3,8 +3,6 @@ from tkinter import ttk
 from tkinter.constants import CENTER, N
 from tkinter import messagebox
 
-from matplotlib.pyplot import text
-
 from generador import Generador
 from lectura_archivo_config import ArchivoConfig, ComisionesArchivo
 
