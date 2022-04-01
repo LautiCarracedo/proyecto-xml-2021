@@ -205,8 +205,9 @@ class VentanaBPC(Frame):
             for importe in vector_imp_determinados:
                 suma_importes_det += importe
             
-            sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
-            sumatoria_imp_determinado.grid(row=7, column=1)
+            messagebox.showinfo(message="Sumatoria importe determinado (pagos presenciales):" + str(round(suma_importes_det,2)), title="Suma exitosa")
+            #sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
+            #sumatoria_imp_determinado.grid(row=7, column=1)
         
         elif dato_formatoxml == "Pagos electronicos":
             vector_imp_recaudado = instancia_dp_electronico.getImpRecaudadoBoletaER()
@@ -221,11 +222,12 @@ class VentanaBPC(Frame):
             for importe in vector_imp_depositado_depositar:
                 suma_importes_depo += importe
             
-            sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
-            sumatoria_imp_recaudado.grid(row=7, column=2)
+            messagebox.showinfo(message="Sumatoria importe recaudado (pagos electronicos): " + str(round(suma_importes_rec,2)) + "\n" + "\n" + "Sumatoria importe a depositar/depositado (pagos electronicos): "  + str(round(suma_importes_depo,2)), title="Suma exitosa")
+            #sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
+            #sumatoria_imp_recaudado.grid(row=7, column=2)
 
-            sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado (electronico): ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
-            sumatoria_imp_depo.grid(row=7, column=3)
+            #sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado (electronico): ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
+            #sumatoria_imp_depo.grid(row=7, column=3)
         
         elif dato_formatoxml == "Ambos pagos":
             vector_imp_determinados = instancia_dp_presencial.getImporte()
@@ -243,14 +245,17 @@ class VentanaBPC(Frame):
             for importe in vector_imp_depositado_depositar:
                 suma_importes_depo += importe
             
-            sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
-            sumatoria_imp_determinado.grid(row=7, column=1)
 
-            sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
-            sumatoria_imp_recaudado.grid(row=7, column=2)
+            messagebox.showinfo(message="Sumatoria importe determinado (pagos presenciales): " + str(round(suma_importes_det,2)) + "\n" + "\n" + "Sumatoria importe recaudado (pagos electronicos): "  + str(round(suma_importes_rec,2)) + "\n" + "\n" + "Sumatoria importe a depositar/depositado(pagos electronicos) : "  + str(round(suma_importes_depo,2)), title="Suma exitosa")
 
-            sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado(electronico) : ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
-            sumatoria_imp_depo.grid(row=7, column=3)
+            #sumatoria_imp_determinado = Label(self.frame, text='Sumatoria imp determinado (presencial): ' + str(round(suma_importes_det,2)), pady=10,padx=20 )
+            #sumatoria_imp_determinado.grid(row=7, column=1)
+
+            #sumatoria_imp_recaudado = Label(self.frame, text='Sumatoria imp recaudado (electronico): ' + str(round(suma_importes_rec,2)), pady=10,padx=20 )
+            #sumatoria_imp_recaudado.grid(row=7, column=2)
+
+            #sumatoria_imp_depo = Label(self.frame, text='Suma imp a depositar/depositado(electronico) : ' + str(round(suma_importes_depo,2)), pady=10,padx=20 )
+            #sumatoria_imp_depo.grid(row=7, column=3)
 
 
 
