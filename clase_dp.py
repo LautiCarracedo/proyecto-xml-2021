@@ -21,7 +21,6 @@ class DetallePagoOutput(DetallePagoInput):
         self.tipo_rendicion = '01'
         self.moneda = '01'
         self.nro_comercio = banco
-        self.impuesto = '501' #para 079 y 082
 
     def getCodRegistro(self):
         return self.cod_registro
@@ -136,6 +135,13 @@ class DetallePagoOutput(DetallePagoInput):
             ivas.append(iva)
         return comisiones, ivas
     
+    
+    def extraer_impuesto_codbarra1(self):
+        impuestos = []
+        for impuesto in self.codbarra1:
+            impuestos.append(impuesto[3:6])
+        return impuestos
+
     def extraer_obligacion_codbarra1(self):
         obligaciones = []
         for obligacion in self.codbarra1:
@@ -181,9 +187,6 @@ class DetallePagoOutput(DetallePagoInput):
         for fecha in self.codbarra2:
             fechas_vencimiento.append(str(fecha[14:18]) + "-" + str(fecha[12:14]) +  "-" + str(fecha[10:12])) 
         return fechas_vencimiento
-
-    def getImpuestoEnte079y082(self):
-        return self.impuesto
     
     def getCodBarra1(self):
         return self.codbarra1

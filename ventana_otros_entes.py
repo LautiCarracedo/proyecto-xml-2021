@@ -168,8 +168,8 @@ class Ventana(Frame):
 
                                                 generador = Generador(dato_origen, dato_banco, dato_fec_rendicion, combo_comision_selec, comision_deb, comision_cred, comision_pres, None, None, datos_fec_pagos, datos_cant_cuotas, None, dato_codbarra1, dato_codbarra2)
                                                 generador.generar_xml(dato_origen, dato_banco, dato_fec_rendicion, combo_comision_selec, comision_deb, comision_cred, comision_pres, None, None, datos_fec_pagos, datos_cant_cuotas, None, dato_codbarra1, dato_codbarra2)    
-                                                nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.P' + banco_t[2:5]
-                                                messagebox.showinfo(message=f"XML generado correctamente en la carpeta principal del generador con  el nombre {nombre_archivoXML}.xml. Presiona aceptar para salir.", title="Generación exitosa")
+                                                nombre_archivoXML = dato_fec_rendicion[0:4] + dato_fec_rendicion[5:7] + dato_fec_rendicion[8:10] + '.R' + banco_t[2:5]
+                                                messagebox.showinfo(message=f"XML generado correctamente en la carpeta principal del generador con  el nombre {nombre_archivoXML}. Presiona aceptar para salir.", title="Generación exitosa")
                                                 #self.cerrar_ventana()    
                                             else:
                                                 messagebox.showerror(message="Revisar los valores ingresados en el campo cantidad de cuotas. Para Cordobesa(00935) ingresar 12 o 18. Para pagos presenciales (00082-PagoFacil y 00079-Rapipago) ingresar P. Para el resto ingresar C o D según corresponda. Si esta ingresando la comision manualmente recuerde llenar el campo correspondiente que se active", title="Error en cantidad cuotas")                                                                                                                                                                                                                                                                            
@@ -246,7 +246,7 @@ class Ventana(Frame):
         except(SystemError):
             messagebox.showerror(message="Revise que todos los campos hayan sido cargados. Sugerencia: Revise comas (para decimales) y puntos (para miles) en los importes", title="Error")
         except(ValueError):
-            messagebox.showerror(message="ReviseE que todos los campos hayan sido cargados. Sugerencia: Revise comas (para decimales) y puntos (para miles) en los importes", title="Error")
+            messagebox.showerror(message="ReviseE que todos los campos hayan sido cargados. Sugerencia: Si ingreso comisión debe ingresar un punto(.) para el decimal. Para los importes ingrese coma(para decimales) y puntos (para miles)", title="Error")
         except(TypeError):
             messagebox.showerror(message="Error en el archivo de configuraciones. Verifique que existan todas las secciones [NroBanco],[Comisiones],[Valores],[Elementos] del origen y el banco para el que desea generar el XML y que los valores sean correctos", title="Error")
         except:

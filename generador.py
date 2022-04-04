@@ -86,7 +86,7 @@ class Generador():
             obligacion = instancia_dp_output.extraer_obligacion_codbarra1()
             fecha_pago = instancia_dp_output.getFechaPago()
             comision, iva = instancia_dp_output.calculo_comision_iva_x_dp(decision_comision, comision_deb, comision_cred, comision_pres, banco_ok, vector_cantcuotas_ok)
-            impuesto = instancia_dp_output.getImpuestoEnte079y082()
+            impuesto = instancia_dp_output.extraer_impuesto_codbarra1()
             id_obj_imp = instancia_dp_output.extraer_objImponible_codbarra2()
             codbarra1 = instancia_dp_output.getCodBarra1()
             codbarra2 = instancia_dp_output.getCodBarra2()
@@ -195,7 +195,7 @@ class Generador():
                                 str(importe[numero]), str(importe[numero]), comision[numero], iva[numero]]
     
                 else:
-                    vector_dp = [cod_registro_dp, str(nro_registro[numero]), str(impuesto), str(fecha_venc[numero]), str(id_obj_imp[numero]),
+                    vector_dp = [cod_registro_dp, str(nro_registro[numero]), str(impuesto[numero]), str(fecha_venc[numero]), str(id_obj_imp[numero]),
                                 str(nro_control), marca_movimiento,
                                 tipo_operacion, tipo_rendicion, moneda, str(nro_boleta[numero]), str(nro_boleta[numero]),str(obligacion[numero]),
                                 str(codbarra1[numero]), str(codbarra2[numero]), fecha_pago[numero],
@@ -400,13 +400,25 @@ class Generador():
             #print(vector_con_indices_a_mostrar_dp)
             #print(vector_dp_datos_a_mostrar)
 
-        tree = ET.ElementTree(general)    
-        tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
+        tree = ET.ElementTree(general)   
 
-        with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5]}" + ".zip", 'w') as zf:
-            tree = ET.ElementTree(general)    
+        #este if es porque no tengo guardado en ningun lado la P o R segun corresponda en el nombre del archivo
+        if banco_ok == "00079" or banco_ok == "00082":
+            tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.R' + banco_ok[3:5], xml_declaration=True, encoding='utf-8')
+
+            with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.R' + banco_ok[3:5]}" + ".zip", 'w') as zf:
+                tree = ET.ElementTree(general)    
+                tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.R' + banco_ok[3:5], xml_declaration=True, encoding='utf-8')
+                zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.R' + banco_ok[3:5])
+        
+        else:
             tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
-            zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5])
+
+            with zipfile.ZipFile(f"{fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5]}" + ".zip", 'w') as zf:
+                tree = ET.ElementTree(general)    
+                tree.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5], xml_declaration=True, encoding='utf-8')
+                zf.write(fecha_rendicion_ok[0:4] + fecha_rendicion_ok[5:7] + fecha_rendicion_ok[8:10] + '.P' + banco_ok[2:5])
+
                        
  
             
